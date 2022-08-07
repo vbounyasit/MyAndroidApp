@@ -7,5 +7,7 @@ I have also developped a server API for this App, based on the NodeJS JavaScript
 
 _See the code base for this project at [NodeJS-API](https://github.com/vbounyasit/NodeJS-API)_
 
+_See my [Trello board](https://trello.com/b/0NH0WcIo/android-app) with the technical business rules I implemented_
+
 
 Under construction...
