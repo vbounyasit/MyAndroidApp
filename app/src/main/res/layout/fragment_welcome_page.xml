@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <import type="com.example.mykotlinapp.domain.pojo.ApiRequestState" />
+
+        <import type="android.view.View" />
+
+        <variable
+            name="activityViewModel"
+            type="com.example.mykotlinapp.activities.UserActivityViewModel" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/app_logo"
+            style="@style/TextLogo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/app_logo_name"
+            android:textSize="@dimen/logo_text_size" />
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/welcome_page_progress"
+            style="@style/CircularProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/app_logo"
+            android:layout_centerHorizontal="true"
+            android:visibility="@{activityViewModel.loginState == ApiRequestState.LOADING ? View.VISIBLE : View.GONE}" />
+    </RelativeLayout>
+</layout>

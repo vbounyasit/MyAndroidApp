@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MyKotlinApp</string>
+    <string name="app_logo_name">WideLink</string>
+
+    <!-- custom pref keys -->
+    <string name="shared_pref">MyAppSharedPref</string>
+    <string name="auth_token_key">authToken</string>
+    <string name="user_remote_id_key">userRemoteId</string>
+    <string name="unique_device_id_key">deviceId</string>
+    <string name="remember_me_key">rememberMe</string>
+    <string name="dark_mode_key">darkMode</string>
+
+    <!-- bundle keys -->
+    <string name="chat_remote_id">chatRemoteId</string>
+    <string name="group_remote_id">groupRemoteId</string>
+    <string name="post_remote_id">postRemoteId</string>
+    <string name="comment_remote_id">commentRemoteId</string>
+    <string name="is_group_chat">isGroupChat</string>
+    <string name="skip_welcome_page">skipWelcomePage</string>
+    <string name="post_notifications">enableNotifications</string>
+
+    <!-- default pref keys -->
+    <string name="language_key">languageKey</string>
+    <string name="event_notifications_key">eventNotificationsKey</string>
+    <string name="chat_notifications_key">chatNotificationsKey</string>
+
+    <!-- notification keys -->
+    <string name="chat_notification_channel_key">chatNotifications</string>
+    <string name="chat_notification_channel_name">Chat Notifications</string>
+    <string name="chat_notification_channel_desc">Notifications related to chats</string>
+    <string name="chat_notification_reply_key">chat_notification_reply_key</string>
+
+    <!-- misc params -->
+    <string name="profile_pictures_delimiter">,\ </string>
+    <string name="chat_log_author_delimiter">\ :\ </string>
+
+</resources>

@@ -1,0 +1,106 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
+    id "kotlin-parcelize"
+}
+apply plugin: 'androidx.navigation.safeargs'
+
+android {
+    compileSdk 31
+
+    defaultConfig {
+        applicationId "com.example.mykotlinapp"
+        minSdk 26
+        targetSdk 30
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+    buildFeatures {
+        dataBinding true
+    }
+    testOptions {
+        unitTests.all {
+            useJUnitPlatform()
+        }
+    }
+    namespace 'com.example.mykotlinapp'
+}
+
+dependencies {
+    // Network
+    implementation "com.squareup.moshi:moshi-kotlin:$version_moshi"
+    implementation "com.squareup.retrofit2:retrofit:$version_retrofit"
+    implementation "com.squareup.retrofit2:converter-moshi:$version_retrofit"
+
+    implementation "com.google.android.material:material:$version_material"
+    implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"
+    implementation "androidx.navigation:navigation-ui-ktx:$navigationVersion"
+
+    // Room and Lifecycle dependencies
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version")
+
+    // Kotlin Extensions and Coroutines support for Room
+    implementation "androidx.room:room-ktx:$room_version"
+
+    // Coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutine_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutine_version"
+
+    // Glide
+    implementation "com.github.bumptech.glide:glide:$version_glide"
+    kapt 'androidx.annotation:annotation:1.4.0'
+    kapt 'com.github.bumptech.glide:compiler:4.9.0'
+
+    // Hilt
+    implementation "com.google.dagger:hilt-android:$version_hilt"
+    implementation "androidx.hilt:hilt-work:$version_hilt_compiler"
+    kapt "androidx.hilt:hilt-compiler:$version_hilt_compiler"
+    kapt "com.google.dagger:hilt-compiler:$version_hilt"
+
+    // Preference
+    implementation "androidx.preference:preference-ktx:$version_preference"
+
+    // WorkManager dependency
+    implementation "androidx.work:work-runtime-ktx:$versions_work_manager"
+
+    // Socket io
+    implementation("io.socket:socket.io-client:$version_socket_io") {
+        exclude group: 'org.json', module: 'json'
+    }
+
+    /**
+     * Tests
+     */
+    //Mockk
+    testImplementation "io.mockk:mockk:$version_mockk"
+    testImplementation "io.mockk:mockk-agent-jvm:$version_mockk"
+
+    // Dependencies for local unit tests
+
+    // AndroidX Test - JVM testing
+    testImplementation "io.kotest:kotest-runner-junit5:$version_kotest"
+    androidTestImplementation "androidx.test.ext:junit:$androidXTestExtKotlinRunnerVersion"
+    androidTestImplementation 'androidx.test:monitor:1.5.0'
+
+}

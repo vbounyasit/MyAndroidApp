@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/update_comment_dialog_options"
+            layout="@layout/component_dialog_options"
+            app:cancelText="@{@string/cancel_label}"
+            app:saveText="@{@string/save_label}" />
+
+    </RelativeLayout>
+</layout>

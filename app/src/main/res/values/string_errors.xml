@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_network_loading">Please check your internet connection</string>
+    <string name="error_min_char_required">At least %d characters are required</string>
+    <string name="error_max_char_allowed">At most %d characters are allowed</string>
+    <string name="error_information_required">Please enter a value for this field</string>
+    <string name="error_invalid_email_address">Please enter a valid email address</string>
+    <string name="error_invalid_format">Please enter a valid value for this field</string>
+    <string name="error_radio_group">Please select %s</string>
+    <string name="error_invalid_credentials">Invalid username or password</string>
+    <string name="error_no_participants_selected">You need at lease one participant !</string>
+    <string name="error_message_empty">Please enter a message !</string>
+</resources>

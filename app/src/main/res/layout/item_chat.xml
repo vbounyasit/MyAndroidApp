@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="property"
+            type="com.example.mykotlinapp.model.dto.ui.chat.ChatListItemDTO" />
+
+        <variable
+            name="listener"
+            type="com.example.mykotlinapp.ui.components.recycler_view.ClickListener" />
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/item_highlight_background"
+        android:onClick="@{() -> listener.onClick(property)}">
+
+        <ImageView
+            android:id="@+id/chat_activity_status"
+            android:layout_width="@dimen/user_activity_icon_size"
+            android:layout_height="@dimen/user_activity_icon_size"
+            android:layout_alignEnd="@id/chat_profile_picture"
+            android:layout_alignBottom="@id/chat_profile_picture"
+            android:contentDescription="@string/user_activity_status_desc"
+            android:elevation="@dimen/z_elevation_to_front"
+            tools:srcCompat="@drawable/ic_status_busy"
+            tools:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/chat_profile_picture"
+            android:layout_width="@dimen/chat_item_pic_size"
+            android:layout_height="@dimen/chat_item_pic_size"
+            android:layout_alignTop="@id/chat_name"
+            android:layout_marginStart="@dimen/big_spacing"
+            android:layout_marginTop="-5dp"
+            android:contentDescription="@string/user_profile_picture_desc"
+            app:circleImgUrl="@{property.chatItem.profilePictures.size() &lt; 2 ? property.chatItem.profilePictures[0] : null}"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <ImageView
+            android:layout_width="@dimen/chat_item_smaller_pic_size"
+            android:layout_height="@dimen/chat_item_smaller_pic_size"
+            android:layout_alignTop="@id/chat_profile_picture"
+            android:layout_alignEnd="@id/chat_profile_picture"
+            android:layout_marginTop="-3dp"
+            android:layout_marginEnd="-3dp"
+            android:contentDescription="@string/user_profile_picture_desc"
+            android:elevation="@dimen/z_elevation_to_front"
+            app:circleImgUrl="@{property.chatItem.profilePictures.size() > 1 ? property.chatItem.profilePictures[0] : null}"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <ImageView
+            android:layout_width="@dimen/chat_item_smaller_pic_size"
+            android:layout_height="@dimen/chat_item_smaller_pic_size"
+            android:layout_alignStart="@id/chat_profile_picture"
+            android:layout_alignBottom="@id/chat_profile_picture"
+            android:layout_marginStart="-3dp"
+            android:layout_marginBottom="-3dp"
+            android:contentDescription="@string/user_profile_picture_desc"
+            app:circleImgUrl="@{property.chatItem.profilePictures.size() > 1 ? property.chatItem.profilePictures[0] : null}"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/chat_name"
+            style="@style/ChatItemTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="90dp"
+            android:layout_marginTop="@dimen/big_spacing"
+            android:text="@{property.chatItem.name}"
+            tools:text="@string/chat_title" />
+
+        <TextView
+            style="@style/ChatItemCaption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/chat_name"
+            android:layout_alignBottom="@id/chat_name"
+            android:layout_marginStart="@dimen/very_small_spacing"
+            android:layout_toEndOf="@id/chat_name"
+            android:drawablePadding="@dimen/standard_spacing"
+            android:scaleX="0.8"
+            android:scaleY="0.8"
+            android:text="@{property.lastChatLog.creationDate}"
+            app:drawableStartCompat="@drawable/ic_post_clock"
+            tools:text="@string/last_updated_placeholder" />
+
+        <TextView
+            android:id="@+id/chat_latest_message"
+            style="@style/ChatItemCaption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/chat_name"
+            android:layout_alignStart="@id/chat_name"
+            android:layout_marginTop="@dimen/standard_spacing"
+            android:layout_marginEnd="@dimen/big_spacing"
+            android:layout_marginBottom="@dimen/big_spacing"
+            android:maxHeight="@dimen/chat_last_log_max_height"
+            android:text="@{property.lastChatLog.content}"
+            tools:text="@string/text_content_placeholder" />
+
+    </RelativeLayout>
+</layout>

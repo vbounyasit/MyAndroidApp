@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="replyingTo"
+            type="String" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/backgroundColor">
+
+        <ImageView
+            android:id="@+id/comment_creation_close"
+            android:layout_width="@dimen/dialog_exit_icon_size"
+            android:layout_height="@dimen/dialog_exit_icon_size"
+            android:layout_marginStart="@dimen/standard_spacing"
+            android:layout_marginTop="@dimen/standard_spacing"
+            android:contentDescription="@string/close_dialog_desc"
+            app:srcCompat="@drawable/ic_close" />
+
+        <TextView
+            android:id="@+id/create_comment_title"
+            style="@style/ChatItemTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/huge_spacing"
+            android:gravity="center_horizontal"
+            android:text="@{`Reply to ` + replyingTo}"
+            android:textSize="@dimen/text_size_big"
+            tools:text="Replying to X" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/create_comment_content"
+            style="@style/TextInputLayout.ClearText"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/text_description_form_height"
+            android:layout_below="@id/create_comment_title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="@dimen/huge_spacing"
+            android:layout_marginTop="@dimen/big_spacing"
+            app:hintEnabled="false">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/create_comment_content_field"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top"
+                android:hint="@string/comment_content_hint"
+                android:inputType="textCapSentences|textMultiLine"
+                android:lines="@integer/input_field_multiline_line_height"
+                android:maxLength="@integer/post_max_length"
+                android:maxLines="@integer/post_max_lines" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/comment_creation_submit"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="@dimen/text_input_form_width"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/create_comment_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/big_spacing"
+            android:layout_marginBottom="@dimen/big_spacing"
+            android:text="@string/comment_submit" />
+    </RelativeLayout>
+</layout>

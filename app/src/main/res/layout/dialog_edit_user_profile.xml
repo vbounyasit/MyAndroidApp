@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="com.example.mykotlinapp.domain.pojo.Gender" />
+
+        <variable
+            name="userData"
+            type="com.example.mykotlinapp.model.dto.inputs.form.user.UpdateUserInput" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/backgroundColor">
+
+        <include
+            android:id="@+id/edit_profile_dialog_options"
+            layout="@layout/component_dialog_options"
+            app:cancelText="@{@string/cancel_label}"
+            app:saveText="@{@string/save_label}" />
+
+        <TextView
+            android:id="@+id/edit_profile_title"
+            style="@style/ChatItemTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/enormous_spacing"
+            android:gravity="center_horizontal"
+            android:text="@string/edit_profile_title"
+            android:textSize="@dimen/text_size_big" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/edit_profile_first_name"
+            style="@style/TextInputLayout"
+            android:layout_width="@dimen/text_input_form_width"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/edit_profile_title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/big_spacing"
+            app:hintEnabled="false">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_profile_first_name_field"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/first_name_hint"
+                android:inputType="textPersonName"
+                android:maxLength="@integer/input_field_max_length"
+                android:text="@{userData.firstName}" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/edit_profile_last_name"
+            style="@style/TextInputLayout"
+            android:layout_width="@dimen/text_input_form_width"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/edit_profile_first_name"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/standard_spacing"
+            app:hintEnabled="false">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_profile_last_name_field"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/last_name_hint"
+                android:inputType="textPersonName"
+                android:maxLength="@integer/input_field_max_length"
+                android:text="@{userData.lastName}" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/edit_profile_email"
+            style="@style/TextInputLayout"
+            android:layout_width="@dimen/text_input_form_width"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/edit_profile_last_name"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/standard_spacing"
+            app:hintEnabled="false">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_profile_email_field"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/email_address_hint"
+                android:inputType="textEmailAddress"
+                android:maxLength="@integer/input_field_max_length"
+                android:text="@{userData.email}" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/edit_profile_about_me_title"
+            style="@style/ChatItemTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/edit_profile_email"
+            android:layout_alignStart="@id/edit_profile_first_name"
+            android:layout_marginTop="@dimen/big_spacing"
+            android:gravity="center_horizontal"
+            android:text="@string/about_me_title"
+            android:textSize="@dimen/text_size_big" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/edit_profile_about_me"
+            style="@style/TextInputLayout.ClearText"
+            android:layout_width="@dimen/text_input_form_width"
+            android:layout_height="@dimen/text_description_form_height"
+            android:layout_below="@id/edit_profile_about_me_title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/standard_spacing">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_profile_about_me_field"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top"
+                android:inputType="textCapSentences|textMultiLine"
+                android:lines="@integer/input_field_multiline_line_height"
+                android:maxLength="@integer/description_max_length"
+                android:maxLines="@integer/profile_description_max_lines"
+                android:text="@{userData.aboutMe}" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </RelativeLayout>
+</layout>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="property"
+            type="com.example.mykotlinapp.model.dto.ui.chat.ChatLogDTO" />
+
+        <variable
+            name="chatIsGroup"
+            type="Boolean" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            style="@style/CircularProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/chat_bubble_card_view"
+            android:layout_marginTop="@dimen/standard_spacing"
+            android:layout_marginEnd="@dimen/standard_spacing"
+            android:layout_marginBottom="@dimen/standard_spacing"
+            android:layout_toStartOf="@id/chat_bubble_card_view"
+            android:visibility="@{property.isMe &amp;&amp; !property.upToDate ? View.VISIBLE : View.GONE}" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/chat_bubble_card_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/standard_spacing"
+            android:layout_marginTop="@dimen/standard_spacing"
+            android:layout_marginEnd="@dimen/standard_spacing"
+            app:cardBackgroundColor="@{ property.isMe ? @color/purple2 : @color/purple4 }"
+            app:cardCornerRadius="@dimen/chat_corner_radius"
+            tools:ignore="RelativeOverlap">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/standard_spacing"
+                android:paddingEnd="@dimen/standard_spacing">
+
+                <ImageView
+                    android:id="@+id/chat_bubble_author_picture"
+                    android:layout_width="@dimen/chat_sender_pic_size"
+                    android:layout_height="@dimen/chat_sender_pic_size"
+                    android:layout_marginTop="@dimen/standard_spacing"
+                    android:contentDescription="@string/user_profile_picture_desc"
+                    android:visibility="@{property.isMe || !chatIsGroup ? View.GONE : View.VISIBLE}"
+                    app:circleImgUrl="@{property.author.profilePicture}"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:srcCompat="@tools:sample/avatars" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/standard_spacing"
+                    android:layout_marginEnd="@dimen/standard_spacing"
+                    android:gravity="center_vertical"
+                    android:includeFontPadding="false"
+                    android:text="@{property.author.firstName}"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                    android:textStyle="bold"
+                    android:visibility="@{property.isMe || !chatIsGroup ? View.GONE : View.VISIBLE}"
+                    app:layout_constraintBottom_toBottomOf="@+id/chat_bubble_author_picture"
+                    app:layout_constraintStart_toEndOf="@+id/chat_bubble_author_picture"
+                    app:layout_constraintTop_toTopOf="@+id/chat_bubble_author_picture"
+                    tools:text="@string/chat_title" />
+
+                <TextView
+                    android:id="@+id/chat_bubble_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/standard_spacing"
+                    android:includeFontPadding="false"
+                    android:maxWidth="@dimen/chat_bubble_max_width"
+                    android:maxHeight="@dimen/chat_bubble_max_height"
+                    android:text="@{property.content}"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/chat_bubble_author_picture"
+                    tools:text="@string/text_content_placeholder" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_spacing"
+                    android:layout_marginBottom="@dimen/small_spacing"
+                    android:text="@{property.creationDate}"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                    android:textSize="@dimen/text_size_tiny"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/chat_bubble_content"
+                    tools:text="@string/last_updated_placeholder" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/read_participants"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/chat_bubble_card_view"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="@dimen/small_spacing"
+            android:layout_marginEnd="@dimen/standard_spacing"
+            android:layout_marginBottom="@dimen/small_spacing"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:listData="@{property.readBy}"
+            tools:itemCount="@integer/group_participant_count_to_display"
+            tools:listitem="@layout/item_participant" />
+    </RelativeLayout>
+</layout>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="notification"
+            type="String" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            tools:ignore="UselessParent">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/standard_spacing"
+                android:layout_marginBottom="@dimen/standard_spacing"
+                app:cardCornerRadius="@dimen/chat_corner_radius">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/standard_spacing"
+                    android:paddingTop="@dimen/very_small_spacing"
+                    android:paddingEnd="@dimen/standard_spacing"
+                    android:paddingBottom="@dimen/very_small_spacing"
+                    android:text="@{notification}"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                    tools:text="@string/chat_notification" />
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+    </RelativeLayout>
+</layout>

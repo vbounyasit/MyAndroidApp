@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/discoverFragment">
+
+    <fragment
+        android:id="@+id/communityFragment"
+        android:name="com.example.mykotlinapp.ui.screens.community.CommunityFragment"
+        android:label="CommunityFragment"
+        tools:layout="@layout/fragment_main_community">
+        <action
+            android:id="@+id/action_communityFragment_to_postFragment"
+            app:destination="@id/userPostFragment"
+            app:enterAnim="@anim/enter_left"
+            app:exitAnim="@anim/exit_left"
+            app:popEnterAnim="@anim/enter_right"
+            app:popExitAnim="@anim/exit_right" />
+        <action
+            android:id="@+id/action_communityFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment"
+            app:enterAnim="@anim/enter_left"
+            app:exitAnim="@anim/exit_left"
+            app:popEnterAnim="@anim/enter_right"
+            app:popExitAnim="@anim/exit_right" />
+        <action
+            android:id="@+id/action_communityFragment_to_userProfileFragment"
+            app:destination="@id/userProfileFragment"
+            app:enterAnim="@anim/enter_left"
+            app:exitAnim="@anim/exit_left"
+            app:popEnterAnim="@anim/enter_right"
+            app:popExitAnim="@anim/exit_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/discoverFragment"
+        android:name="com.example.mykotlinapp.ui.screens.discover.DiscoverFragment"
+        android:label="discoverFragment"
+        tools:layout="@layout/fragment_main_discover">
+        <action
+            android:id="@+id/action_discoverFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment"
+            app:enterAnim="@anim/enter_left"
+            app:exitAnim="@anim/exit_left"
+            app:popEnterAnim="@anim/enter_right"
+            app:popExitAnim="@anim/exit_right" />
+        <action
+            android:id="@+id/action_discoverFragment_to_userProfileFragment"
+            app:destination="@id/userProfileFragment"
+            app:enterAnim="@anim/enter_left"
+            app:exitAnim="@anim/exit_left"
+            app:popEnterAnim="@anim/enter_right"
+            app:popExitAnim="@anim/exit_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/eventsFragment"
+        android:name="com.example.mykotlinapp.ui.screens.events.EventsFragment"
+        android:label="EventsFragment">
+        <action
+            android:id="@+id/action_eventsFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment"
+            app:enterAnim="@anim/enter_left"
+            app:exitAnim="@anim/exit_left"
+            app:popEnterAnim="@anim/enter_right"
+            app:popExitAnim="@anim/exit_right" />
+        <action
+            android:id="@+id/action_eventsFragment_to_userProfileFragment"
+            app:destination="@id/userProfileFragment"
+            app:enterAnim="@anim/enter_left"
+            app:exitAnim="@anim/exit_left"
+            app:popEnterAnim="@anim/enter_right"
+            app:popExitAnim="@anim/exit_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/chatWindowFragment"
+        android:name="com.example.mykotlinapp.ui.screens.chats.history.chat.ChatWindowFragment"
+        android:label="chatWindowFragment"
+        tools:layout="@layout/fragment_chat_window">
+        <argument
+            android:name="chat_remote_id"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_groupChatFragment_to_postFragment"
+            app:destination="@id/userPostFragment"
+            app:enterAnim="@anim/enter_left"
+            app:exitAnim="@anim/exit_left"
+            app:popEnterAnim="@anim/enter_right"
+            app:popExitAnim="@anim/exit_right" />
+        <action
+            android:id="@+id/action_chatWindowFragment_to_chatFragment"
+            app:popUpTo="@id/chatFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/groupPostsFragment"
+        android:name="com.example.mykotlinapp.ui.screens.chats.history.group.GroupFragment"
+        android:label="GroupFragment"
+        tools:layout="@layout/fragment_tab_group_post_list" />
+    <fragment
+        android:id="@+id/userPostFragment"
+        android:name="com.example.mykotlinapp.ui.screens.chats.history.group.posts.comments.CommentsFragment"
+        android:label="UserPostFragment"
+        tools:layout="@layout/fragment_group_post">
+        <argument
+            android:name="post_remote_id"
+            app:argType="string" />
+        <argument
+            android:name="group_remote_id"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.mykotlinapp.ui.screens.side_nav.settings.SettingsFragment"
+        android:label="SettingsFragment"
+        tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="com.example.mykotlinapp.ui.screens.chats.ChatFragment"
+        android:label="ChatFragment"
+        tools:layout="@layout/fragment_main_chat">
+        <action
+            android:id="@+id/action_chatFragment_to_groupChatFragment"
+            app:destination="@id/chatWindowFragment"
+            app:enterAnim="@anim/enter_left"
+            app:exitAnim="@anim/exit_left"
+            app:popEnterAnim="@anim/enter_right"
+            app:popExitAnim="@anim/exit_right" />
+        <action
+            android:id="@+id/action_chatFragment_to_contactSearchFragment"
+            app:destination="@id/contactSearchFragment"
+            app:enterAnim="@anim/enter_left"
+            app:exitAnim="@anim/exit_left"
+            app:popEnterAnim="@anim/enter_right"
+            app:popExitAnim="@anim/exit_right" />
+        <action
+            android:id="@+id/action_chatFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment"
+            app:enterAnim="@anim/enter_left"
+            app:exitAnim="@anim/exit_left"
+            app:popEnterAnim="@anim/enter_right"
+            app:popExitAnim="@anim/exit_right" />
+        <action
+            android:id="@+id/action_chatFragment_to_userProfileFragment"
+            app:destination="@id/userProfileFragment"
+            app:enterAnim="@anim/enter_left"
+            app:exitAnim="@anim/exit_left"
+            app:popEnterAnim="@anim/enter_right"
+            app:popExitAnim="@anim/exit_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/contactSearchFragment"
+        android:name="com.example.mykotlinapp.ui.screens.chats.contacts.search.ContactSearchFragment"
+        android:label="ContactSearchFragment"
+        tools:layout="@layout/fragment_search_page" />
+    <fragment
+        android:id="@+id/userProfileFragment"
+        android:name="com.example.mykotlinapp.ui.screens.side_nav.profile.UserProfileFragment"
+        android:label="UserProfileFragment"
+        tools:layout="@layout/fragment_user_profile_page" />
+
+</navigation>

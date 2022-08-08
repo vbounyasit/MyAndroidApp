@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="property"
+            type="com.example.mykotlinapp.model.entity.Channel" />
+
+        <variable
+            name="listener"
+            type="com.example.mykotlinapp.ui.components.recycler_view.ClickListener" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="@{() -> listener.onClick(property)}">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/channel_pic_cardview"
+                android:layout_width="@dimen/chat_item_pic_size"
+                android:layout_height="@dimen/chat_item_pic_size"
+                android:layout_marginStart="@dimen/big_spacing"
+                android:layout_marginTop="-5dp"
+                android:contentDescription="@string/user_profile_picture_desc"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:srcCompat="@tools:sample/avatars" />
+
+            <TextView
+                android:id="@+id/channel_name"
+                style="@style/ChatItemTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{property.channelName}"
+                app:layout_constraintBottom_toTopOf="@+id/channel_follower_count"
+                app:layout_constraintStart_toEndOf="@+id/channel_pic_cardview"
+                app:layout_constraintTop_toTopOf="@+id/channel_pic_cardview"
+                app:layout_constraintVertical_chainStyle="packed"
+                tools:text="@string/channel_title" />
+
+            <TextView
+                android:id="@+id/channel_follower_count"
+                style="@style/ChatItemCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{property.followerCount}"
+                android:textStyle="italic"
+                app:layout_constraintBottom_toBottomOf="@+id/channel_pic_cardview"
+                app:layout_constraintStart_toStartOf="@+id/channel_name"
+                app:layout_constraintTop_toBottomOf="@+id/channel_name"
+                tools:text="@string/follower_count_placeholder" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </RelativeLayout>
+</layout>

@@ -1,0 +1,113 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.example.mykotlinapp.domain.pojo.ApiRequestState" />
+
+        <import type="android.view.View" />
+
+        <variable
+            name="activityViewModel"
+            type="com.example.mykotlinapp.activities.UserActivityViewModel" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:id="@+id/login_error_message"
+            style="@style/TextAppearance.Design.Error"
+            android:layout_width="@dimen/text_input_form_width"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/standard_spacing"
+            android:gravity="center"
+            android:text="@string/error_invalid_credentials"
+            android:visibility="@{activityViewModel.loginState == ApiRequestState.FAILED_UNAUTHORIZED ? View.VISIBLE : View.GONE}" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_username"
+            style="@style/TextInputLayout.ClearText"
+            android:layout_width="@dimen/text_input_form_width"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/login_error_message"
+            android:layout_marginTop="@dimen/huge_spacing"
+            android:hint="@string/login_id_hint">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_username_field"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="textPersonName|textCapWords" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_password"
+            style="@style/TextInputLayout"
+            android:layout_width="@dimen/text_input_form_width"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/input_username"
+            android:layout_marginTop="@dimen/standard_spacing"
+            android:hint="@string/login_password_hint"
+            app:endIconMode="password_toggle">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_password_field"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="textPassword" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/remember_me_switch"
+            style="@style/InputSwitch"
+            android:layout_width="@dimen/text_input_form_width"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/input_password"
+            android:layout_marginTop="@dimen/standard_spacing"
+            android:paddingStart="@dimen/standard_spacing"
+            android:paddingEnd="@dimen/no_spacing"
+            android:text="@string/remember_me"
+            android:textColor="?attr/colorOnBackground" />
+
+        <FrameLayout
+            android:id="@+id/login_button_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/remember_me_switch">
+
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:id="@+id/login_button_progress"
+                style="@style/CircularProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:elevation="@dimen/z_elevation_to_front"
+                android:visibility="@{activityViewModel.loginState == ApiRequestState.LOADING ? View.VISIBLE : View.GONE}" />
+
+            <Button
+                android:id="@+id/login_button"
+                android:layout_width="@dimen/text_input_form_width"
+                android:layout_height="wrap_content"
+                android:text="@{activityViewModel.loginState != ApiRequestState.LOADING ? @string/log_in : ``}"
+                tools:text="@string/log_in" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/cant_log_in"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/login_button_layout"
+            android:layout_alignStart="@id/login_button_layout"
+            android:layout_alignEnd="@id/login_button_layout"
+            android:layout_marginTop="@dimen/huge_spacing"
+            android:gravity="center_horizontal"
+            android:paddingStart="@dimen/standard_spacing"
+            android:paddingEnd="@dimen/standard_spacing"
+            android:text="@string/cant_log_in" />
+    </RelativeLayout>
+</layout>

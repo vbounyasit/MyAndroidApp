@@ -1,0 +1,22 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="Theme.MyKotlinApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/purple2</item>
+        <item name="colorPrimaryVariant">@color/purple</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="boxBackgroundColor">@color/chat_search_bar_day</item>
+        <item name="backgroundColor">@color/white</item>
+        <item name="colorOnBackground">@color/black</item>
+
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/purple3</item>
+        <item name="colorSecondaryVariant">@color/purple4</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <!-- Customize your theme here. -->
+        <item name="android:textColor">?attr/colorOnBackground</item>
+        <item name="android:iconTint">?attr/colorOnBackground</item>
+    </style>
+</resources>

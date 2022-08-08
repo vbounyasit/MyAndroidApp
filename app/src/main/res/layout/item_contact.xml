@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.example.mykotlinapp.domain.pojo.ContactRelationType" />
+
+        <import type="android.view.View" />
+
+        <variable
+            name="property"
+            type="com.example.mykotlinapp.model.dto.ui.user.UserContactDTO" />
+
+        <variable
+            name="listener"
+            type="com.example.mykotlinapp.ui.components.recycler_view.ClickListener" />
+
+        <variable
+            name="acceptListener"
+            type="com.example.mykotlinapp.ui.components.recycler_view.ClickListener" />
+
+        <variable
+            name="declineListener"
+            type="com.example.mykotlinapp.ui.components.recycler_view.ClickListener" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClickListener="@{() -> listener.onClick(property)}">
+
+        <ImageView
+            android:id="@+id/contact_request_profile_picture"
+            android:layout_width="@dimen/contact_request_pic_size"
+            android:layout_height="@dimen/contact_request_pic_size"
+            android:layout_marginStart="@dimen/big_spacing"
+            android:layout_marginTop="@dimen/big_spacing"
+            android:layout_marginBottom="@dimen/big_spacing"
+            android:contentDescription="@string/user_profile_picture_desc"
+            app:circleImgUrl="@{property.profilePicture}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/contact_request_name"
+            style="@style/ChatItemTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/big_spacing"
+            android:text="@{property.fullName}"
+            app:layout_constraintBottom_toTopOf="@id/pending_request"
+            app:layout_constraintStart_toEndOf="@id/contact_request_profile_picture"
+            app:layout_constraintTop_toTopOf="@+id/contact_request_profile_picture"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="@string/chat_title" />
+
+        <TextView
+            android:id="@+id/pending_request"
+            style="@style/ChatItemCaption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/very_small_spacing"
+            android:text="@string/sent"
+            android:textStyle="italic"
+            android:visibility="@{property.relationType == ContactRelationType.OUTGOING ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toTopOf="@id/request_accept_button"
+            app:layout_constraintStart_toStartOf="@+id/contact_request_name"
+            app:layout_constraintTop_toBottomOf="@+id/contact_request_name" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/request_accept_button"
+            style="@style/ChatItemButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/standard_spacing"
+            android:onClickListener="@{() -> acceptListener.onClick(property)}"
+            android:text="@{property.relationType == ContactRelationType.INCOMING ? @string/accept : @string/cancel_label}"
+            android:visibility="@{property.relationType != ContactRelationType.FRIENDS ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="@+id/contact_request_profile_picture"
+            app:layout_constraintStart_toStartOf="@+id/pending_request"
+            app:layout_constraintTop_toBottomOf="@+id/pending_request"
+            tools:text="@string/accept" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/materialButton"
+            style="@style/ChatItemButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/request_accept_button"
+            android:layout_marginStart="@dimen/standard_spacing"
+            android:layout_toEndOf="@id/request_accept_button"
+            android:onClickListener="@{() -> declineListener.onClick(property)}"
+            android:text="@string/decline"
+            android:visibility="@{property.relationType == ContactRelationType.INCOMING ? View.VISIBLE : View.GONE}"
+            app:layout_constraintStart_toEndOf="@+id/request_accept_button"
+            app:layout_constraintTop_toTopOf="@+id/request_accept_button" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

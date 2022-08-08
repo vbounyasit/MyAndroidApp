@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.example.mykotlinapp.ui.screens.chats.history.ChatHistoryViewModel" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/group_chat_list"
+            layout="@layout/component_list_items"
+            app:apiState="@{viewModel.httpRequestState}"
+            app:listData="@{viewModel.chats}"
+            app:listEmptyMessage="@{@string/no_chats}" />
+    </FrameLayout>
+</layout>

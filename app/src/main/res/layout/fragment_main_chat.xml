@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/chat_history_tool_bar"
+            style="@style/Widget.MaterialComponents.Toolbar.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:menu="@menu/chat_top_bar_menu"
+            app:navigationIcon="@drawable/ic_top_nav_profile"
+            app:title="@string/chat_history_title" />
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="?attr/backgroundColor">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_scrollFlags="scroll|enterAlwaysCollapsed">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/TextInputLayout.DialogForm"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/big_spacing"
+                        android:layout_marginTop="@dimen/standard_spacing"
+                        android:layout_marginEnd="@dimen/big_spacing"
+                        android:layout_marginBottom="@dimen/standard_spacing"
+                        android:hint="@string/char_search_hint"
+                        app:startIconDrawable="@drawable/ic_search"
+                        app:startIconTint="@color/default_page_text">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/chat_search_bar_input_field"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:cursorVisible="false"
+                            android:focusable="false"
+                            android:paddingTop="@dimen/standard_spacing"
+                            android:paddingBottom="@dimen/standard_spacing"
+                            android:textSize="@dimen/text_size_huge" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.tabs.TabLayout
+                        android:id="@+id/chat_tab_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:tabTextColor="?attr/colorOnBackground">
+
+                        <com.google.android.material.tabs.TabItem
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:icon="@drawable/ic_recent" />
+
+                        <com.google.android.material.tabs.TabItem
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:icon="@drawable/ic_contact" />
+                    </com.google.android.material.tabs.TabLayout>
+                </LinearLayout>
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/chat_view_pager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </LinearLayout>
+</layout>

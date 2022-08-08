@@ -1,0 +1,188 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.example.mykotlinapp.domain.pojo.ApiRequestState" />
+
+        <import type="android.view.View" />
+
+        <variable
+            name="activityViewModel"
+            type="com.example.mykotlinapp.activities.UserActivityViewModel" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_create_email"
+            style="@style/TextInputLayout.ClearText"
+            android:layout_width="@dimen/text_input_form_width"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/huge_spacing"
+            android:hint="@string/email_address_hint">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_create_email_field"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="textEmailAddress" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_create_username"
+            style="@style/TextInputLayout.ClearText"
+            android:layout_width="@dimen/text_input_form_width"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/input_create_email"
+            android:layout_marginTop="@dimen/standard_spacing"
+            android:hint="@string/username_hint">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_create_username_field"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="textPersonName|textCapWords" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_create_first_name"
+            style="@style/TextInputLayout.ClearText"
+            android:layout_width="@dimen/text_input_form_width"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/input_create_username"
+            android:layout_marginTop="@dimen/standard_spacing"
+            android:hint="@string/first_name_hint">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_create_first_name_field"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="textPersonName|textCapWords" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_create_last_name"
+            style="@style/TextInputLayout.ClearText"
+            android:layout_width="@dimen/text_input_form_width"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/input_create_first_name"
+            android:layout_marginTop="@dimen/standard_spacing"
+            android:hint="@string/last_name_hint">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_create_last_name_field"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="textPersonName|textCapWords" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_create_password"
+            style="@style/TextInputLayout.ClearText"
+            android:layout_width="@dimen/text_input_form_width"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/input_create_last_name"
+            android:layout_marginTop="@dimen/standard_spacing"
+            android:hint="@string/login_password_hint">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_create_password_field"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="textPassword" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/birthday_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/input_create_password"
+            android:layout_alignTop="@id/input_birthday"
+            android:layout_alignBottom="@id/input_birthday"
+            android:paddingStart="@dimen/standard_spacing"
+            android:paddingEnd="@dimen/standard_spacing"
+            android:text="@string/date_of_birth_label"
+            android:textSize="@dimen/text_size_medium" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_birthday"
+            style="@style/TextInputLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/input_create_password"
+            android:layout_alignEnd="@id/input_create_password"
+            android:layout_marginStart="@dimen/standard_spacing"
+            android:layout_marginTop="@dimen/intermediate_spacing"
+            android:layout_toEndOf="@id/birthday_label"
+            app:errorIconDrawable="@null"
+            app:hintEnabled="false">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_birthday_field"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="false"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:gravity="center"
+                android:paddingTop="@dimen/very_small_spacing"
+                android:paddingBottom="@dimen/very_small_spacing"
+                android:textSize="@dimen/text_size_medium" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <RadioGroup
+            android:id="@+id/gender_radio_group"
+            android:layout_width="@dimen/text_input_form_width"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/input_birthday"
+            android:layout_marginTop="@dimen/standard_spacing"
+            android:orientation="horizontal">
+
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/choice_male_gender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/huge_spacing"
+                android:layout_weight="1"
+                android:text="@string/male_radio" />
+
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/choice_female_gender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/enormous_spacing"
+                android:layout_weight="1"
+                android:text="@string/female_radio" />
+        </RadioGroup>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/gender_radio_group">
+
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:id="@+id/signup_button_progress"
+                style="@style/CircularProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:elevation="@dimen/z_elevation_to_front"
+                android:visibility="@{activityViewModel.signUpState == ApiRequestState.LOADING ? View.VISIBLE : View.GONE}" />
+
+            <Button
+                android:id="@+id/signup_button"
+                android:layout_width="@dimen/text_input_form_width"
+                android:layout_height="wrap_content"
+                android:text="@{activityViewModel.signUpState != ApiRequestState.LOADING ? @string/sign_up : ``}"
+                tools:text="@string/sign_up" />
+        </FrameLayout>
+
+
+    </RelativeLayout>
+
+</layout>

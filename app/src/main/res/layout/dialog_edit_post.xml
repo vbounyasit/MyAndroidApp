@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="postData"
+            type="com.example.mykotlinapp.model.dto.inputs.form.post.UpdatePostInput" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/backgroundColor">
+
+        <include
+            android:id="@+id/edit_post_dialog_options"
+            layout="@layout/component_dialog_options"
+            app:cancelText="@{@string/cancel_label}"
+            app:saveText="@{@string/save_label}" />
+
+        <TextView
+            android:id="@+id/edit_post_title"
+            style="@style/ChatItemTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/huge_spacing"
+            android:gravity="center_horizontal"
+            android:text="@string/edit_post_title"
+            android:textSize="@dimen/text_size_big" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/edit_post_content"
+            style="@style/TextInputLayout.ClearText"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/text_description_form_height"
+            android:layout_below="@id/edit_post_title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="@dimen/huge_spacing"
+            android:layout_marginTop="@dimen/big_spacing"
+            android:layout_marginBottom="@dimen/huge_spacing"
+            app:hintEnabled="false">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_post_content_field"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top"
+                android:hint="@string/post_content_hint"
+                android:inputType="textCapSentences|textMultiLine"
+                android:lines="@integer/input_field_multiline_line_height"
+                android:maxLength="@integer/post_max_length"
+                android:maxLines="@integer/post_max_lines"
+                android:text="@{postData.content}" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </RelativeLayout>
+</layout>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:singleLineTitle="true"
+
+        app:title="NOTIFICATIONS">
+        <SwitchPreferenceCompat
+            app:key="@string/chat_notifications_key"
+            app:title="Enable message notifications" />
+
+        <SwitchPreferenceCompat
+            app:key="@string/event_notifications_key"
+            app:title="Enable events notifications" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="VIEW SETTINGS">
+        <ListPreference
+            android:entries="@array/languageEntries"
+            android:entryValues="@array/languageValues"
+            android:summary="%s"
+            app:key="@string/language_key"
+            app:title="Language" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

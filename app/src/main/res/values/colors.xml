@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple">#3700B3</color>
+    <color name="purple2">#673AB7</color>
+    <color name="purple3">#7855B5</color>
+    <color name="purple4">#A58ECD</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="red">#FF2A2A</color>
+
+    <!-- posts -->
+    <color name="reply_line">#A1A0A0</color>
+    <color name="post_background">#939393</color>
+    <color name="vote_enabled">#1B61FF</color>
+    <color name="vote_disabled">@color/default_page_text</color>
+
+    <!-- custom colors -->
+    <color name="comment_bubble_border">#E6E4E4</color>
+    <color name="hr_line">#E6E4E4</color>
+    <color name="chat_search_bar">#464646</color>
+    <color name="chat_search_bar_day">#F0F0F0</color>
+    <color name="default_page_text">#787878</color>
+    <color name="chat_last_log_unread">#AAAAAA</color>
+    <color name="dark_mode_background">#121212</color>
+    <color name="chat_input_bar">#8C8C8C</color>
+</resources>

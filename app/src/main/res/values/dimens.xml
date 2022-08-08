@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- text size -->
+    <dimen name="text_size_tiny">9sp</dimen>
+    <dimen name="text_size_small">11sp</dimen>
+    <dimen name="text_size_medium">15sp</dimen>
+    <dimen name="text_size_big">18sp</dimen>
+    <dimen name="text_size_huge">20sp</dimen>
+    <dimen name="small_logo_text_size">45sp</dimen>
+    <dimen name="logo_text_size">60sp</dimen>
+    <!-- spacing -->
+    <dimen name="no_spacing">0dp</dimen>
+    <dimen name="very_small_spacing">3dp</dimen>
+    <dimen name="small_spacing">5dp</dimen>
+    <dimen name="standard_spacing">8dp</dimen>
+    <dimen name="intermediate_spacing">12dp</dimen>
+    <dimen name="big_spacing">16dp</dimen>
+    <dimen name="very_big_spacing">24dp</dimen>
+    <dimen name="huge_spacing">32dp</dimen>
+    <dimen name="very_huge_spacing">48dp</dimen>
+    <dimen name="enormous_spacing">64dp</dimen>
+    <dimen name="search_bar_padding">30dp</dimen>
+    <dimen name="comment_reply_margin_start">8dp</dimen>
+    <dimen name="recycler_list_margin_top">@dimen/big_spacing</dimen>
+
+    <!-- chat dimens -->
+    <dimen name="chat_icon_margin_top">12dp</dimen>
+    <dimen name="chat_message_bar_width">267dp</dimen>
+    <dimen name="user_activity_icon_size">15dp</dimen>
+    <dimen name="chat_item_user_activity_icon_size">15dp</dimen>
+    <!-- event dimens -->
+    <dimen name="events_join_state_icon_size">12dp</dimen>
+
+    <!-- profile pictures -->
+    <dimen name="group_participant_pic_size">25dp</dimen>
+    <dimen name="event_participant_pic_size">15dp</dimen>
+    <dimen name="chat_participant_read_pic_size">15dp</dimen>
+    <dimen name="group_last_poster_pic_size">20dp</dimen>
+    <dimen name="user_profile_page_pic_size">100dp</dimen>
+    <dimen name="top_bar_pic_size">40dp</dimen>
+    <dimen name="top_bar_smaller_pic_size">30dp</dimen>
+    <dimen name="chat_sender_pic_size">18dp</dimen>
+    <dimen name="chat_item_pic_size">55dp</dimen>
+    <dimen name="chat_item_smaller_pic_size">40dp</dimen>
+    <dimen name="contact_request_pic_size">60dp</dimen>
+    <dimen name="contact_profile_pic_size">40dp</dimen>
+    <dimen name="post_group_pic_size">45dp</dimen>
+    <dimen name="post_user_pic_size">20dp</dimen>
+    <dimen name="post_more_icon_size">20dp</dimen>
+    <dimen name="post_title_icon_size">15dp</dimen>
+    <dimen name="post_options_icon_size">25dp</dimen>
+    <dimen name="comment_options_icon_size">20dp</dimen>
+    <dimen name="comment_poster_pic_size">45dp</dimen>
+    <dimen name="top_bar_pic_marginStart">55dp</dimen>
+    <dimen name="top_bar_title_marginStart">55dp</dimen>
+    <dimen name="comment_clock_icon_size">15dp</dimen>
+    <dimen name="group_background_pic_height">150dp</dimen>
+    <dimen name="group_page_pic_size">80dp</dimen>
+    <dimen name="group_page_smaller_pic_size">50dp</dimen>
+    <dimen name="contact_info_pic_size">120dp</dimen>
+    <dimen name="chat_info_pic_size">90dp</dimen>
+    <dimen name="contact_selection_pic_size">35dp</dimen>
+    <dimen name="user_profile_background_pic_height">200dp</dimen>
+    <dimen name="picture_edit_button_size">25dp</dimen>
+    <dimen name="profile_picture_edit_size">80dp</dimen>
+
+    <!-- misc dimens -->
+    <dimen name="z_elevation_to_front">3dp</dimen>
+    <dimen name="picture_corner_radius">35dp</dimen>
+    <dimen name="message_bar_corner_radius">15dp</dimen>
+    <dimen name="top_bar_picture_corner_radius">20dp</dimen>
+    <dimen name="chat_corner_radius">10dp</dimen>
+    <dimen name="comment_corner_radius">5dp</dimen>
+    <dimen name="text_input_corner_radius">10dp</dimen>
+    <dimen name="picture_edit_icon_size">15dp</dimen>
+    <dimen name="dialog_exit_icon_size">30dp</dimen>
+
+    <!-- max dimensions -->
+    <dimen name="chat_bubble_max_width">230dp</dimen>
+    <dimen name="chat_last_log_max_width">240dp</dimen>
+    <dimen name="chat_last_log_max_height">20dp</dimen>
+    <dimen name="user_full_name_max_width">250dp</dimen>
+    <dimen name="chat_bubble_max_height">1500dp</dimen>
+    <dimen name="post_max_text_height">110dp</dimen>
+    <dimen name="group_title_max_width">250dp</dimen>
+    <dimen name="group_description_max_height">50dp</dimen>
+    <dimen name="chat_item_button_min_height">25dp</dimen>
+    <dimen name="user_profile_description_max_height">150dp</dimen>
+
+    <!-- user post -->
+    <dimen name="post_image_height">410dp</dimen>
+    <dimen name="hr_line_size">1dp</dimen>
+    <dimen name="reply_line_width">1dp</dimen>
+
+    <!-- user login -->
+    <dimen name="text_input_form_width">300dp</dimen>
+    <dimen name="text_input_form_height">50dp</dimen>
+    <dimen name="login_logo_width">200dp</dimen>
+    <dimen name="login_logo_height">80dp</dimen>
+    <dimen name="card_view_stroke_width">1dp</dimen>
+
+    <!-- user contact -->
+    <dimen name="circle_button_size">40dp</dimen>
+    <dimen name="circle_button_icon_size">20dp</dimen>
+    <dimen name="contact_selection_remove_icon">15dp</dimen>
+
+    <!-- user profile edit -->
+    <dimen name="text_description_form_height">200dp</dimen>
+
+    <!-- group -->
+    <dimen name="group_edit_button_size">40dp</dimen>
+
+
+</resources>

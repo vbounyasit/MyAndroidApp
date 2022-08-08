@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.example.mykotlinapp.ui.screens.chats.contacts.ContactViewModel" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/contact_list"
+            layout="@layout/component_list_items"
+            app:apiState="@{viewModel.httpRequestState}"
+            app:listData="@{viewModel.contacts}"
+            app:listEmptyMessage="@{@string/no_contacts}" />
+    </FrameLayout>
+
+</layout>

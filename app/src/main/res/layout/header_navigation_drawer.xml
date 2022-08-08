@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.example.mykotlinapp.activities.MainActivityViewModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/huge_spacing"
+        android:fitsSystemWindows="true"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="@dimen/group_page_pic_size"
+            android:layout_height="@dimen/group_page_pic_size"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/huge_spacing"
+            android:contentDescription="@string/chat_picture_desc"
+            app:circleImgUrl="@{viewModel.userData.profilePicture}"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/big_spacing"
+            android:maxWidth="@dimen/user_full_name_max_width"
+            android:text="@{viewModel.userData.fullName}"
+            android:textAppearance="?attr/textAppearanceHeadline6"
+            tools:text="@tools:sample/full_names" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/view_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/standard_spacing"
+            android:checked="@{viewModel.darkMode}"
+            android:scaleX="2"
+            android:scaleY="2"
+            android:thumb="@{viewModel.darkMode ? @drawable/ic_mode_night : @drawable/ic_mode_light}"
+            app:splitTrack="true"
+            app:thumbTint="?attr/colorPrimary"
+            tools:checked="false"
+            tools:thumb="@drawable/ic_mode_night" />
+    </LinearLayout>
+</layout>

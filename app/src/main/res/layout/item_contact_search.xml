@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.example.mykotlinapp.domain.pojo.ContactRelationType" />
+
+        <import type="android.view.View" />
+
+        <import type="com.example.mykotlinapp.domain.pojo.ApiRequestState" />
+
+        <variable
+            name="property"
+            type="com.example.mykotlinapp.model.dto.ui.user.UserContactDTO" />
+
+        <variable
+            name="listener"
+            type="com.example.mykotlinapp.ui.components.recycler_view.ClickListener" />
+
+        <variable
+            name="sendRequestListener"
+            type="com.example.mykotlinapp.ui.components.recycler_view.ClickListener" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/item_highlight_background"
+        android:onClickListener="@{() -> listener.onClick(property)}">
+
+        <ImageView
+            android:id="@+id/contact_search_profile_picture"
+            android:layout_width="@dimen/contact_profile_pic_size"
+            android:layout_height="@dimen/contact_profile_pic_size"
+            android:layout_marginStart="@dimen/big_spacing"
+            android:layout_marginTop="@dimen/big_spacing"
+            android:layout_marginBottom="@dimen/big_spacing"
+            android:contentDescription="@string/user_profile_picture_desc"
+            app:circleImgUrl="@{property.profilePicture}"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/contact_search_name"
+            style="@style/ChatItemTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/contact_search_profile_picture"
+            android:layout_alignBottom="@id/contact_search_profile_picture"
+            android:layout_marginStart="@dimen/big_spacing"
+            android:layout_toEndOf="@id/contact_search_profile_picture"
+            android:gravity="center_vertical"
+            android:maxWidth="@dimen/user_full_name_max_width"
+            android:text="@{property.fullName}"
+            tools:ignore="RelativeOverlap"
+            tools:text="@string/chat_title" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/contact_search_profile_picture"
+            android:layout_alignBottom="@id/contact_search_profile_picture"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/big_spacing"
+            android:drawablePadding="@dimen/standard_spacing"
+            android:gravity="center_vertical"
+            android:text="@string/search_sent"
+            android:visibility="@{property.relationType == ContactRelationType.OUTGOING ? View.VISIBLE : View.GONE}"
+            app:drawableEndCompat="@drawable/ic_check"
+            app:drawableTint="?attr/colorOnPrimary"
+            tools:ignore="RelativeOverlap" />
+
+        <Button
+            style="@style/CircleButtonIcon"
+            android:layout_width="@dimen/circle_button_size"
+            android:layout_height="@dimen/circle_button_size"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="@dimen/big_spacing"
+            android:layout_marginEnd="@dimen/big_spacing"
+            android:onClickListener="@{() -> sendRequestListener.onClick(property)}"
+            android:visibility="@{property.relationType != ContactRelationType.OUTGOING &amp;&amp; property.relationType != ContactRelationType.FRIENDS ? View.VISIBLE : View.GONE}"
+            app:icon="@drawable/ic_contact_add"
+            tools:visibility="visible" />
+
+    </RelativeLayout>
+</layout>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="groupData"
+            type="com.example.mykotlinapp.model.dto.inputs.form.chat.UpdateGroupInput" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?attr/backgroundColor">
+
+        <include
+            android:id="@+id/edit_group_dialog_options"
+            layout="@layout/component_dialog_options"
+            app:cancelText="@{@string/cancel_label}"
+            app:saveText="@{@string/save_label}" />
+
+        <TextView
+            android:id="@+id/edit_group_title"
+            style="@style/ChatItemTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/very_huge_spacing"
+            android:gravity="center_horizontal"
+            android:text="@string/edit_group_title"
+            android:textSize="@dimen/text_size_big" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/edit_group_name"
+            style="@style/TextInputLayout"
+            android:layout_width="@dimen/text_input_form_width"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/edit_group_title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/big_spacing"
+            app:hintEnabled="false">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_group_name_field"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/group_name_hint"
+                android:inputType="textPersonName"
+                android:maxLength="@integer/input_field_max_length"
+                android:text="@{groupData.name}" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/edit_group_description"
+            style="@style/TextInputLayout.ClearText"
+            android:layout_width="@dimen/text_input_form_width"
+            android:layout_height="@dimen/text_description_form_height"
+            android:layout_below="@id/edit_group_name"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/big_spacing"
+            app:hintEnabled="false">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_group_description_field"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/huge_spacing"
+                android:gravity="top"
+                android:hint="@string/group_description_hint"
+                android:inputType="textCapSentences|textMultiLine"
+                android:lines="@integer/input_field_multiline_line_height"
+                android:maxLength="@integer/description_max_length"
+                android:maxLines="@integer/profile_description_max_lines"
+                android:text="@{groupData.description}" />
+        </com.google.android.material.textfield.TextInputLayout>
+    </RelativeLayout>
+</layout>

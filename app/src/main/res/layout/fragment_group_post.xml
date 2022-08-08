@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.example.mykotlinapp.ui.screens.chats.history.group.posts.comments.CommentsViewModel" />
+
+        <variable
+            name="sorting_rules_adapter"
+            type="android.widget.ArrayAdapter" />
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="?attr/backgroundColor">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:layout_scrollFlags="scroll|enterAlwaysCollapsed">
+
+                <include
+                    android:id="@+id/post_top_toolbar"
+                    layout="@layout/component_chat_toolbar"
+                    app:pictures="@{viewModel.groupData.groupPictures}"
+                    app:title="@{viewModel.groupData.groupName}" />
+
+                <include
+                    android:id="@+id/post_header"
+                    layout="@layout/item_user_post"
+                    app:isHeader="@{true}"
+                    app:property="@{viewModel.userPost}" />
+
+                <include
+                    layout="@layout/header_sorting_rules"
+                    app:sortingRulesAdapter="@{sorting_rules_adapter}" />
+
+                <include
+                    layout="@layout/component_list_api_state"
+                    app:apiState="@{viewModel.httpRequestState}" />
+
+            </LinearLayout>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/huge_spacing"
+            android:layout_marginBottom="@dimen/huge_spacing"
+            android:gravity="center"
+            android:text="@string/no_comments"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/default_page_text"
+            android:visibility="@{viewModel.userComments.empty ? View.VISIBLE : View.GONE}"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/post_comments"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="@{viewModel.userComments.empty ? View.GONE : View.VISIBLE}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:listData="@{viewModel.userComments}"
+            tools:listitem="@layout/item_user_comment" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="pictures"
+            type="java.util.List&lt;String>" />
+
+        <variable
+            name="title"
+            type="String" />
+
+        <variable
+            name="subtitle"
+            type="String" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/chat_window_top_bar_picture"
+            android:layout_width="@dimen/top_bar_pic_size"
+            android:layout_height="@dimen/top_bar_pic_size"
+            android:layout_marginStart="@dimen/top_bar_pic_marginStart"
+            android:layout_marginTop="@dimen/standard_spacing"
+            android:contentDescription="@string/chat_picture_desc"
+            android:elevation="5dp"
+            app:circleImgUrl="@{pictures.size() &lt; 2 ? pictures[0] : null}"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <ImageView
+            android:layout_width="@dimen/top_bar_smaller_pic_size"
+            android:layout_height="@dimen/top_bar_smaller_pic_size"
+            android:layout_alignTop="@id/chat_window_top_bar_picture"
+            android:layout_alignEnd="@id/chat_window_top_bar_picture"
+            android:layout_marginTop="-3dp"
+            android:layout_marginEnd="-3dp"
+            android:contentDescription="@string/chat_picture_desc"
+            android:elevation="5dp"
+            app:circleImgUrl="@{pictures.size() > 1 ? pictures[0] : null}"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <ImageView
+            android:layout_width="@dimen/top_bar_smaller_pic_size"
+            android:layout_height="@dimen/top_bar_smaller_pic_size"
+            android:layout_alignStart="@id/chat_window_top_bar_picture"
+            android:layout_alignBottom="@id/chat_window_top_bar_picture"
+            android:layout_marginStart="-3dp"
+            android:layout_marginBottom="-3dp"
+            android:contentDescription="@string/chat_picture_desc"
+            android:elevation="5dp"
+            app:circleImgUrl="@{pictures.size() > 1 ? pictures[0] : null}"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/chat_window_toolbar"
+            style="@style/Widget.MaterialComponents.Toolbar.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:contentInsetStartWithNavigation="@dimen/no_spacing"
+            app:navigationIcon="@drawable/ic_back_icon"
+            app:subtitle="@{subtitle}"
+            app:subtitleTextAppearance="@style/TextAppearance.Compat.Notification.Info"
+            app:title="@{title}"
+            app:titleMarginStart="@dimen/top_bar_title_marginStart"
+            app:titleTextAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title"
+            tools:subtitle="@string/page_subtitle"
+            tools:title="@string/page_title" />
+    </RelativeLayout>
+</layout>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/settings_top_bar"
+            style="@style/Widget.MaterialComponents.Toolbar.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:menu="@menu/settings_top_bar_menu"
+            app:navigationIcon="@drawable/ic_back_icon"
+            app:title="@string/settings" />
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/user_settings_fragment"
+            android:name="com.example.mykotlinapp.ui.screens.side_nav.settings.prefs.UserSettingsFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</layout>

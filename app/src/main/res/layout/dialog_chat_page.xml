@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.example.mykotlinapp.ui.screens.chats.history.chat.page.ChatPageDialogViewModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/backgroundColor"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/ChatItemTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/big_spacing"
+            android:layout_marginBottom="@dimen/big_spacing"
+            android:text="@string/chat_participants_title"
+            android:textSize="@dimen/text_size_huge" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/contact_participants"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:listData="@{viewModel.chatContactParticipant}"
+            tools:listitem="@layout/item_contact" />
+    </LinearLayout>
+</layout>

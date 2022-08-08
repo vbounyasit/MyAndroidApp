@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="com.example.mykotlinapp.domain.pojo.ApiRequestState" />
+
+        <import type="android.view.View" />
+
+        <variable
+            name="activityViewModel"
+            type="com.example.mykotlinapp.activities.UserActivityViewModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/login_message_banner"
+            style="@style/ConnectionFailedBanner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="@{activityViewModel.loginState == ApiRequestState.FAILED ? View.VISIBLE : View.GONE}" />
+
+        <TextView
+            style="@style/TextLogo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/big_spacing"
+            android:text="@string/app_logo_name"
+            android:textSize="@dimen/small_logo_text_size" />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/chat_window_tab_layout"
+            android:layout_width="@dimen/text_input_form_width"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/standard_spacing"
+            app:tabTextColor="?attr/colorOnBackground">
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/log_in" />
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sign_up" />
+        </com.google.android.material.tabs.TabLayout>
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/user_page_viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+</layout>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.example.mykotlinapp.ui.screens.chats.history.chat.logs.ChatLogsViewModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            layout="@layout/component_list_api_state"
+            app:apiState="@{viewModel.httpRequestState}" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/chat_bubble_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="@dimen/standard_spacing"
+            android:layout_weight="1.0"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:listData="@{viewModel.chatBubbles}"
+            app:stackFromEnd="true"
+            tools:listitem="@layout/item_chat_log" />
+
+        <include
+            android:id="@+id/chat_message_toolbar"
+            layout="@layout/component_message_toolbar" />
+
+    </LinearLayout>
+</layout>

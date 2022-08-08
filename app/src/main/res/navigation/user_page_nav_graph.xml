@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/user_nav_graph"
+    app:startDestination="@id/welcomePageFragment">
+    <fragment
+        android:id="@+id/welcomePageFragment"
+        android:name="com.example.mykotlinapp.ui.screens.user.WelcomePageFragment"
+        android:label="WelcomePageFragment"
+        tools:layout="@layout/fragment_welcome_page">
+        <action
+            android:id="@+id/action_welcomePageFragment_to_userPageFragment"
+            app:destination="@id/userPageFragment"
+            app:enterAnim="@anim/enter_left"
+            app:exitAnim="@anim/exit_left"
+            app:popEnterAnim="@anim/enter_right"
+            app:popExitAnim="@anim/exit_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/userPageFragment"
+        android:name="com.example.mykotlinapp.ui.screens.user.page.UserPageFragment"
+        android:label="UserPageFragment"
+        tools:layout="@layout/fragment_user_page" />
+</navigation>

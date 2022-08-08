@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/black"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/chat_upload_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/standard_spacing"
+            android:contentDescription="@string/chat_upload_photo_desc"
+            app:srcCompat="@drawable/ic_chat_upload_media" />
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/chat_message_input"
+                style="@style/ChatMessageInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/standard_spacing"
+                android:layout_marginTop="@dimen/standard_spacing"
+                android:layout_marginBottom="@dimen/standard_spacing"
+                app:boxStrokeWidthFocused="@dimen/no_spacing"
+                app:hintEnabled="false">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/chat_message_input_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/chat_input_hint"
+                    android:imeOptions="actionSend"
+                    android:inputType="textCapSentences"
+                    android:paddingTop="@dimen/very_small_spacing"
+                    android:paddingBottom="@dimen/very_small_spacing"
+                    android:textColorHint="@color/white"
+                    android:textSize="@dimen/text_size_big" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <ImageView
+                android:id="@+id/chat_emoji"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/chat_message_input"
+                android:layout_alignEnd="@id/chat_message_input"
+                android:layout_alignBottom="@id/chat_message_input"
+                android:layout_marginTop="@dimen/small_spacing"
+                android:layout_marginEnd="@dimen/small_spacing"
+                android:layout_marginBottom="@dimen/small_spacing"
+                android:contentDescription="@string/chat_emoji_desc"
+                app:srcCompat="@drawable/ic_chat_emoji" />
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/chat_camera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/standard_spacing"
+            android:contentDescription="@string/chat_take_photo_desc"
+            app:srcCompat="@drawable/ic_photo_camera"
+            app:tint="@color/white" />
+
+        <ImageView
+            android:id="@+id/chat_microphone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/standard_spacing"
+            android:contentDescription="@string/chat_record_voice_desc"
+            app:srcCompat="@drawable/ic_chat_mic" />
+
+        <ImageView
+            android:id="@+id/chat_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/standard_spacing"
+            android:layout_marginEnd="@dimen/standard_spacing"
+            android:contentDescription="@string/chat_record_voice_desc"
+            app:srcCompat="@drawable/ic_chat_send" />
+    </LinearLayout>
+</layout>

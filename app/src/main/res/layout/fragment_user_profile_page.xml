@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.example.mykotlinapp.ui.screens.side_nav.profile.UserProfileViewModel" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/user_profile_page_top_bar"
+            style="@style/Widget.MaterialComponents.Toolbar.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:navigationIcon="@drawable/ic_back_icon"
+            app:title="@string/drawer_my_profile" />
+
+        <ImageView
+            android:id="@+id/user_profile_page_background"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_below="@id/user_profile_page_top_bar"
+            android:contentDescription="@string/user_profile_background_picture_desc"
+            android:scaleType="fitXY"
+            app:imgUrl="@{viewModel.userData.profileBackgroundPicture}"
+            app:srcCompat="@drawable/group_default_bg" />
+
+        <Button
+            android:id="@+id/user_profile_edit_button"
+            style="@style/CircleButtonIcon"
+            android:layout_width="@dimen/circle_button_size"
+            android:layout_height="@dimen/circle_button_size"
+            android:layout_below="@id/user_profile_page_background"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="@dimen/standard_spacing"
+            android:layout_marginEnd="@dimen/standard_spacing"
+            app:icon="@drawable/ic_edit" />
+
+        <ImageView
+            android:id="@+id/user_profile_page_picture"
+            circleImgUrl="@{viewModel.userData.profilePicture}"
+            android:layout_width="@dimen/user_profile_page_pic_size"
+            android:layout_height="@dimen/user_profile_page_pic_size"
+            android:layout_below="@id/user_profile_page_top_bar"
+            android:layout_marginStart="@dimen/huge_spacing"
+            android:layout_marginTop="@dimen/enormous_spacing"
+            android:contentDescription="@string/user_profile_picture_desc"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <Button
+            android:id="@+id/user_profile_edit_picture_button"
+            style="@style/CircleButtonIcon"
+            android:layout_width="@dimen/picture_edit_button_size"
+            android:layout_height="@dimen/picture_edit_button_size"
+            android:layout_alignEnd="@id/user_profile_page_picture"
+            android:layout_alignBottom="@id/user_profile_page_picture"
+            android:layout_marginEnd="@dimen/small_spacing"
+            android:layout_marginBottom="@dimen/small_spacing"
+            app:icon="@drawable/ic_photo_camera"
+            app:iconSize="@dimen/picture_edit_icon_size" />
+
+        <TextView
+            android:id="@+id/user_profile_page_name"
+            style="@style/ChatItemTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/user_profile_page_picture"
+            android:layout_alignStart="@id/user_profile_page_picture"
+            android:layout_marginTop="@dimen/big_spacing"
+            android:maxWidth="@dimen/user_full_name_max_width"
+            android:text="@{viewModel.userData.fullName}"
+            android:textSize="@dimen/text_size_huge"
+            tools:text="@tools:sample/full_names" />
+
+        <TextView
+            android:id="@+id/user_profile_page_email"
+            style="@style/ChatItemCaption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/user_profile_page_name"
+            android:layout_alignStart="@id/user_profile_page_picture"
+            android:layout_marginTop="@dimen/small_spacing"
+            android:text="@{viewModel.userData.email}"
+            tools:text="@string/email_address_hint" />
+
+        <TextView
+            android:id="@+id/user_profile_page_gender"
+            style="@style/ChatItemCaption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/user_profile_page_email"
+            android:layout_alignStart="@id/user_profile_page_picture"
+            android:layout_marginTop="@dimen/small_spacing"
+            android:text="@{@string/gender_label + ` : ` + viewModel.userData.gender.title}"
+            tools:text="@string/gender_label" />
+
+        <TextView
+            android:id="@+id/user_profile_page_age"
+            style="@style/ChatItemCaption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/user_profile_page_gender"
+            android:layout_alignStart="@id/user_profile_page_picture"
+            android:layout_marginTop="@dimen/small_spacing"
+            android:text="@{`Age : ` + viewModel.userData.age}"
+            tools:text="@string/age_label" />
+
+        <TextView
+            android:id="@+id/user_profile_page_description_title"
+            style="@style/ChatItemTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/user_profile_page_age"
+            android:layout_alignStart="@id/user_profile_page_picture"
+            android:layout_marginTop="@dimen/very_big_spacing"
+            android:text="@string/about_me_title" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/user_profile_page_description_title"
+            android:layout_alignStart="@id/user_profile_page_picture"
+            android:layout_marginTop="@dimen/standard_spacing"
+            android:layout_marginEnd="@dimen/big_spacing"
+            android:maxHeight="@dimen/user_profile_description_max_height"
+            android:text="@{viewModel.userData.description}"
+            tools:text="@string/text_long_content_placeholder" />
+
+    </RelativeLayout>
+</layout>

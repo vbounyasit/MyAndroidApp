@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <import type="com.example.mykotlinapp.domain.pojo.VoteState" />
+
+        <variable
+            name="property"
+            type="com.example.mykotlinapp.model.dto.ui.post.PostDTO" />
+
+        <variable
+            name="isHeader"
+            type="Boolean" />
+
+        <variable
+            name="clickListener"
+            type="com.example.mykotlinapp.ui.components.recycler_view.ClickListener" />
+
+        <variable
+            name="upVoteListener"
+            type="com.example.mykotlinapp.ui.components.recycler_view.ClickListener" />
+
+        <variable
+            name="downVoteListener"
+            type="com.example.mykotlinapp.ui.components.recycler_view.ClickListener" />
+
+        <variable
+            name="menuListener"
+            type="com.example.mykotlinapp.ui.components.recycler_view.ClickListener" />
+
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/item_highlight_background">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/very_small_spacing"
+            android:layout_marginEnd="@dimen/very_small_spacing"
+            android:layout_marginBottom="@dimen/standard_spacing"
+            android:backgroundTint="?attr/backgroundColor">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/user_post_picture"
+                    android:layout_width="@dimen/post_group_pic_size"
+                    android:layout_height="@dimen/post_group_pic_size"
+                    android:layout_marginStart="@dimen/big_spacing"
+                    android:layout_marginTop="@dimen/big_spacing"
+                    android:contentDescription="@string/group_profile_picture_desc"
+                    app:circleImgUrl="@{property.posterProfilePicture}"
+                    tools:srcCompat="@tools:sample/avatars" />
+
+
+                <TextView
+                    android:id="@+id/user_post_name"
+                    style="@style/ChatItemTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@id/user_post_picture"
+                    android:layout_alignBottom="@id/user_post_picture"
+                    android:layout_marginStart="@dimen/big_spacing"
+                    android:layout_toEndOf="@id/user_post_picture"
+                    android:gravity="center_vertical"
+                    android:text="@{property.posterName}"
+                    android:textSize="@dimen/text_size_big"
+                    tools:text="@string/chat_title" />
+
+                <ImageView
+                    android:id="@+id/user_post_clock_icon"
+                    android:layout_width="@dimen/post_title_icon_size"
+                    android:layout_height="@dimen/post_title_icon_size"
+                    android:layout_alignTop="@id/user_post_name"
+                    android:layout_alignBottom="@id/user_post_name"
+                    android:layout_marginStart="@dimen/standard_spacing"
+                    android:layout_toEndOf="@id/user_post_name"
+                    android:contentDescription="@string/last_time_posted_icon_desc"
+                    app:srcCompat="@drawable/ic_post_clock" />
+
+                <TextView
+                    android:id="@+id/user_post_time"
+                    style="@style/ChatItemCaption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@id/user_post_clock_icon"
+                    android:layout_alignBottom="@id/user_post_clock_icon"
+                    android:layout_marginStart="@dimen/very_small_spacing"
+                    android:layout_toEndOf="@id/user_post_clock_icon"
+                    android:gravity="center_vertical"
+                    android:text="@{property.timePosted}"
+                    android:textSize="@dimen/text_size_small"
+                    tools:text="@string/last_updated_placeholder" />
+
+                <ImageView
+                    android:id="@+id/user_post_notification_icon"
+                    android:layout_width="@dimen/post_title_icon_size"
+                    android:layout_height="@dimen/post_title_icon_size"
+                    android:layout_alignTop="@id/user_post_time"
+                    android:layout_alignBottom="@id/user_post_time"
+                    android:layout_marginStart="@dimen/standard_spacing"
+                    android:layout_toEndOf="@id/user_post_time"
+                    android:contentDescription="@string/last_time_posted_icon_desc"
+                    app:srcCompat="@drawable/ic_notification" />
+
+                <ImageView
+                    android:id="@+id/is_edited"
+                    android:layout_width="@dimen/post_title_icon_size"
+                    android:layout_height="@dimen/post_title_icon_size"
+                    android:layout_alignTop="@id/user_post_time"
+                    android:layout_alignBottom="@id/user_post_time"
+                    android:layout_marginStart="@dimen/standard_spacing"
+                    android:layout_toEndOf="@id/user_post_notification_icon"
+                    android:contentDescription="@string/last_time_posted_icon_desc"
+                    android:visibility="@{property.isEdited ? View.VISIBLE : View.GONE}"
+                    app:srcCompat="@drawable/ic_edit"
+                    app:tint="@color/default_page_text" />
+
+                <com.google.android.material.button.MaterialButton
+                    style="@style/SimpleButton.MoreButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@id/user_post_picture"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="@dimen/standard_spacing"
+                    android:onClick="@{() -> menuListener.onClick(property)}"
+                    tools:ignore="RelativeOverlap" />
+
+                <TextView
+                    android:id="@+id/user_post_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/user_post_picture"
+                    android:layout_marginStart="@dimen/big_spacing"
+                    android:layout_marginTop="@dimen/standard_spacing"
+                    android:layout_marginEnd="@dimen/big_spacing"
+                    android:layout_marginBottom="@dimen/big_spacing"
+                    android:maxHeight="@dimen/post_max_text_height"
+                    android:onClick="@{() -> clickListener.onClick(property)}"
+                    android:text="@{property.content}"
+                    android:textSize="@dimen/text_size_medium"
+                    tools:text="@string/text_long_content_placeholder" />
+
+                <FrameLayout
+                    android:id="@+id/user_post_medias"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/post_image_height"
+                    android:layout_below="@+id/user_post_content"
+                    android:background="@color/black"
+                    android:visibility="@{property.medias.isEmpty() ? View.GONE : View.VISIBLE}">
+
+                    <ImageView
+                        imgUrl="@{property.medias.size() > 0 ? property.medias[0].media : null}"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="@string/post_media_preview_desc"
+                        android:visibility="@{isHeader ? View.GONE : View.VISIBLE}" />
+
+                    <androidx.viewpager2.widget.ViewPager2
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="@{isHeader ? View.VISIBLE : View.GONE}"
+                        app:medias="@{property.medias}" />
+                </FrameLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/up_vote_button"
+                    style="@style/SimpleButton.PostOptionButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/user_post_medias"
+                    android:layout_marginStart="@dimen/standard_spacing"
+                    android:layout_marginTop="@dimen/intermediate_spacing"
+                    android:layout_marginBottom="@dimen/intermediate_spacing"
+                    android:onClick="@{() -> upVoteListener.onClick(property)}"
+                    android:text="@{property.votesCount}"
+                    app:icon="@drawable/ic_post_upvote"
+                    app:iconTint="@{property.voteState == VoteState.UP_VOTED ? @color/vote_enabled : @color/vote_disabled}"
+                    tools:text="@string/count_placeholder" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/down_vote_button"
+                    style="@style/SimpleButton.PostOptionButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@id/up_vote_button"
+                    android:layout_marginStart="@dimen/small_spacing"
+                    android:layout_toEndOf="@id/up_vote_button"
+                    android:onClick="@{() -> downVoteListener.onClick(property)}"
+                    app:icon="@drawable/ic_post_down_vote"
+                    app:iconTint="@{property.voteState == VoteState.DOWN_VOTED ? @color/vote_enabled : @color/vote_disabled}" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/comments_button"
+                    style="@style/SimpleButton.PostOptionButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@id/up_vote_button"
+                    android:layout_toStartOf="@id/share_button"
+                    android:layout_toEndOf="@id/down_vote_button"
+                    android:onClick="@{() -> clickListener.onClick(property)}"
+                    android:text="@{property.commentsCount}"
+                    app:icon="@drawable/ic_post_comment"
+                    app:iconGravity="textStart"
+                    tools:text="@string/count_placeholder" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/share_button"
+                    style="@style/SimpleButton.PostOptionButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@id/up_vote_button"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="@dimen/big_spacing"
+                    android:text="@string/share_label"
+                    app:icon="@drawable/ic_post_share" />
+            </RelativeLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </FrameLayout>
+
+</layout>

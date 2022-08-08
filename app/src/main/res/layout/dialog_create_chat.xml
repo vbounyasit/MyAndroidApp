@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.example.mykotlinapp.ui.screens.chats.creation.ChatCreationViewModel" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/backgroundColor">
+
+        <include
+            android:id="@+id/chat_creation_dialog_options"
+            layout="@layout/component_dialog_options"
+            app:cancelText="@{@string/cancel_label}"
+            app:saveText="@{viewModel.onMessagePage ? @string/previous_label : @string/next_label}" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/chat_creation_chat_name_input"
+            style="@style/TextInputLayout.DialogForm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/big_spacing"
+            android:layout_marginTop="@dimen/very_huge_spacing"
+            android:layout_marginEnd="@dimen/big_spacing"
+            android:hint="@string/chat_name"
+            app:startIconDrawable="@drawable/ic_groups">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/chat_creation_chat_name_input_field"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="text"
+                android:paddingTop="@dimen/standard_spacing"
+                android:paddingBottom="@dimen/standard_spacing"
+                android:textSize="@dimen/text_size_huge" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/contact_selection_participants_title"
+            style="@style/ChatItemTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/chat_creation_chat_name_input"
+            android:layout_alignStart="@id/chat_creation_chat_name_input"
+            android:layout_alignEnd="@id/chat_creation_chat_name_input"
+            android:layout_marginTop="@dimen/big_spacing"
+            android:gravity="center_horizontal"
+            android:text="@string/chat_participants_title"
+            tools:text="@string/chat_participants_title" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/contact_selection_search_bar"
+            style="@style/TextInputLayout.DialogForm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/contact_selection_participants_title"
+            android:layout_marginStart="@dimen/big_spacing"
+            android:layout_marginTop="@dimen/standard_spacing"
+            android:layout_marginEnd="@dimen/big_spacing"
+            android:layout_marginBottom="@dimen/big_spacing"
+            android:hint="@string/char_search_hint"
+            android:visibility="@{viewModel.onMessagePage ? View.GONE : View.VISIBLE}"
+            app:startIconDrawable="@drawable/ic_search">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/contact_selection_search_bar_field"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="text"
+                android:paddingTop="@dimen/standard_spacing"
+                android:paddingBottom="@dimen/standard_spacing"
+                android:textSize="@dimen/text_size_huge" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Note: A RecyclerView can also be used -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/selection_contact_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/contact_selection_search_bar"
+            android:layout_marginTop="@dimen/standard_spacing"
+            android:orientation="horizontal"
+            android:visibility="@{viewModel.searchedContacts.empty ? View.GONE : View.VISIBLE}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:listData="@{viewModel.selectedContacts}"
+            tools:listitem="@layout/item_contact_selection" />
+
+        <TextView
+            android:id="@+id/contact_selector_title"
+            style="@style/ChatItemTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/selection_contact_list"
+            android:layout_alignStart="@id/chat_creation_chat_name_input"
+            android:layout_alignEnd="@id/chat_creation_chat_name_input"
+            android:layout_marginTop="@dimen/standard_spacing"
+            android:gravity="center_horizontal"
+            android:text="@{viewModel.onMessagePage ? @string/new_message_title : @string/contacts_title}"
+            tools:text="@string/contacts_title" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/contact_selector_title"
+            android:orientation="vertical">
+
+            <include
+                android:id="@+id/chat_creation_connection_status"
+                layout="@layout/component_list_api_state"
+                app:apiState="@{viewModel.httpRequestState}" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_gravity="bottom"
+                android:visibility="@{viewModel.onMessagePage ? View.VISIBLE : View.GONE}">
+
+                <include
+                    android:id="@+id/chat_creation_message_input"
+                    layout="@layout/component_message_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </FrameLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/no_results"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/default_page_text"
+                android:visibility="@{viewModel.searchedContacts.empty &amp;&amp; !viewModel.onMessagePage ? View.VISIBLE : View.GONE}" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/selector_contact_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/chat_creation_connection_status"
+                android:layout_marginTop="@dimen/standard_spacing"
+                android:visibility="@{!viewModel.searchedContacts.empty &amp;&amp; !viewModel.onMessagePage ? View.VISIBLE : View.GONE}"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:listData="@{viewModel.searchedContacts}"
+                tools:listitem="@layout/item_contact_selector" />
+        </RelativeLayout>
+
+    </RelativeLayout>
+</layout>

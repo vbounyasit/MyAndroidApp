@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="listData"
+            type="java.util.List" />
+
+        <variable
+            name="apiState"
+            type="com.example.mykotlinapp.domain.pojo.ApiRequestState" />
+
+        <variable
+            name="listEmptyMessage"
+            type="String" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            layout="@layout/component_list_api_state"
+            app:apiState="@{apiState}" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/huge_spacing"
+            android:layout_marginBottom="@dimen/huge_spacing"
+            android:gravity="center"
+            android:text="@{listEmptyMessage}"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/default_page_text"
+            android:visibility="@{listData.empty ? View.VISIBLE : View.GONE}" />
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/items_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/big_spacing"
+            android:visibility="@{!listData.empty ? View.VISIBLE : View.GONE}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:listData="@{listData}" />
+    </LinearLayout>
+</layout>

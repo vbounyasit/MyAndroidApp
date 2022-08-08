@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="sorting_rules">
+        <item>Latest</item>
+        <item>Best</item>
+    </string-array>
+    <string-array name="languageEntries">
+        <item>English</item>
+        <item>Français</item>
+    </string-array>
+    <string-array name="languageValues">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+</resources>

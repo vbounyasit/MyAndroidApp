@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="slide_anim_speed">150</integer>
+    <integer name="group_participant_count_to_display">5</integer>
+    <integer name="event_participant_count_to_display">5</integer>
+    <integer name="max_contact_requests_to_display">2</integer>
+
+    <integer name="input_field_min_length">5</integer>
+    <integer name="input_field_max_length">20</integer>
+    <integer name="input_field_multiline_line_height">8</integer>
+    <integer name="profile_description_max_lines">8</integer>
+    <integer name="description_max_length">250</integer>
+    <integer name="post_max_lines">20</integer>
+    <integer name="post_max_length">20000</integer>
+    <integer name="comment_max_length">10000</integer>
+
+    <integer name="minutes_to_inactive">5</integer>
+
+    <integer name="comments_max_depth">4</integer>
+</resources>

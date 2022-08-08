@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="android:maxLength">@integer/input_field_max_length</item>
+        <item name="android:textColorHint">?attr/colorOnBackground</item>
+        <item name="boxStrokeColor">@color/box_stroke_color_selector</item>
+        <item name="boxCornerRadiusTopStart">@dimen/text_input_corner_radius</item>
+        <item name="boxCornerRadiusTopEnd">@dimen/text_input_corner_radius</item>
+        <item name="boxCornerRadiusBottomEnd">@dimen/text_input_corner_radius</item>
+        <item name="boxCornerRadiusBottomStart">@dimen/text_input_corner_radius</item>
+    </style>
+
+    <style name="TextInputLayout.ClearText">
+        <item name="endIconMode">clear_text</item>
+    </style>
+
+    <style name="TextInputLayout.DialogForm">
+        <item name="boxBackgroundColor">?attr/boxBackgroundColor</item>
+        <item name="boxStrokeWidth">@dimen/no_spacing</item>
+        <item name="android:textColorHint">@color/default_page_text</item>
+        <item name="hintTextColor">?attr/colorOnBackground</item>
+        <item name="startIconTint">@color/default_page_text</item>
+    </style>
+
+    <style name="ChatMessageInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="boxCornerRadiusTopStart">@dimen/message_bar_corner_radius</item>
+        <item name="boxCornerRadiusTopEnd">@dimen/message_bar_corner_radius</item>
+        <item name="boxCornerRadiusBottomEnd">@dimen/message_bar_corner_radius</item>
+        <item name="boxCornerRadiusBottomStart">@dimen/message_bar_corner_radius</item>
+        <item name="boxBackgroundColor">@color/chat_input_bar</item>
+    </style>
+
+    <style name="InputSwitch" parent="Widget.MaterialComponents.CompoundButton.Switch">
+        <item name="thumbTint">?attr/colorPrimary</item>
+        <item name="trackColorActive">?attr/colorPrimary</item>
+        <item name="trackColorInactive">?attr/colorSecondaryVariant</item>
+        <item name="android:checked">true</item>
+    </style>
+
+    <style name="DatePicker" parent="Theme.MaterialComponents.Light.Dialog.Alert">
+        <item name="android:datePickerStyle">@style/DatePickerStyle</item>
+        <item name="materialButtonStyle">@style/Widget.MaterialComponents.Button.TextButton</item>
+    </style>
+
+    <style name="DatePickerStyle" parent="@android:style/Widget.Material.DatePicker">
+        <item name="android:datePickerMode">spinner</item>
+    </style>
+
+</resources>
