@@ -1,27 +1,26 @@
-package com.example.mykotlinapp.background_work.workmanager.user
+package com.example.mykotlinapp.background.workmanager.post
 
 import android.content.Context
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.example.mykotlinapp.model.repository.impl.UserRepository
+import com.example.mykotlinapp.model.repository.impl.CommentRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 
 @HiltWorker
-class UpdateUserSettingsWorker @AssistedInject constructor(
+class RemoveCommentsWorker @AssistedInject constructor(
     @Assisted appContext: Context,
     @Assisted workerParams: WorkerParameters,
-    private val userRepository: UserRepository,
+    private val commentRepository: CommentRepository,
 ) : CoroutineWorker(appContext, workerParams) {
 
     override suspend fun doWork(): Result {
         return try {
-            userRepository.sendUserSettingsUpdate()
+            commentRepository.sendDeleteComments()
             Result.success()
-        } catch (e: Exception) {
+        } catch (exception: Exception) {
             Result.failure()
         }
     }
-
 }

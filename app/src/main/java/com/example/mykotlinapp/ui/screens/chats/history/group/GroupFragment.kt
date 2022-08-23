@@ -8,7 +8,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.mykotlinapp.R
-import com.example.mykotlinapp.activities.MainActivityViewModel
+import com.example.mykotlinapp.ui.activities.MainActivityViewModel
 import com.example.mykotlinapp.databinding.FragmentTabGroupPageBinding
 import com.example.mykotlinapp.model.dto.inputs.form.chat.UpdateGroupInput
 import com.example.mykotlinapp.ui.AppFragment
@@ -72,8 +72,8 @@ class GroupFragment : AppFragment(), WithViewPager {
         super.onResume()
     }
 
-    override fun registerComponents() {
-        super.registerComponents()
+    override fun registerUIComponents() {
+        super.registerUIComponents()
         sharedViewModel.dialogFormFragmentManager.registerDialogForm(groupEditDialog)
         sharedViewModel.dialogFormFragmentManager.registerDialogForm(postCreationDialog)
     }

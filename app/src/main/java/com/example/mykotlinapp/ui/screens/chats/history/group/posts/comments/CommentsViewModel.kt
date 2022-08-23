@@ -4,7 +4,7 @@ import androidx.lifecycle.*
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.example.mykotlinapp.*
-import com.example.mykotlinapp.background_work.workmanager.post.*
+import com.example.mykotlinapp.background.workmanager.post.*
 import com.example.mykotlinapp.model.dto.inputs.form.comment.CreateCommentInput
 import com.example.mykotlinapp.model.dto.inputs.form.comment.UpdateCommentInput
 import com.example.mykotlinapp.model.dto.inputs.form.comment.UpdateCommentVoteInput

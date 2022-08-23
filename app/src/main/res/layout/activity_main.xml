@@ -9,7 +9,7 @@
 
         <variable
             name="viewModel"
-            type="com.example.mykotlinapp.activities.MainActivityViewModel" />
+            type="com.example.mykotlinapp.ui.activities.MainActivityViewModel" />
     </data>
 
     <RelativeLayout
@@ -31,7 +31,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    tools:context=".activities.MainActivity">
+                    tools:context=".ui.activities.MainActivity">
 
                     <androidx.fragment.app.FragmentContainerView
                         android:id="@+id/nav_host_fragment"

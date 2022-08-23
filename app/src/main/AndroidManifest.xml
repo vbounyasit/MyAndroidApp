@@ -24,7 +24,7 @@
             tools:node="remove" />
 
         <activity
-            android:name=".activities.UserActivity"
+            android:name="com.example.mykotlinapp.ui.activities.UserActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,14 +32,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.MainActivity"
+            android:name="com.example.mykotlinapp.ui.activities.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
 
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <receiver android:name=".background_work.receiver.ReplyMessageReceiver" />
+        <receiver android:name=".background.receiver.ReplyMessageReceiver" />
     </application>
 
 </manifest>

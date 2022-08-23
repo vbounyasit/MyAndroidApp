@@ -13,8 +13,8 @@ import androidx.core.app.Person
 import androidx.core.app.RemoteInput
 import com.bumptech.glide.Glide
 import com.example.mykotlinapp.R
-import com.example.mykotlinapp.activities.MainActivity
-import com.example.mykotlinapp.background_work.receiver.ReplyMessageReceiver
+import com.example.mykotlinapp.ui.activities.MainActivity
+import com.example.mykotlinapp.background.receiver.ReplyMessageReceiver
 import com.example.mykotlinapp.model.dto.ui.chat.ChatItemDTO
 import com.example.mykotlinapp.model.dto.ui.chat.ChatLogDTO
 import kotlinx.coroutines.CoroutineDispatcher

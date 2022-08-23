@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.example.mykotlinapp.activities.MainActivityViewModel
+import com.example.mykotlinapp.ui.activities.MainActivityViewModel
 import com.example.mykotlinapp.databinding.FragmentTabChatListBinding
 import com.example.mykotlinapp.ui.AppFragment
 import com.example.mykotlinapp.ui.components.recycler_view.ClickListener

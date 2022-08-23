@@ -3,7 +3,7 @@ package com.example.mykotlinapp.ui.screens.chats.history.chat.logs
 import androidx.lifecycle.*
 import androidx.work.WorkManager
 import com.example.mykotlinapp.CREATE_CHAT_LOGS_WORK_NAME
-import com.example.mykotlinapp.background_work.workmanager.chat.CreateChatLogsWorker
+import com.example.mykotlinapp.background.workmanager.chat.CreateChatLogsWorker
 import com.example.mykotlinapp.model.dto.inputs.form.chat.CreateChatLogInput
 import com.example.mykotlinapp.model.dto.ui.chat.ChatBubbleDTO
 import com.example.mykotlinapp.model.dto.ui.chat.ChatLogDTO

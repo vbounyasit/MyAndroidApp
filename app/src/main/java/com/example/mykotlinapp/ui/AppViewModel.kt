@@ -13,6 +13,9 @@ import kotlinx.coroutines.launch
 import java.time.Duration
 import java.util.concurrent.TimeUnit
 
+/**
+ * base class implemented by all viewModels
+ */
 open class AppViewModel : ViewModel() {
 
     private val _httpRequestState = MutableLiveData<ApiRequestState>()

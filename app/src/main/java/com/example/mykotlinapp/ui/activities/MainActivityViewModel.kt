@@ -1,4 +1,4 @@
-package com.example.mykotlinapp.activities
+package com.example.mykotlinapp.ui.activities
 
 import androidx.lifecycle.*
 import androidx.work.WorkManager

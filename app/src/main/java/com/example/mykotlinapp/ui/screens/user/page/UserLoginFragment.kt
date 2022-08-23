@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import com.example.mykotlinapp.R
-import com.example.mykotlinapp.activities.UserActivityViewModel
+import com.example.mykotlinapp.ui.activities.UserActivityViewModel
 import com.example.mykotlinapp.databinding.FragmentTabUserLoginBinding
 import com.example.mykotlinapp.model.dto.inputs.form.user.LogInUserInput
 import com.example.mykotlinapp.ui.AppFragment

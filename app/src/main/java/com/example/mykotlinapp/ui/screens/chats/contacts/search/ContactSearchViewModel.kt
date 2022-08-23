@@ -7,7 +7,7 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.example.mykotlinapp.CREATE_CONTACT_WORK_NAME
 import com.example.mykotlinapp.WORK_CREATE_CONTACT_INPUT_KEY
-import com.example.mykotlinapp.background_work.workmanager.contact.CreateContactWorker
+import com.example.mykotlinapp.background.workmanager.contact.CreateContactWorker
 import com.example.mykotlinapp.domain.pojo.ContactRelationType
 import com.example.mykotlinapp.model.dto.ui.user.UserContactDTO
 import com.example.mykotlinapp.model.repository.impl.UserRepository

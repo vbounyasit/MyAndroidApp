@@ -6,7 +6,7 @@ import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import androidx.work.WorkManager
 import com.example.mykotlinapp.UPDATE_USER_WORK_NAME
-import com.example.mykotlinapp.background_work.workmanager.user.UpdateUserWorker
+import com.example.mykotlinapp.background.workmanager.user.UpdateUserWorker
 import com.example.mykotlinapp.model.dto.inputs.form.user.UpdateUserInput
 import com.example.mykotlinapp.model.dto.ui.user.UserDTO
 import com.example.mykotlinapp.model.repository.impl.UserRepository

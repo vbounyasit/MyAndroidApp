@@ -9,7 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.example.mykotlinapp.R
-import com.example.mykotlinapp.activities.MainActivityViewModel
+import com.example.mykotlinapp.ui.activities.MainActivityViewModel
 import com.example.mykotlinapp.databinding.FragmentUserProfilePageBinding
 import com.example.mykotlinapp.model.dto.inputs.form.user.UpdateUserInput
 import com.example.mykotlinapp.ui.AppFragment
@@ -37,8 +37,8 @@ class UserProfileFragment : AppFragment() {
         super.onDestroy()
     }
 
-    override fun registerComponents() {
-        super.registerComponents()
+    override fun registerUIComponents() {
+        super.registerUIComponents()
         sharedViewModel.bottomDrawerManager.registerNavigationDrawerMenu(requireActivity(), bottomDrawerMenu)
         sharedViewModel.dialogFormFragmentManager.registerDialogForm(userProfileEditDialog)
     }

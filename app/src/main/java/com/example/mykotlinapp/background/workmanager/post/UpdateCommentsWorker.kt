@@ -1,4 +1,4 @@
-package com.example.mykotlinapp.background_work.workmanager.post
+package com.example.mykotlinapp.background.workmanager.post
 
 import android.content.Context
 import androidx.hilt.work.HiltWorker

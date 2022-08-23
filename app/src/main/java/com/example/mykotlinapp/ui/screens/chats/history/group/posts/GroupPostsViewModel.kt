@@ -5,9 +5,9 @@ import androidx.work.WorkManager
 import com.example.mykotlinapp.REMOVE_POSTS_WORK_NAME
 import com.example.mykotlinapp.UPDATE_POSTS_WORK_NAME
 import com.example.mykotlinapp.UPDATE_POST_VOTE_STATES_WORK_NAME
-import com.example.mykotlinapp.background_work.workmanager.post.RemovePostsWorker
-import com.example.mykotlinapp.background_work.workmanager.post.UpdatePostVoteStatesWorker
-import com.example.mykotlinapp.background_work.workmanager.post.UpdatePostsWorker
+import com.example.mykotlinapp.background.workmanager.post.RemovePostsWorker
+import com.example.mykotlinapp.background.workmanager.post.UpdatePostVoteStatesWorker
+import com.example.mykotlinapp.background.workmanager.post.UpdatePostsWorker
 import com.example.mykotlinapp.model.dto.inputs.form.post.UpdatePostInput
 import com.example.mykotlinapp.model.dto.inputs.form.post.UpdatePostVoteInput
 import com.example.mykotlinapp.model.dto.inputs.ui_item.impl.UpdatePostNotificationInputUI

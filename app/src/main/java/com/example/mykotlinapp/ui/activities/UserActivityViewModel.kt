@@ -1,4 +1,4 @@
-package com.example.mykotlinapp.activities
+package com.example.mykotlinapp.ui.activities
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

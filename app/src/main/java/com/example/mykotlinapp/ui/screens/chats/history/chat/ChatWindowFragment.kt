@@ -8,7 +8,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.example.mykotlinapp.R
-import com.example.mykotlinapp.activities.MainActivityViewModel
+import com.example.mykotlinapp.ui.activities.MainActivityViewModel
 import com.example.mykotlinapp.databinding.FragmentChatWindowBinding
 import com.example.mykotlinapp.ui.AppFragment
 import com.example.mykotlinapp.ui.WithViewPager

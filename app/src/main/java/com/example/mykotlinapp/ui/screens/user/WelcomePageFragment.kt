@@ -8,7 +8,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.mykotlinapp.R
-import com.example.mykotlinapp.activities.UserActivityViewModel
+import com.example.mykotlinapp.ui.activities.UserActivityViewModel
 import com.example.mykotlinapp.databinding.FragmentWelcomePageBinding
 import com.example.mykotlinapp.domain.pojo.ApiRequestState
 import com.example.mykotlinapp.ui.AppFragment

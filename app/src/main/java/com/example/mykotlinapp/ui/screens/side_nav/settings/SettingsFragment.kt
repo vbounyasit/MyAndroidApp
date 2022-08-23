@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import com.example.mykotlinapp.activities.MainActivityViewModel
+import com.example.mykotlinapp.ui.activities.MainActivityViewModel
 import com.example.mykotlinapp.databinding.FragmentSettingsBinding
 import com.example.mykotlinapp.ui.AppFragment
 import dagger.hilt.android.AndroidEntryPoint

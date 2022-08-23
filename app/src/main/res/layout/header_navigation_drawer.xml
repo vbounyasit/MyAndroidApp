@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.example.mykotlinapp.activities.MainActivityViewModel" />
+            type="com.example.mykotlinapp.ui.activities.MainActivityViewModel" />
     </data>
 
     <LinearLayout

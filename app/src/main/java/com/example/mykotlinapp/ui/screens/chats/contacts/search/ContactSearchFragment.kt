@@ -10,7 +10,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.work.WorkInfo
 import com.example.mykotlinapp.WORK_CREATE_CONTACT_INPUT_KEY
-import com.example.mykotlinapp.activities.MainActivityViewModel
+import com.example.mykotlinapp.ui.activities.MainActivityViewModel
 import com.example.mykotlinapp.databinding.FragmentSearchPageBinding
 import com.example.mykotlinapp.ui.AppFragment
 import com.example.mykotlinapp.ui.components.recycler_view.ClickListener

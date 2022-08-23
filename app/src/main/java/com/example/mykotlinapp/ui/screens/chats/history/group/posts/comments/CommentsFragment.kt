@@ -9,7 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.work.WorkInfo
 import com.example.mykotlinapp.R
-import com.example.mykotlinapp.activities.MainActivityViewModel
+import com.example.mykotlinapp.ui.activities.MainActivityViewModel
 import com.example.mykotlinapp.databinding.FragmentGroupPostBinding
 import com.example.mykotlinapp.domain.pojo.VoteState
 import com.example.mykotlinapp.model.dto.inputs.form.comment.CreateCommentInput
@@ -107,8 +107,8 @@ class CommentsFragment : AppFragment() {
         )
     }
 
-    override fun registerComponents() {
-        super.registerComponents()
+    override fun registerUIComponents() {
+        super.registerUIComponents()
         sharedViewModel.dialogFormFragmentManager.registerDialogForm(editPostDialog)
         sharedViewModel.dialogFormFragmentManager.registerDialogForm(editCommentDialog)
         sharedViewModel.dialogFormFragmentManager.registerDialogForm(createCommentDialog)

@@ -3,7 +3,7 @@ package com.example.mykotlinapp.ui.screens.chats.history.group
 import androidx.lifecycle.*
 import androidx.work.WorkManager
 import com.example.mykotlinapp.UPDATE_GROUP_WORK_NAME
-import com.example.mykotlinapp.background_work.workmanager.chat.UpdateGroupWorker
+import com.example.mykotlinapp.background.workmanager.chat.UpdateGroupWorker
 import com.example.mykotlinapp.model.dto.inputs.form.chat.UpdateGroupInput
 import com.example.mykotlinapp.model.dto.inputs.form.post.CreatePostInput
 import com.example.mykotlinapp.model.dto.ui.chat.ChatParticipantDTO

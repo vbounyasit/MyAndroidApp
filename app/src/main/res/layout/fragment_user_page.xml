@@ -10,7 +10,7 @@
 
         <variable
             name="activityViewModel"
-            type="com.example.mykotlinapp.activities.UserActivityViewModel" />
+            type="com.example.mykotlinapp.ui.activities.UserActivityViewModel" />
     </data>
 
     <LinearLayout

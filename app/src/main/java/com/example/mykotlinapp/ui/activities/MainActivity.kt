@@ -1,4 +1,4 @@
-package com.example.mykotlinapp.activities
+package com.example.mykotlinapp.ui.activities
 
 import android.content.Context
 import android.content.Intent
@@ -8,7 +8,6 @@ import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate.*
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.NavDirections
@@ -16,6 +15,7 @@ import androidx.navigation.findNavController
 import com.example.mykotlinapp.R
 import com.example.mykotlinapp.databinding.ActivityMainBinding
 import com.example.mykotlinapp.databinding.HeaderNavigationDrawerBinding
+import com.example.mykotlinapp.ui.AppActivity
 import com.example.mykotlinapp.ui.components.drawer.BottomDrawerUI
 import com.example.mykotlinapp.ui.screens.chats.ChatFragmentDirections.actionChatFragmentToSettingsFragment
 import com.example.mykotlinapp.ui.screens.chats.ChatFragmentDirections.actionChatFragmentToUserProfileFragment
@@ -30,7 +30,7 @@ import com.google.android.material.switchmaterial.SwitchMaterial
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var headerNavViewBinding: HeaderNavigationDrawerBinding
@@ -44,9 +44,6 @@ class MainActivity : AppCompatActivity() {
         headerNavViewBinding = HeaderNavigationDrawerBinding.bind(binding.userNavView.getHeaderView(0))
         headerNavViewBinding.lifecycleOwner = this
         headerNavViewBinding.viewModel = viewModel
-        registerComponents()
-        registerObservers()
-        registerListeners()
         handleStartFromNotification()
         viewModel.retrieveInitialData()
         viewModel.showBottomNav()
@@ -66,14 +63,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun registerComponents() {
+    override fun registerUIComponents() {
         viewModel.initializeAndConnectSocket()
         viewModel.notificationComponent.createChatChannel(getString(R.string.chat_notification_channel_key), getString(R.string.chat_notification_channel_name))
         viewModel.bottomDrawerManager.registerNavigationUI(this, bottomDrawerUI)
         viewModel.dialogFormFragmentManager.registerLifeCycle(this, supportFragmentManager)
     }
 
-    private fun registerObservers() {
+    override fun registerObservers() {
         viewModel.bottomNavigationDestination.observe(this) {
             it?.let {
                 binding.navHostFragment.findNavController().navigate(it)
@@ -116,7 +113,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun registerListeners() {
+    override fun registerListeners() {
         headerNavViewBinding.viewMode.setOnClickListener { view ->
             if (view is SwitchMaterial) viewModel.toggleViewMode(view.isChecked)
         }
@@ -137,6 +134,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun handleStartFromNotification() {
+        //Start from chat notification - redirect to relevant chat fragment
         intent.getStringExtra(getString(R.string.chat_remote_id))?.let { chatRemoteId ->
             viewModel.setNavigationToChatRemoteId(chatRemoteId)
         }

@@ -1,4 +1,4 @@
-package com.example.mykotlinapp.background_work.receiver
+package com.example.mykotlinapp.background.receiver
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -9,7 +9,7 @@ import androidx.work.WorkManager
 import com.example.mykotlinapp.R
 import com.example.mykotlinapp.WORK_REPLY_CHAT_CONTENT_INPUT_KEY
 import com.example.mykotlinapp.WORK_REPLY_CHAT_REMOTE_ID_INPUT_KEY
-import com.example.mykotlinapp.background_work.workmanager.chat.CreateReplyWorker
+import com.example.mykotlinapp.background.workmanager.chat.CreateReplyWorker
 import com.example.mykotlinapp.ui.AppViewModel.BackgroundWorkConfig.RegularBackgroundTask
 import com.example.mykotlinapp.ui.AppViewModel.Companion.launchNetworkBackgroundTask
 import dagger.hilt.android.AndroidEntryPoint
