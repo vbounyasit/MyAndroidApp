@@ -1,5 +1,5 @@
 # My Android App
-A Chat app Android project
+_A Chat app Android project_
 
 This is an Android application I have started a while ago as a side project when I first dived into the Kotlin language.
 I have had the most fun diving into Android Apps world with its rich and always up to date documentation, the Android Jetpack library suite, 
@@ -11,13 +11,13 @@ _See the code base for the [NodeJS-API server](https://github.com/vbounyasit/Nod
 
 _See my [Trello board](https://trello.com/b/0NH0WcIo/android-app) with the technical business rules I implemented_
 
-# Architecture choices
+## Architecture choices
 
-# App components
+## App components
 
-# Libraries
+## Libraries
 
-## General
+### General
 - [Retrofit](https://square.github.io/retrofit/) is used for the **Network layer**, to allow the App to query and retrieve the relevant data from **the remote API server**
 - [Moshi](https://github.com/square/moshi) allows us to parse various **JSON responses** from the remote API, or to serialize and **pass data between various components** in the App
 - [Room](https://developer.android.com/jetpack/androidx/releases/room) is a database library used for **persisting data locally** in various structured tables
@@ -28,11 +28,11 @@ _See my [Trello board](https://trello.com/b/0NH0WcIo/android-app) with the techn
 - [WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager) allows us to use Android's WorkManager component, in order to perform various **background tasks** (See [guide to background work](https://developer.android.com/guide/background) for more details)
 - [SocketIO](https://socket.io/fr/blog/native-socket-io-and-android/) allows us to open a **Socket connection** between our device and the remote server for **real time executions** such as instant chat messaging, chat/posts/comments notifications, etc
 
-## UI
+### UI
 - [Material Components](https://material.io/develop/android/docs/getting-started) allows the various UI elements of our App to **inherit from a common design system** known as **Material design**, created by Google
 - [Navigation](https://developer.android.com/guide/navigation/navigation-getting-started) allows us to use the Navigation component to navigate between different destination fragments
 
-## Testing
+### Testing
 - [MockK](https://mockk.io/) allows us to generate mock instances of various Application components that would otherwise be difficult to instantiate for **unit tests**
 - [KoTest](https://kotest.io/) is a flexible multi-platform **assertion Framework** allowing us to write simple, clean and elegant test cases
 - [JUnit](https://kotlinlang.org/docs/jvm-test-using-junit.html) is a popular **unit testing Framework**
