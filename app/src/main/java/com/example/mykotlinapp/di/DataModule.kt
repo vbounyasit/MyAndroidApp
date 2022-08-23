@@ -37,14 +37,23 @@ class DataModule {
     @Provides
     fun provideCommentDao(appDatabase: AppDatabase): CommentDao = appDatabase.commentDao
 
+    /**
+     * Database
+     */
+
     @Provides
     fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase = AppDatabase.getInstance(context)
 
-    @Provides
-    fun provideMoshiObj(): Moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+    /**
+     * Network
+     */
 
     @Provides
     fun provideApiService(moshi: Moshi): ApiService = ApiServiceProvider.getRetrofitService(moshi)
+
+    /**
+     * Preferences
+     */
 
     @Provides
     fun provideSharedPreferencesDao(@ApplicationContext context: Context, @Qualifiers.IoDispatcher dispatcher: CoroutineDispatcher): SharedPreferenceDao = SharedPreferenceDao(context, dispatcher)
