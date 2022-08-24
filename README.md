@@ -18,6 +18,8 @@ It relies on the [separation of concerns principle](https://en.wikipedia.org/wik
 - The **Domain layer** : _contains all the complex business logic used by the various ViewModels. It is an **optional layer** depending on **how complicated your use cases are**. This project does not contain a domain layer._
 - The **UI layer** : _responsible for receiving relevant business data from the **Data layer** and displaying it on screen. It is composed of **Views** where the various UI elements are displayed, and **ViewModels** which hold the data exposed to the UI, and handle its logic._
 
+<img src="docs/images/architecture.png" width="500">
+
 ## App components
 
 ## Libraries
