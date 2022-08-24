@@ -12,6 +12,10 @@ _See the code base for the [NodeJS-API server](https://github.com/vbounyasit/Nod
 _See my [Trello board](https://trello.com/b/0NH0WcIo/android-app) with the technical business rules I implemented_
 
 ## Architecture choices
+A MVVM (Model-View-ViewModel) type of architecture has been used for this project and based on the [Guide to app architectureGuide to app architecture](https://developer.android.com/topic/architecture#recommended-app-arch) by Google.
+It relies on the [separation of concerns principle](https://en.wikipedia.org/wiki/Separation_of_concerns), cutting the application into multiple layers with single main responsibilities :
+- The **Data layer**: _containing Repositories responsible for retrieving data from different **data sources** (Network API, local database, etc), applying **business logic** to it, and serving it to the **UI layer**_
+- The **UI layer**: _responsible for receiving relevant business data from the **Data layer** and displaying it on screen. The UI layer is composed of **Views** where the various UI elements are displayed, and **ViewModels** which hold the data exposed to the UI, and handle its logic.
 
 ## App components
 
@@ -36,6 +40,8 @@ _See my [Trello board](https://trello.com/b/0NH0WcIo/android-app) with the techn
 - [MockK](https://mockk.io/) allows us to generate mock instances of various Application components that would otherwise be difficult to instantiate for **unit tests**
 - [KoTest](https://kotest.io/) is a flexible multi-platform **assertion Framework** allowing us to write simple, clean and elegant test cases
 - [JUnit](https://kotlinlang.org/docs/jvm-test-using-junit.html) is a popular **unit testing Framework**
+
+
 
 
 
