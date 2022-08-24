@@ -12,7 +12,7 @@ _See the code base for the [NodeJS-API server](https://github.com/vbounyasit/Nod
 _See my [Trello board](https://trello.com/b/0NH0WcIo/android-app) with the technical business rules I implemented_
 
 ## Architecture choices
-An **MVVM (Model-View-ViewModel)** type of architecture has been used for this project and based on the [Guide to app architecture](https://developer.android.com/topic/architecture#recommended-app-arch) by Google.
+The **MVVM (Model-View-ViewModel)** architecture has been used for this project and based on the [Guide to app architecture](https://developer.android.com/topic/architecture#recommended-app-arch) by Google.
 It relies on the [separation of concerns principle](https://en.wikipedia.org/wiki/Separation_of_concerns), cutting the application into multiple layers with single main responsibilities :
 - The **Data layer** : _contains **Repositories** responsible for retrieving data from different **data sources** (Network API, local database, etc), applying **business logic** to it, and serving it to the **UI layer**_
 - The **Domain layer** : _contains all the complex business logic used by the various ViewModels. It is an **optional layer** depending on **how complicated your use cases are**. This project does not contain a domain layer._
