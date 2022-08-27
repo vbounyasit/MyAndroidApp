@@ -30,6 +30,8 @@ The App is currently made of the following UI screens or components :
 A **group page** will automatically be created after initiating a new conversation, where users will be able to **post content and medias**, or **comment on existing posts**. 
 They will also be able to **upvote/downvote/share** existing posts or comments
 
+Here's a sneak peak at the navigation graph :
+
 <img src="docs/images/navgraph.png" width="800">
 
 ## Architecture choices
