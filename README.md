@@ -11,6 +11,27 @@ _See the code base for the [NodeJS-API server](https://github.com/vbounyasit/Nod
 
 _See my [Trello board](https://trello.com/b/0NH0WcIo/android-app) with the technical business rules I implemented_
 
+## App features
+The main part of the App is a single activity and multiple fragments type of application. It relies on navigation graphs to handle everything related to screen transitions.
+
+The App is currently made of the following UI screens or components : 
+- a **user page screen** allowing new users to **log in or sign up** to the platform
+- a **side navigation page** displaying **basic user information** and allowing access to **app and user profile settings**
+- an **App settings page** accessible from side navigation
+- a **user profile page** allowing users to **view their profile information and edit them**
+- a **chat history page** allowing users to **view current conversations and create new ones with others**
+- a **chat window** for each conversation displaying **chat bubbles**
+- a **group window** for each chat window displaying **user posts, upcoming events and other things**
+- a **contact list** page displaying **the user's contacts, outgoing and incoming contact requests**
+- a **search bar** allowing users to **search the whole platform for users** by name and **send contact requests to them**
+- a **user post page** where other users from the platform can **have a discussion by posting comments**
+- a **notification manager** that will send app notifications when **a user receive a new chat message**
+
+A **group page** will automatically be created after initiating a new conversation, where users will be able to **post content and medias**, or **comment on existing posts**. 
+They will also be able to **upvote/downvote/share** existing posts or comments
+
+<img src="docs/images/navgraph.png" width="800">
+
 ## Architecture choices
 The **MVVM (Model-View-ViewModel)** architecture has been used for this project and based on the [Guide to app architecture](https://developer.android.com/topic/architecture#recommended-app-arch) by Google.
 It relies on the [separation of concerns principle](https://en.wikipedia.org/wiki/Separation_of_concerns), cutting the application into multiple layers with single main responsibilities :
@@ -19,8 +40,6 @@ It relies on the [separation of concerns principle](https://en.wikipedia.org/wik
 - The **UI layer** : _responsible for receiving relevant business data from the **Data layer** and displaying it on screen. It is composed of **Views** where the various UI elements are displayed, and **ViewModels** which hold the data exposed to the UI, and handle its logic._
 
 <img src="docs/images/app_architecture.png" width="500">
-
-## App components
 
 ## Libraries
 

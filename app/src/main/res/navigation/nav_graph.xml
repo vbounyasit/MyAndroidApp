@@ -11,13 +11,6 @@
         android:label="CommunityFragment"
         tools:layout="@layout/fragment_main_community">
         <action
-            android:id="@+id/action_communityFragment_to_postFragment"
-            app:destination="@id/userPostFragment"
-            app:enterAnim="@anim/enter_left"
-            app:exitAnim="@anim/exit_left"
-            app:popEnterAnim="@anim/enter_right"
-            app:popExitAnim="@anim/exit_right" />
-        <action
             android:id="@+id/action_communityFragment_to_settingsFragment"
             app:destination="@id/settingsFragment"
             app:enterAnim="@anim/enter_left"
@@ -56,7 +49,8 @@
     <fragment
         android:id="@+id/eventsFragment"
         android:name="com.example.mykotlinapp.ui.screens.events.EventsFragment"
-        android:label="EventsFragment">
+        android:label="EventsFragment"
+        tools:layout="@layout/fragment_main_events">
         <action
             android:id="@+id/action_eventsFragment_to_settingsFragment"
             app:destination="@id/settingsFragment"
@@ -87,15 +81,7 @@
             app:exitAnim="@anim/exit_left"
             app:popEnterAnim="@anim/enter_right"
             app:popExitAnim="@anim/exit_right" />
-        <action
-            android:id="@+id/action_chatWindowFragment_to_chatFragment"
-            app:popUpTo="@id/chatFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/groupPostsFragment"
-        android:name="com.example.mykotlinapp.ui.screens.chats.history.group.GroupFragment"
-        android:label="GroupFragment"
-        tools:layout="@layout/fragment_tab_group_post_list" />
     <fragment
         android:id="@+id/userPostFragment"
         android:name="com.example.mykotlinapp.ui.screens.chats.history.group.posts.comments.CommentsFragment"
