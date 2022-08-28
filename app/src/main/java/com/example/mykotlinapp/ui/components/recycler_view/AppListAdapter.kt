@@ -41,7 +41,12 @@ open class AppListAdapter<Property : RecyclerViewItem, Binding : ViewDataBinding
                 it.forEach { payloadMetaData ->
                     val newParcelableItem = payloadMetaData.toInputDTO(newItem)
                     if (payloadMetaData.toInputDTO(oldItem) != newParcelableItem) {
-                        bundle.apply { putParcelable(payloadMetaData.payloadKey, newParcelableItem) }
+                        bundle.apply {
+                            putParcelable(
+                                payloadMetaData.payloadKey,
+                                newParcelableItem
+                            )
+                        }
                     }
                 }
                 if (bundle.size() > 0) bundle else super.getChangePayload(oldItem, newItem)
@@ -67,12 +72,19 @@ open class AppListAdapter<Property : RecyclerViewItem, Binding : ViewDataBinding
         holder.bind { binding ->
             bindData(property, binding)
             payloadsMetadata?.forEach { payloadMetaData ->
-                payloadMetaData.applyChangesFromPayload(payloadMetaData.toInputDTO(property), binding)
+                payloadMetaData.applyChangesFromPayload(
+                    payloadMetaData.toInputDTO(property),
+                    binding
+                )
             }
         }
     }
 
-    override fun onBindViewHolder(holder: AppViewHolder<Binding>, position: Int, payloads: MutableList<Any>) {
+    override fun onBindViewHolder(
+        holder: AppViewHolder<Binding>,
+        position: Int,
+        payloads: MutableList<Any>
+    ) {
         if (payloads.isNotEmpty()) {
             val item = payloads[0] as Bundle
             payloadsMetadata?.forEach { payloadMetaData ->

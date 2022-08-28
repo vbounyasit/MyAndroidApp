@@ -7,7 +7,8 @@ import com.example.mykotlinapp.model.mappers.DTOMapper
 import com.example.mykotlinapp.model.mappers.NetworkResponseMapper
 import com.example.mykotlinapp.network.dto.responses.post.PostResponse
 
-object PostMediasMapper : DTOMapper<PostMedia, PostMediaDTO>, NetworkResponseMapper<PostResponse, List<PostMedia>> {
+object PostMediasMapper : DTOMapper<PostMedia, PostMediaDTO>,
+    NetworkResponseMapper<PostResponse, List<PostMedia>> {
     override fun toDTO(entity: PostMedia): PostMediaDTO =
         PostMediaDTO(
             entity.postRemoteId,

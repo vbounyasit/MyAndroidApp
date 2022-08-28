@@ -23,7 +23,11 @@ class PostEditSheetFragment(
 
     private lateinit var binding: DialogEditPostBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = DialogEditPostBinding.inflate(inflater)
         binding.postData = initialInput
         setUpListeners()
@@ -41,7 +45,8 @@ class PostEditSheetFragment(
             requireContext(),
             binding.root,
             initialInput?.let { UpdatePostInput(it.remoteId, content.getContent()) },
-            TextInputFieldValidator(content,
+            TextInputFieldValidator(
+                content,
                 ValueRequiredValidator,
                 MaxLengthValidator(resources.getInteger(R.integer.post_max_length))
             ),

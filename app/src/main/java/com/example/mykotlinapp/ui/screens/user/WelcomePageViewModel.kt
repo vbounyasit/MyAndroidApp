@@ -11,7 +11,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class WelcomePageViewModel @Inject constructor(private val userRepository: UserRepository) : AppViewModel() {
+class WelcomePageViewModel @Inject constructor(private val userRepository: UserRepository) :
+    AppViewModel() {
 
     private val _navigatingToUserPage = MutableLiveData<Boolean>()
     private val _requestedLogIn = MutableLiveData<Boolean>()

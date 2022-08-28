@@ -24,7 +24,7 @@ interface WithComponents {
      * Registers all the necessary components (usually used in the onCreate or onCreateView method of fragments/activities)
      */
     fun registerComponents() {
-        registerListeners()
+        registerObservers()
         registerUIComponents()
         registerListeners()
     }

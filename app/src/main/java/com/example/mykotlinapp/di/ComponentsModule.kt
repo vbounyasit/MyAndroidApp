@@ -30,17 +30,27 @@ class ComponentsModule {
     fun getDialogFormManager(): DialogFormFragmentManager = DialogFormFragmentManager()
 
     @Provides
-    fun provideWorkManager(@ApplicationContext context: Context): WorkManager = WorkManager.getInstance(context)
+    fun provideWorkManager(@ApplicationContext context: Context): WorkManager =
+        WorkManager.getInstance(context)
 
     @Provides
-    fun provideSocketComponent(sharedPreferenceDao: SharedPreferenceDao, @IoDispatcher dispatcher: CoroutineDispatcher, moshi: Moshi): SocketComponent =
+    fun provideSocketComponent(
+        sharedPreferenceDao: SharedPreferenceDao,
+        @IoDispatcher dispatcher: CoroutineDispatcher,
+        moshi: Moshi
+    ): SocketComponent =
         SocketComponent(sharedPreferenceDao, dispatcher, moshi)
 
     @Provides
-    fun provideNotificationManager(@ApplicationContext context: Context): NotificationManager = context.getSystemService(NotificationManager::class.java)
+    fun provideNotificationManager(@ApplicationContext context: Context): NotificationManager =
+        context.getSystemService(NotificationManager::class.java)
 
     @Provides
-    fun provideNotificationComponent(notificationManager: NotificationManager, @ApplicationContext context: Context, @Qualifiers.DefaultDispatcher dispatcher: CoroutineDispatcher) =
+    fun provideNotificationComponent(
+        notificationManager: NotificationManager,
+        @ApplicationContext context: Context,
+        @Qualifiers.DefaultDispatcher dispatcher: CoroutineDispatcher
+    ) =
         NotificationComponent(notificationManager, context, dispatcher)
 
     @Provides

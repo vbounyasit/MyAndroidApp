@@ -26,12 +26,13 @@ class UserActivity : AppActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_user)
+        registerComponents()
         updateNightMode()
     }
 
     override fun registerObservers() {
         fun startOnSuccess(action: () -> Unit): (ApiRequestState) -> Unit = {
-            if(it == ApiRequestState.SUCCESS)
+            if (it == ApiRequestState.SUCCESS)
                 startMainActivity(action)
         }
         viewModel.loginState.observe(this, ::startOnSuccess { viewModel.onLogIn() })

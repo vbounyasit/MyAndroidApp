@@ -16,7 +16,8 @@ import java.util.*
  *
  * @property displayText The text field to display the date on
  */
-class DatePickerDialogFragment(private val displayText: TextInputEditText) : DialogFragment(), DatePickerDialog.OnDateSetListener {
+class DatePickerDialogFragment(private val displayText: TextInputEditText) : DialogFragment(),
+    DatePickerDialog.OnDateSetListener {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Use the current date as the default date in the picker

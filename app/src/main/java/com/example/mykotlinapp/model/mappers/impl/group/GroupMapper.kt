@@ -39,7 +39,8 @@ object GroupMapper :
 
     override fun toDTO(context: Context): (entity: GroupProperty) -> GroupDTO =
         { entity ->
-            val groupPictures: List<String> = entity.groupPicture.split(context.getString(R.string.profile_pictures_delimiter))
+            val groupPictures: List<String> =
+                entity.groupPicture.split(context.getString(R.string.profile_pictures_delimiter))
             val groupName = with(entity.groupName) {
                 if (contains(context.getString(R.string.profile_pictures_delimiter)))
                     context.getString(R.string.default_group_name)

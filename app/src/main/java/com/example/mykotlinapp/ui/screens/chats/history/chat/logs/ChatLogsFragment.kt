@@ -27,7 +27,11 @@ class ChatLogsFragment : AppFragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
         arguments?.getBoolean(getString(R.string.is_group_chat))?.let {
-            binding.chatBubbleList.adapter = ChatLogsAdapter(it, requireContext().resources.getDimension(R.dimen.chat_participant_read_pic_size).toInt())
+            binding.chatBubbleList.adapter = ChatLogsAdapter(
+                it,
+                requireContext().resources.getDimension(R.dimen.chat_participant_read_pic_size)
+                    .toInt()
+            )
         }
         arguments?.getString(getString(R.string.chat_remote_id))?.let {
             viewModel.updateChatRemoteId(it)
@@ -40,7 +44,11 @@ class ChatLogsFragment : AppFragment() {
         binding.chatBubbleList.adapter?.let {
             it.registerAdapterDataObserver(object : AdapterDataObserver() {
                 override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                    binding.chatBubbleList.layoutManager?.smoothScrollToPosition(binding.chatBubbleList, null, it.itemCount)
+                    binding.chatBubbleList.layoutManager?.smoothScrollToPosition(
+                        binding.chatBubbleList,
+                        null,
+                        it.itemCount
+                    )
                     viewModel.readChat()
                 }
             })

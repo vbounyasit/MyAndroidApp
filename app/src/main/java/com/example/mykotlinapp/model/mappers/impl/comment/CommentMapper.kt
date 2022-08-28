@@ -40,7 +40,8 @@ object CommentMapper :
 
     override fun toDTO(context: Context): (entity: List<UserComment>) -> List<CommentDTO> =
         { entity ->
-            val depthFLags = BooleanArray(context.resources.getInteger(R.integer.comments_max_depth)) { true }
+            val depthFLags =
+                BooleanArray(context.resources.getInteger(R.integer.comments_max_depth)) { true }
             entity.map {
                 val timePosted: String = toTimeAgo(context, it.time)
                 if (it.isLast && it.depthLevel > 0)
@@ -54,7 +55,10 @@ object CommentMapper :
                     it.votesCount.toString(),
                     it.depthLevel,
                     it.isLast,
-                    depthFLags.joinToString(context.getString(R.string.profile_pictures_delimiter), transform = Boolean::toString),
+                    depthFLags.joinToString(
+                        context.getString(R.string.profile_pictures_delimiter),
+                        transform = Boolean::toString
+                    ),
                     it.voteState,
                     it.isCreator,
                     it.editTime != null

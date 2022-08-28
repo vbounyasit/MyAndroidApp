@@ -22,13 +22,31 @@ object UserContactMapper :
                 networkData.contacts.map { toEntity(it, ContactRelationType.FRIENDS) }
     }
 
-    fun toSearchContactResult(context: Context): (SearchContactResponse) -> List<UserContactDTO> = { networkData ->
-        val contacts = networkData.contacts.map { toDTO(context)(toEntity(it, ContactRelationType.FRIENDS)) }
-        val searchResults = networkData.searchResults.map { toDTO(context)(toEntity(it, ContactRelationType.NONE)) }
-        contacts + searchResults
-    }
+    fun toSearchContactResult(context: Context): (SearchContactResponse) -> List<UserContactDTO> =
+        { networkData ->
+            val contacts = networkData.contacts.map {
+                toDTO(context)(
+                    toEntity(
+                        it,
+                        ContactRelationType.FRIENDS
+                    )
+                )
+            }
+            val searchResults = networkData.searchResults.map {
+                toDTO(context)(
+                    toEntity(
+                        it,
+                        ContactRelationType.NONE
+                    )
+                )
+            }
+            contacts + searchResults
+        }
 
-    fun toEntity(userContactResponse: UserContactResponse, relationType: ContactRelationType): UserContact =
+    fun toEntity(
+        userContactResponse: UserContactResponse,
+        relationType: ContactRelationType
+    ): UserContact =
         UserContact(
             userContactResponse.remoteId,
             userContactResponse.firstName,

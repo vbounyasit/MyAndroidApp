@@ -24,12 +24,17 @@ class ContactViewModel @Inject constructor(
     private val workManager: WorkManager,
 ) : AppViewModel() {
 
-    val contacts: LiveData<List<UserContactDTO>> = userRepository.getUserContactsWithRequests().asLiveData()
+    val contacts: LiveData<List<UserContactDTO>> =
+        userRepository.getUserContactsWithRequests().asLiveData()
 
     fun removeContactOrRequest(remoteId: String) {
         viewModelScope.launch {
             userRepository.submitContactForDeletion(remoteId)
-            workManager.launchNetworkBackgroundTask<RemoveContactsWorker>(UniqueBackgroundTask(REMOVE_CONTACTS_WORK_NAME))
+            workManager.launchNetworkBackgroundTask<RemoveContactsWorker>(
+                UniqueBackgroundTask(
+                    REMOVE_CONTACTS_WORK_NAME
+                )
+            )
         }
     }
 
@@ -39,7 +44,11 @@ class ContactViewModel @Inject constructor(
             builder.putString(WORK_CREATE_CONTACT_INPUT_KEY, remoteId)
             builder.build()
         }
-        workManager.launchNetworkBackgroundTask<CreateContactWorker>(UniqueBackgroundTask(CREATE_CONTACT_WORK_NAME), inputData)
+        workManager.launchNetworkBackgroundTask<CreateContactWorker>(
+            UniqueBackgroundTask(
+                CREATE_CONTACT_WORK_NAME
+            ), inputData
+        )
     }
 
     fun retrieveData() = submitHttpRequest { userRepository.retrieveUserContacts() }

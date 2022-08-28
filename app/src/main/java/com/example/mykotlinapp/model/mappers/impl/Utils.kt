@@ -25,7 +25,11 @@ object Utils {
     fun toTimeAgo(context: Context, time: Long, suffix: String = ""): String {
         val calendar = Calendar.getInstance()
         val lastLogDate = Date(time)
-        val default = DateFormat.getDateInstance(DateFormat.MEDIUM, context.resources.configuration.locales[0]).format(Date(time))
+        val default = DateFormat.getDateInstance(
+            DateFormat.MEDIUM,
+            context.resources.configuration.locales[0]
+        ).format(Date(time))
+
         fun diff(field: Int) = abs(calendar.fieldDifference(lastLogDate, field))
         val weeksAgo = diff(Calendar.WEEK_OF_YEAR)
         val daysAgo = diff(Calendar.DAY_OF_YEAR)
@@ -51,7 +55,11 @@ object Utils {
         fun diff(field: Int) = abs(calendar.fieldDifference(lastLogDate, field))
         val hoursAgo = diff(Calendar.HOUR_OF_DAY)
         val minutesAgo = diff(Calendar.MINUTE)
-        return if (hoursAgo > 0) DateFormat.getDateTimeInstance(DateFormat.NONE, DateFormat.SHORT, context.resources.configuration.locales[0]).format(time).toString()
+        return if (hoursAgo > 0) DateFormat.getDateTimeInstance(
+            DateFormat.NONE,
+            DateFormat.SHORT,
+            context.resources.configuration.locales[0]
+        ).format(time).toString()
         else if (minutesAgo > 0) "$minutesAgo min"
         else "Now"
     }
@@ -61,7 +69,8 @@ object Utils {
      *
      * @param word The word to capitalize
      */
-    fun capitalize(word: String) = word.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+    fun capitalize(word: String) =
+        word.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
 
     fun truncate(number: Double): String {
         val df = DecimalFormat("#.#")

@@ -13,10 +13,10 @@ import androidx.core.app.Person
 import androidx.core.app.RemoteInput
 import com.bumptech.glide.Glide
 import com.example.mykotlinapp.R
-import com.example.mykotlinapp.ui.activities.MainActivity
 import com.example.mykotlinapp.background.receiver.ReplyMessageReceiver
 import com.example.mykotlinapp.model.dto.ui.chat.ChatItemDTO
 import com.example.mykotlinapp.model.dto.ui.chat.ChatLogDTO
+import com.example.mykotlinapp.ui.activities.MainActivity
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
@@ -54,7 +54,10 @@ class NotificationComponent(
         return withContext(dispatcher) {
             try {
                 val contentIntent = Intent(context, MainActivity::class.java)
-                    .putExtra(context.getString(R.string.chat_remote_id), notification.chatItem.remoteId)
+                    .putExtra(
+                        context.getString(R.string.chat_remote_id),
+                        notification.chatItem.remoteId
+                    )
                 val contentPendingIntent = PendingIntent.getActivity(
                     context,
                     NOTIFICATION_ID,
@@ -62,11 +65,15 @@ class NotificationComponent(
                     PendingIntent.FLAG_UPDATE_CURRENT
                 )
 
-                val replyInput: RemoteInput = RemoteInput.Builder(context.getString(R.string.chat_notification_reply_key))
-                    .setLabel(context.getString(R.string.notification_reply_label))
-                    .build()
+                val replyInput: RemoteInput =
+                    RemoteInput.Builder(context.getString(R.string.chat_notification_reply_key))
+                        .setLabel(context.getString(R.string.notification_reply_label))
+                        .build()
                 val replyIntent = Intent(context, ReplyMessageReceiver::class.java)
-                    .putExtra(context.getString(R.string.chat_remote_id), notification.chatItem.remoteId)
+                    .putExtra(
+                        context.getString(R.string.chat_remote_id),
+                        notification.chatItem.remoteId
+                    )
                 val replyPendingIntent =
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
                         PendingIntent.getBroadcast(
@@ -82,8 +89,10 @@ class NotificationComponent(
                     replyPendingIntent
                 ).addRemoteInput(replyInput).build()
 
-                val pictureUrl: String? = if (notification.chatItem.profilePictures.size == 1) notification.chatItem.profilePictures.first() else null
-                val bitMap = pictureUrl?.let { Glide.with(context).asBitmap().load(it).submit().get() }
+                val pictureUrl: String? =
+                    if (notification.chatItem.profilePictures.size == 1) notification.chatItem.profilePictures.first() else null
+                val bitMap =
+                    pictureUrl?.let { Glide.with(context).asBitmap().load(it).submit().get() }
                 val me = Person.Builder()
                     .setName(context.getString(R.string.chat_item_author_me))
                     .setKey(notification.userRemoteId)
@@ -103,10 +112,14 @@ class NotificationComponent(
                         .addMessage(
                             chatLog.content,
                             chatLog.creationTimeStamp,
-                            sender)
+                            sender
+                        )
                 }
 
-                val notificationBuilder = NotificationCompat.Builder(context, context.getString(R.string.chat_notification_channel_key))
+                val notificationBuilder = NotificationCompat.Builder(
+                    context,
+                    context.getString(R.string.chat_notification_channel_key)
+                )
                     .setStyle(notificationStyle)
                     .setContentIntent(contentPendingIntent)
                     .addAction(replyAction)
@@ -116,7 +129,11 @@ class NotificationComponent(
                     .setAutoCancel(true)
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
 
-                notificationManager.notify(notification.chatItem.remoteId, NOTIFICATION_ID, notificationBuilder.build())
+                notificationManager.notify(
+                    notification.chatItem.remoteId,
+                    NOTIFICATION_ID,
+                    notificationBuilder.build()
+                )
 
             } catch (exception: Exception) {
                 exception.message?.let { Log.e(TAG, it) }
@@ -141,7 +158,8 @@ class NotificationComponent(
             notificationChannel.enableLights(true)
             notificationChannel.lightColor = Color.RED
             notificationChannel.enableVibration(true)
-            notificationChannel.description = context.getString(R.string.chat_notification_channel_desc)
+            notificationChannel.description =
+                context.getString(R.string.chat_notification_channel_desc)
             notificationManager.createNotificationChannel(notificationChannel)
         }
     }

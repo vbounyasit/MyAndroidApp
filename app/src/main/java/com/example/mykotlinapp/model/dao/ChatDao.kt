@@ -108,7 +108,10 @@ interface ChatDao {
     suspend fun clearChatLogs(except: List<String>, syncState: SyncState = SyncState.UP_TO_DATE)
 
     @Query("DELETE from chat_notifications WHERE sync_state = :syncState AND remoteId NOT IN (:except)")
-    suspend fun clearChatNotifications(except: List<String>, syncState: SyncState = SyncState.UP_TO_DATE)
+    suspend fun clearChatNotifications(
+        except: List<String>,
+        syncState: SyncState = SyncState.UP_TO_DATE
+    )
 
     @Query("DELETE from pending_chat_logs_creation")
     suspend fun clearPendingChatLogsCreation()

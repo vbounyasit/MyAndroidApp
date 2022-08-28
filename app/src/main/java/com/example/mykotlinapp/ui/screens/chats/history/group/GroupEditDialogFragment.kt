@@ -26,7 +26,11 @@ class GroupEditDialogFragment(
 
     private lateinit var binding: DialogEditGroupBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = DialogEditGroupBinding.inflate(inflater)
         binding.groupData = initialInput
         cancelButton = binding.editGroupDialogOptions.dialogCancelButton
@@ -54,7 +58,10 @@ class GroupEditDialogFragment(
                 MaxLengthValidator(resources.getInteger(R.integer.input_field_max_length)),
                 GroupNameValidator
             ),
-            TextInputFieldValidator(description, MaxLengthValidator(resources.getInteger(R.integer.description_max_length))),
+            TextInputFieldValidator(
+                description,
+                MaxLengthValidator(resources.getInteger(R.integer.description_max_length))
+            ),
             submitAction = { submit(it) }
         )
     }

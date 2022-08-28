@@ -9,7 +9,8 @@ import com.example.mykotlinapp.model.mappers.DTOMapper
 import com.example.mykotlinapp.model.mappers.NetworkResponseMapper
 import com.example.mykotlinapp.network.dto.responses.chat.ChatResponse
 
-object ChatParticipantMapper : DTOMapper<ChatParticipant, ChatParticipantDTO>, NetworkResponseMapper<ChatResponse, List<ChatParticipant>> {
+object ChatParticipantMapper : DTOMapper<ChatParticipant, ChatParticipantDTO>,
+    NetworkResponseMapper<ChatResponse, List<ChatParticipant>> {
     override fun toDTO(entity: ChatParticipant): ChatParticipantDTO =
         ChatParticipantDTO(
             entity.chatRemoteId,

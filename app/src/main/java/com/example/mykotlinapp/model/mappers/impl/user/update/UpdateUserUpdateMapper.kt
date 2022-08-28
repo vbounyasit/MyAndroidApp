@@ -7,7 +7,8 @@ import com.example.mykotlinapp.model.mappers.InputUpdateMapper
 import com.example.mykotlinapp.model.mappers.NetworkRequestMapper
 import com.example.mykotlinapp.network.dto.requests.user.UpdateUserRequest
 
-object UpdateUserUpdateMapper : NetworkRequestMapper<User, UpdateUserRequest>, InputUpdateMapper<UpdateUserInput, User> {
+object UpdateUserUpdateMapper : NetworkRequestMapper<User, UpdateUserRequest>,
+    InputUpdateMapper<UpdateUserInput, User> {
 
     override fun toNetworkRequest(entity: User): UpdateUserRequest {
         return UpdateUserRequest(

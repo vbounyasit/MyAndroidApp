@@ -21,25 +21,36 @@ abstract class SharedPreferenceLiveData<T>(
         /**
          * Shared preference LiveData for strings
          */
-        class SharedPreferenceStringLiveData(sharedPrefs: SharedPreferences, key: String, defValue: String) :
+        class SharedPreferenceStringLiveData(
+            sharedPrefs: SharedPreferences,
+            key: String,
+            defValue: String
+        ) :
             SharedPreferenceLiveData<String>(sharedPrefs, key, defValue) {
-            override fun getValueFromPreferences(key: String, defValue: String): String = sharedPrefs.getString(key, defValue) ?: defValue
+            override fun getValueFromPreferences(key: String, defValue: String): String =
+                sharedPrefs.getString(key, defValue) ?: defValue
         }
 
         /**
          * Shared preference LiveData for booleans
          */
-        class SharedPreferenceBooleanLiveData(sharedPrefs: SharedPreferences, key: String, defValue: Boolean) :
+        class SharedPreferenceBooleanLiveData(
+            sharedPrefs: SharedPreferences,
+            key: String,
+            defValue: Boolean
+        ) :
             SharedPreferenceLiveData<Boolean>(sharedPrefs, key, defValue) {
-            override fun getValueFromPreferences(key: String, defValue: Boolean): Boolean = sharedPrefs.getBoolean(key, defValue)
+            override fun getValueFromPreferences(key: String, defValue: Boolean): Boolean =
+                sharedPrefs.getBoolean(key, defValue)
         }
     }
 
-    private val preferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-        if (key == this.key) {
-            value = getValueFromPreferences(key, defValue)
+    private val preferenceChangeListener =
+        SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+            if (key == this.key) {
+                value = getValueFromPreferences(key, defValue)
+            }
         }
-    }
 
     abstract fun getValueFromPreferences(key: String, defValue: T): T
 

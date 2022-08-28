@@ -8,10 +8,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.example.mykotlinapp.R
-import com.example.mykotlinapp.ui.activities.MainActivityViewModel
 import com.example.mykotlinapp.databinding.FragmentChatWindowBinding
 import com.example.mykotlinapp.ui.AppFragment
 import com.example.mykotlinapp.ui.WithViewPager
+import com.example.mykotlinapp.ui.activities.MainActivityViewModel
 import com.example.mykotlinapp.ui.components.view_pager.AppPagerAdapter
 import com.example.mykotlinapp.ui.components.view_pager.TabItem
 import com.example.mykotlinapp.ui.screens.chats.history.chat.logs.ChatLogsFragment
@@ -52,7 +52,8 @@ class ChatWindowFragment : AppFragment(), WithViewPager {
                 ChatPageDialogFragment(it).show(childFragmentManager, ChatPageDialogFragment.TAG)
             }
         }
-        binding.chatWindowViewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        binding.chatWindowViewPager.registerOnPageChangeCallback(object :
+            ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 viewModel.tabSelected = position
                 super.onPageSelected(position)
@@ -95,8 +96,16 @@ class ChatWindowFragment : AppFragment(), WithViewPager {
     override fun getPagerAdapter(): AppPagerAdapter {
         return object : AppPagerAdapter(this) {
             override val tabItems: List<TabItem> = listOf(
-                TabItem(iconResource = R.drawable.ic_chat_bubble, fragment = attach(ChatLogsFragment(), bundle), badgeNumber = 0),
-                TabItem(iconResource = R.drawable.ic_groups, fragment = attach(GroupFragment(), bundle), badgeNumber = 0)
+                TabItem(
+                    iconResource = R.drawable.ic_chat_bubble,
+                    fragment = attach(ChatLogsFragment(), bundle),
+                    badgeNumber = 0
+                ),
+                TabItem(
+                    iconResource = R.drawable.ic_groups,
+                    fragment = attach(GroupFragment(), bundle),
+                    badgeNumber = 0
+                )
             )
         }
     }

@@ -25,7 +25,8 @@ class ContactSearchViewModel @Inject constructor(
     private val _foundContacts = MutableLiveData<List<UserContactDTO>?>()
 
     val foundContacts: LiveData<List<UserContactDTO>?> = _foundContacts
-    val createContactWorkInfo: LiveData<List<WorkInfo>> = workManager.getWorkInfosForUniqueWorkLiveData(CREATE_CONTACT_WORK_NAME)
+    val createContactWorkInfo: LiveData<List<WorkInfo>> =
+        workManager.getWorkInfosForUniqueWorkLiveData(CREATE_CONTACT_WORK_NAME)
 
     fun updateSearchResults(searchTag: String) =
         submitHttpRequest({ userRepository.retrieveUserContactSearchResults(searchTag) }) {
@@ -38,7 +39,11 @@ class ContactSearchViewModel @Inject constructor(
             builder.putString(WORK_CREATE_CONTACT_INPUT_KEY, remoteId)
             builder.build()
         }
-        workManager.launchNetworkBackgroundTask<CreateContactWorker>(UniqueBackgroundTask(CREATE_CONTACT_WORK_NAME), inputData)
+        workManager.launchNetworkBackgroundTask<CreateContactWorker>(
+            UniqueBackgroundTask(
+                CREATE_CONTACT_WORK_NAME
+            ), inputData
+        )
     }
 
     fun setOutgoingRequest(remoteId: String) {

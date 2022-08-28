@@ -31,7 +31,10 @@ class PostsAdapter(
             toInputDTO = { UpdatePostVoteInputUI(it.remoteId, it.voteState, it.votesCount) },
             applyChangesFromPayload = { inputDTO, binding ->
                 val input = inputDTO as UpdatePostVoteInputUI
-                binding.property = binding.property?.copy(voteState = input.voteState, votesCount = input.votesCount)
+                binding.property = binding.property?.copy(
+                    voteState = input.voteState,
+                    votesCount = input.votesCount
+                )
             }
         )
         /*Companion.PayloadMetaData(

@@ -37,7 +37,8 @@ class GroupViewModel @Inject constructor(
     }
 
     val groupParticipants: LiveData<List<ChatParticipantDTO>?> = groupWindow.switchMap {
-        it?.let { group -> chatRepository.getChatParticipants(group.chatRemoteId).asLiveData() } ?: liveData { listOf<ChatParticipantDTO>() }
+        it?.let { group -> chatRepository.getChatParticipants(group.chatRemoteId).asLiveData() }
+            ?: liveData { listOf<ChatParticipantDTO>() }
     }
 
     fun updateGroupRemoteId(groupRemoteId: String) {
@@ -47,13 +48,22 @@ class GroupViewModel @Inject constructor(
     fun sendGroupUpdate(updateGroupInput: UpdateGroupInput): Job {
         val result = viewModelScope.launch {
             groupRepository.updateGroup(updateGroupInput)
-            workManager.launchNetworkBackgroundTask<UpdateGroupWorker>(UniqueBackgroundTask(UPDATE_GROUP_WORK_NAME))
+            workManager.launchNetworkBackgroundTask<UpdateGroupWorker>(
+                UniqueBackgroundTask(
+                    UPDATE_GROUP_WORK_NAME
+                )
+            )
         }
         return result
     }
 
     fun createGroupPost(groupRemoteId: String, createPostInput: CreatePostInput): Job {
-        return submitHttpRequest({ postRepository.sendCreatePost(groupRemoteId, createPostInput) }) { postRemoteId ->
+        return submitHttpRequest({
+            postRepository.sendCreatePost(
+                groupRemoteId,
+                createPostInput
+            )
+        }) { postRemoteId ->
             submitHttpRequest({ postRepository.retrievePost(groupRemoteId, postRemoteId) }) {
                 navigateToCreatedPost(postRemoteId)
             }

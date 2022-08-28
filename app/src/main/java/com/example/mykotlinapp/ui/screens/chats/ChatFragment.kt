@@ -8,10 +8,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.mykotlinapp.R
-import com.example.mykotlinapp.ui.activities.MainActivityViewModel
 import com.example.mykotlinapp.databinding.FragmentMainChatBinding
 import com.example.mykotlinapp.ui.AppFragment
 import com.example.mykotlinapp.ui.WithViewPager
+import com.example.mykotlinapp.ui.activities.MainActivityViewModel
 import com.example.mykotlinapp.ui.components.view_pager.AppPagerAdapter
 import com.example.mykotlinapp.ui.components.view_pager.TabItem
 import com.example.mykotlinapp.ui.screens.chats.contacts.ContactFragment
@@ -33,7 +33,11 @@ class ChatFragment : AppFragment(), WithViewPager {
         )
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val pagerAdapter: AppPagerAdapter = getPagerAdapter()
         binding = FragmentMainChatBinding.inflate(inflater)
         binding.chatViewPager.adapter = pagerAdapter
@@ -72,7 +76,11 @@ class ChatFragment : AppFragment(), WithViewPager {
         }
         viewModel.navigateToCreatedChatId.observe(viewLifecycleOwner) {
             it?.let {
-                findNavController().navigate(ChatFragmentDirections.actionChatFragmentToGroupChatFragment(it))
+                findNavController().navigate(
+                    ChatFragmentDirections.actionChatFragmentToGroupChatFragment(
+                        it
+                    )
+                )
                 viewModel.onNavigatedToCreatedChat()
             }
         }

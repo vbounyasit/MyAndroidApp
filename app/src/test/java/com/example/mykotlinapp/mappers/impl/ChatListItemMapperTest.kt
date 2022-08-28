@@ -29,8 +29,15 @@ class ChatListItemMapperTest : WordSpec({
     fun getChatItem(remoteId: String, isGroupChat: Boolean): ChatItem =
         ChatItem(remoteId, "chatName", "picture1", 0, null, isGroupChat, SyncState.UP_TO_DATE)
 
-    fun getChatLog(chatLogRemoteId: String, authorRemoteId: String, authorFirstName: String, authorLastName: String, isMe: Boolean): ChatLog =
-        ChatLog(chatLogRemoteId, "chat_$chatLogRemoteId",
+    fun getChatLog(
+        chatLogRemoteId: String,
+        authorRemoteId: String,
+        authorFirstName: String,
+        authorLastName: String,
+        isMe: Boolean
+    ): ChatLog =
+        ChatLog(
+            chatLogRemoteId, "chat_$chatLogRemoteId",
             UserContact(
                 authorRemoteId,
                 authorFirstName,
@@ -66,7 +73,11 @@ class ChatListItemMapperTest : WordSpec({
                 //When
                 val chatListItemDTO: ChatListItemDTO = ChatListItemMapper.toDTO(context)(input)
                 //Then
-                chatListItemDTO.toResult() shouldBe Result("remoteId1", true, "$me${delimiter}content")
+                chatListItemDTO.toResult() shouldBe Result(
+                    "remoteId1",
+                    true,
+                    "$me${delimiter}content"
+                )
             }
             "with chat read time >= last log creation date - compute the correct content and be READ" {
                 //Given
@@ -76,13 +87,23 @@ class ChatListItemMapperTest : WordSpec({
                 //When
                 val chatListItemDTO: ChatListItemDTO = ChatListItemMapper.toDTO(context)(input)
                 //Then
-                chatListItemDTO.toResult() shouldBe Result("remoteId1", true, "$me${delimiter}content")
+                chatListItemDTO.toResult() shouldBe Result(
+                    "remoteId1",
+                    true,
+                    "$me${delimiter}content"
+                )
             }
         }
         "Last chat log author IS NOT ME" should {
             val baseInput = Pair(
                 getChatItem("remoteId1", true),
-                getChatLog("chatLogRemoteId1", "authorRemoteId", "authorFirstName", "authorLastName", false)
+                getChatLog(
+                    "chatLogRemoteId1",
+                    "authorRemoteId",
+                    "authorFirstName",
+                    "authorLastName",
+                    false
+                )
             )
             "with chat read time < last log creation date - compute the correct content and be NOT READ" {
                 //Given
@@ -92,7 +113,11 @@ class ChatListItemMapperTest : WordSpec({
                 //When
                 val chatListItemDTO: ChatListItemDTO = ChatListItemMapper.toDTO(context)(input)
                 //Then
-                chatListItemDTO.toResult() shouldBe Result("remoteId1", false, "${baseInput.second.author.firstName}${delimiter}content")
+                chatListItemDTO.toResult() shouldBe Result(
+                    "remoteId1",
+                    false,
+                    "${baseInput.second.author.firstName}${delimiter}content"
+                )
             }
             "with chat read time >= last log creation date - compute the correct content and be read" {
                 //Given
@@ -102,7 +127,11 @@ class ChatListItemMapperTest : WordSpec({
                 //When
                 val chatListItemDTO: ChatListItemDTO = ChatListItemMapper.toDTO(context)(input)
                 //Then
-                chatListItemDTO.toResult() shouldBe Result("remoteId1", true, "${baseInput.second.author.firstName}${delimiter}content")
+                chatListItemDTO.toResult() shouldBe Result(
+                    "remoteId1",
+                    true,
+                    "${baseInput.second.author.firstName}${delimiter}content"
+                )
             }
         }
     }

@@ -16,7 +16,8 @@ class ChatLogsAdapter(private val isChatGroup: Boolean, readParticipantSize: Int
             if (property is ChatLogDTO && binding is ItemChatLogBinding) {
                 binding.property = property
                 binding.chatIsGroup = isChatGroup
-                val layoutParam = binding.chatBubbleCardView.layoutParams as RelativeLayout.LayoutParams
+                val layoutParam =
+                    binding.chatBubbleCardView.layoutParams as RelativeLayout.LayoutParams
                 if (property.isMe)
                     layoutParam.addRule(RelativeLayout.ALIGN_PARENT_END)
                 else

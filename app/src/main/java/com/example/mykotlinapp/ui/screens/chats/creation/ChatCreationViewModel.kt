@@ -21,15 +21,25 @@ class ChatCreationViewModel @Inject constructor(
     val selectedContacts: LiveData<List<UserContactDTO>> = _selectedContacts
     val onMessagePage: LiveData<Boolean> = _onMessagePage
 
-    val contacts: LiveData<List<UserContactSelectionDTO>> = selectedContacts.switchMap { selectedUsers ->
-        userRepository.getUserContacts().map { retrievedContacts ->
-            retrievedContacts.map { contact -> UserContactSelectionDTO(contact, selectedUsers.contains(contact)) }
-        }.asLiveData()
-    }
+    val contacts: LiveData<List<UserContactSelectionDTO>> =
+        selectedContacts.switchMap { selectedUsers ->
+            userRepository.getUserContacts().map { retrievedContacts ->
+                retrievedContacts.map { contact ->
+                    UserContactSelectionDTO(
+                        contact,
+                        selectedUsers.contains(contact)
+                    )
+                }
+            }.asLiveData()
+        }
 
     val searchedContacts: LiveData<List<UserContactSelectionDTO>> = _searchTag.switchMap { tag ->
         contacts.map {
-            if (tag.isNotBlank()) it.filter { contact -> contact.dto.firstName.startsWith(tag) || contact.dto.lastName.startsWith(tag) }
+            if (tag.isNotBlank()) it.filter { contact ->
+                contact.dto.firstName.startsWith(tag) || contact.dto.lastName.startsWith(
+                    tag
+                )
+            }
             else it
         }
     }

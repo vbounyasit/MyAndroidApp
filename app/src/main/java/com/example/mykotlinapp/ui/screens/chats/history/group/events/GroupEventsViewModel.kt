@@ -8,11 +8,13 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class GroupEventsViewModel @Inject constructor(private val groupEventRepository: GroupEventRepository) : ViewModel() {
+class GroupEventsViewModel @Inject constructor(private val groupEventRepository: GroupEventRepository) :
+    ViewModel() {
 
     private val groupId = MutableLiveData<Long>()
 
-    val groupEvents: LiveData<List<GroupEventItemDTO>> = groupId.switchMap { groupEventRepository.getGroupEvents(it).asLiveData() }
+    val groupEvents: LiveData<List<GroupEventItemDTO>> =
+        groupId.switchMap { groupEventRepository.getGroupEvents(it).asLiveData() }
 
     fun loadEvents(groupId: Long) {
         this.groupId.value = groupId

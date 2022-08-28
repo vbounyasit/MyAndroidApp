@@ -40,7 +40,9 @@
     </style>
 
     <style name="ChatItemButton" parent="ShapeAppearanceOverlay.Material3.Button">
-        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.Material3.FloatingActionButton</item>
+        <item name="shapeAppearanceOverlay">
+            @style/ShapeAppearanceOverlay.Material3.FloatingActionButton
+        </item>
         <item name="android:padding">@dimen/no_spacing</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:minHeight">@dimen/chat_item_button_min_height</item>

@@ -24,7 +24,11 @@ class CommentCreationSheetFragment(
 
     override val dialogFragmentTag: String = "CommentCreationDialogFragment"
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = DialogCreateCommentBinding.inflate(inflater)
         binding.commentCreationClose.setOnClickListener { dismiss() }
         binding.commentCreationSubmit.setOnClickListener { getFormValidator().performSubmitAction() }
@@ -37,8 +41,15 @@ class CommentCreationSheetFragment(
         return FormValidator(
             requireContext(),
             binding.root,
-            initialInput?.let { CreateCommentInput(it.parentRemoteId, content.getContent(), it.replyingTo) },
-            TextInputFieldValidator(content,
+            initialInput?.let {
+                CreateCommentInput(
+                    it.parentRemoteId,
+                    content.getContent(),
+                    it.replyingTo
+                )
+            },
+            TextInputFieldValidator(
+                content,
                 ValueRequiredValidator,
                 MaxLengthValidator(resources.getInteger(R.integer.comment_max_length))
             ),

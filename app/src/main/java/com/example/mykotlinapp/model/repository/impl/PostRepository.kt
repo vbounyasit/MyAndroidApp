@@ -17,7 +17,6 @@ import com.example.mykotlinapp.model.mappers.impl.post.create.CreatePostMapper
 import com.example.mykotlinapp.model.mappers.impl.post.delete.DeletePostMapper
 import com.example.mykotlinapp.model.mappers.impl.post.update.UpdatePostMapper
 import com.example.mykotlinapp.model.mappers.impl.post.update.UpdatePostVoteMapper
-import com.example.mykotlinapp.network.ApiService
 import com.example.mykotlinapp.network.dto.requests.post.CreatePostRequest
 import com.example.mykotlinapp.network.dto.requests.post.DeletePostRequest
 import com.example.mykotlinapp.network.dto.requests.post.UpdatePostRequest
@@ -25,6 +24,7 @@ import com.example.mykotlinapp.network.dto.requests.post.UpdatePostVoteRequest
 import com.example.mykotlinapp.network.dto.responses.CreateOperationResponse
 import com.example.mykotlinapp.network.dto.responses.UpdateOperationResponse
 import com.example.mykotlinapp.network.dto.responses.post.PostResponse
+import com.example.mykotlinapp.network.service.PostApiService
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -38,7 +38,7 @@ class PostRepository @Inject constructor(
     @ApplicationContext val context: Context,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
     private val sharedPreferenceDao: SharedPreferenceDao,
-    private val apiService: ApiService,
+    private val postApiService: PostApiService,
     private val postDao: PostDao,
 ) {
     /**
@@ -144,7 +144,8 @@ class PostRepository @Inject constructor(
      */
     private suspend fun updatePostsFromResponse(postListResponse: List<PostResponse>) {
         val pendingPosts = postDao.getPendingPosts()
-        val newPosts = postListResponse.filter { !pendingPosts.contains(it.remoteId) }.map { PostMapper.toEntity(it) }
+        val newPosts = postListResponse.filter { !pendingPosts.contains(it.remoteId) }
+            .map { PostMapper.toEntity(it) }
         postDao.clearPosts(postListResponse.map { it.remoteId })
         postDao.insertUserPosts(newPosts)
     }
@@ -174,11 +175,15 @@ class PostRepository @Inject constructor(
      * @param createPostInput The post creation form input
      * @returnThe newly created post remote id
      */
-    suspend fun sendCreatePost(groupRemoteId: String, createPostInput: CreatePostInput): Result<String> {
+    suspend fun sendCreatePost(
+        groupRemoteId: String,
+        createPostInput: CreatePostInput
+    ): Result<String> {
         return withContext(dispatcher) {
             sharedPreferenceDao.getAPIAuthenticatedResult { authHeader ->
                 val request: CreatePostRequest = CreatePostMapper.toNetworkRequest(createPostInput)
-                val response: CreateOperationResponse = apiService.createPost(authHeader, groupRemoteId, request)
+                val response: CreateOperationResponse =
+                    postApiService.createPost(authHeader, groupRemoteId, request)
                 response.remoteId
             }
         }
@@ -198,7 +203,8 @@ class PostRepository @Inject constructor(
     suspend fun retrievePost(groupRemoteId: String, postRemoteId: String): Result<Unit> {
         return withContext(dispatcher) {
             sharedPreferenceDao.performAPIAuthenticatedAction { authHeader ->
-                val postResponse: PostResponse = apiService.getPostData(authHeader, groupRemoteId, postRemoteId)
+                val postResponse: PostResponse =
+                    postApiService.getPostData(authHeader, groupRemoteId, postRemoteId)
                 updatePostFromResponse(postResponse)
             }
         }
@@ -213,7 +219,8 @@ class PostRepository @Inject constructor(
     suspend fun retrievePostList(groupRemoteId: String): Result<Unit> {
         return withContext(dispatcher) {
             sharedPreferenceDao.performAPIAuthenticatedAction { authHeader ->
-                val postListResponse: List<PostResponse> = apiService.getPostList(authHeader, groupRemoteId)
+                val postListResponse: List<PostResponse> =
+                    postApiService.getPostList(authHeader, groupRemoteId)
                 updatePostsFromResponse(postListResponse)
                 updatePostMediasFromResponse(postListResponse)
             }
@@ -234,8 +241,10 @@ class PostRepository @Inject constructor(
             sharedPreferenceDao.performAPIAuthenticatedAction { authHeader ->
                 val postsToUpdate = postDao.getPostsBySyncState(SyncState.PENDING_UPDATE)
                 if (postsToUpdate.isNotEmpty()) {
-                    val request: List<UpdatePostRequest> = postsToUpdate.map { UpdatePostMapper.toNetworkRequest(it) }
-                    val response: UpdateOperationResponse = apiService.updatePosts(authHeader, request)
+                    val request: List<UpdatePostRequest> =
+                        postsToUpdate.map { UpdatePostMapper.toNetworkRequest(it) }
+                    val response: UpdateOperationResponse =
+                        postApiService.updatePosts(authHeader, request)
                     if (response.modified == postsToUpdate.size)
                         postDao.insertUserPosts(postsToUpdate.map { it.copy(syncState = SyncState.UP_TO_DATE) })
                 }
@@ -253,8 +262,10 @@ class PostRepository @Inject constructor(
             sharedPreferenceDao.performAPIAuthenticatedAction { authHeader ->
                 val postsToUpdate = postDao.getPostsBySyncState(SyncState.PENDING_UPDATE)
                 if (postsToUpdate.isNotEmpty()) {
-                    val request: List<UpdatePostVoteRequest> = postsToUpdate.map { UpdatePostVoteMapper.toNetworkRequest(it) }
-                    val response: UpdateOperationResponse = apiService.updatePostVotes(authHeader, request)
+                    val request: List<UpdatePostVoteRequest> =
+                        postsToUpdate.map { UpdatePostVoteMapper.toNetworkRequest(it) }
+                    val response: UpdateOperationResponse =
+                        postApiService.updatePostVotes(authHeader, request)
                     if (response.modified == postsToUpdate.size)
                         postDao.insertUserPosts(postsToUpdate.map { it.copy(syncState = SyncState.UP_TO_DATE) })
                 }
@@ -276,8 +287,9 @@ class PostRepository @Inject constructor(
             sharedPreferenceDao.performAPIAuthenticatedAction { authHeader ->
                 val postsToRemove = postDao.getPostsBySyncState(SyncState.PENDING_REMOVAL)
                 if (postsToRemove.isNotEmpty()) {
-                    val request: List<DeletePostRequest> = postsToRemove.map { DeletePostMapper.toNetworkRequest(it) }
-                    apiService.deletePosts(authHeader, request)
+                    val request: List<DeletePostRequest> =
+                        postsToRemove.map { DeletePostMapper.toNetworkRequest(it) }
+                    postApiService.deletePosts(authHeader, request)
                     postDao.deletePosts(postsToRemove)
                 }
             }

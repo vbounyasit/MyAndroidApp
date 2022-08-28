@@ -23,7 +23,11 @@ class CommentEditSheetFragment(
 
     override val dialogFragmentTag: String = "CommentEditDialogFragment"
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = DialogEditCommentBinding.inflate(inflater)
         binding.commentData = initialInput
         binding.editCommentDialogOptions.dialogCancelButton.setOnClickListener { dismiss() }
@@ -37,7 +41,8 @@ class CommentEditSheetFragment(
             requireContext(),
             binding.root,
             initialInput?.let { UpdateCommentInput(it.remoteId, content.getContent()) },
-            TextInputFieldValidator(content,
+            TextInputFieldValidator(
+                content,
                 ValueRequiredValidator,
                 MaxLengthValidator(resources.getInteger(R.integer.comment_max_length))
             ),

@@ -8,10 +8,15 @@ import com.example.mykotlinapp.model.mappers.DTOContextMapper
 import com.example.mykotlinapp.model.mappers.InputCreateMapper
 import com.example.mykotlinapp.model.mappers.impl.Utils.toChatLogTime
 
-object PendingChatLogMapper : InputCreateMapper<CreateChatLogInput, PendingChatLogCreation>, DTOContextMapper<PendingChatLogCreation, ChatLogDTO> {
+object PendingChatLogMapper : InputCreateMapper<CreateChatLogInput, PendingChatLogCreation>,
+    DTOContextMapper<PendingChatLogCreation, ChatLogDTO> {
 
     override fun toEntity(input: CreateChatLogInput): PendingChatLogCreation {
-        return PendingChatLogCreation(chatRemoteId = input.chatRemoteId, content = input.content, creationDate = System.currentTimeMillis())
+        return PendingChatLogCreation(
+            chatRemoteId = input.chatRemoteId,
+            content = input.content,
+            creationDate = System.currentTimeMillis()
+        )
     }
 
     override fun toDTO(context: Context): (entity: PendingChatLogCreation) -> ChatLogDTO =

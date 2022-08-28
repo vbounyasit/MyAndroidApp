@@ -9,7 +9,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.work.WorkInfo
 import com.example.mykotlinapp.R
-import com.example.mykotlinapp.ui.activities.MainActivityViewModel
 import com.example.mykotlinapp.databinding.FragmentGroupPostBinding
 import com.example.mykotlinapp.domain.pojo.VoteState
 import com.example.mykotlinapp.model.dto.inputs.form.comment.CreateCommentInput
@@ -21,6 +20,7 @@ import com.example.mykotlinapp.model.dto.inputs.ui_item.impl.UpdatePostNotificat
 import com.example.mykotlinapp.model.dto.ui.post.CommentDTO
 import com.example.mykotlinapp.model.dto.ui.post.PostDTO
 import com.example.mykotlinapp.ui.AppFragment
+import com.example.mykotlinapp.ui.activities.MainActivityViewModel
 import com.example.mykotlinapp.ui.components.recycler_view.ClickListener
 import com.example.mykotlinapp.ui.screens.chats.history.group.posts.PostDrawers
 import com.example.mykotlinapp.ui.screens.chats.history.group.posts.PostDrawers.DrawerMenusDefinition
@@ -57,7 +57,11 @@ class CommentsFragment : AppFragment() {
     }
 
     private val dropDownAdapter by lazy {
-        val adapter = ArrayAdapter.createFromResource(requireContext(), R.array.sorting_rules, R.layout.component_spinner_item)
+        val adapter = ArrayAdapter.createFromResource(
+            requireContext(),
+            R.array.sorting_rules,
+            R.layout.component_spinner_item
+        )
         adapter.setDropDownViewResource(R.layout.component_spinner_item)
         adapter
     }
@@ -65,8 +69,20 @@ class CommentsFragment : AppFragment() {
     /**
      * Dialogs
      */
-    private val editPostDialog by lazy { PostEditSheetFragment(confirmFunction = { viewModel.editPost(it) }) }
-    private val editCommentDialog by lazy { CommentEditSheetFragment(confirmFunction = { viewModel.editComment(it) }) }
+    private val editPostDialog by lazy {
+        PostEditSheetFragment(confirmFunction = {
+            viewModel.editPost(
+                it
+            )
+        })
+    }
+    private val editCommentDialog by lazy {
+        CommentEditSheetFragment(confirmFunction = {
+            viewModel.editComment(
+                it
+            )
+        })
+    }
 
     private val createCommentDialog by lazy {
         CommentCreationSheetFragment(confirmFunction = {
@@ -89,7 +105,12 @@ class CommentsFragment : AppFragment() {
             { viewModel.deletePost(it) },
             { bundle ->
                 bundle.getString(getString(R.string.post_remote_id))?.let {
-                    viewModel.updateNotifications(UpdatePostNotificationInputUI(it, !bundle.getBoolean(getString(R.string.post_notifications))))
+                    viewModel.updateNotifications(
+                        UpdatePostNotificationInputUI(
+                            it,
+                            !bundle.getBoolean(getString(R.string.post_notifications))
+                        )
+                    )
                 }
             },
             PostDrawers.postDrawerTags,
@@ -112,12 +133,30 @@ class CommentsFragment : AppFragment() {
         sharedViewModel.dialogFormFragmentManager.registerDialogForm(editPostDialog)
         sharedViewModel.dialogFormFragmentManager.registerDialogForm(editCommentDialog)
         sharedViewModel.dialogFormFragmentManager.registerDialogForm(createCommentDialog)
-        sharedViewModel.bottomDrawerManager.registerNavigationDrawerMenu(requireActivity(), postDrawerMenus.drawerMenu)
-        sharedViewModel.bottomDrawerManager.registerNavigationDrawerMenu(requireActivity(), postDrawerMenus.adminDrawerMenu)
-        sharedViewModel.bottomDrawerManager.registerNavigationDrawerMenu(requireActivity(), postDrawerMenus.creatorDrawerMenu)
-        sharedViewModel.bottomDrawerManager.registerNavigationDrawerMenu(requireActivity(), commentDrawerMenus.drawerMenu)
-        sharedViewModel.bottomDrawerManager.registerNavigationDrawerMenu(requireActivity(), commentDrawerMenus.adminDrawerMenu)
-        sharedViewModel.bottomDrawerManager.registerNavigationDrawerMenu(requireActivity(), commentDrawerMenus.creatorDrawerMenu)
+        sharedViewModel.bottomDrawerManager.registerNavigationDrawerMenu(
+            requireActivity(),
+            postDrawerMenus.drawerMenu
+        )
+        sharedViewModel.bottomDrawerManager.registerNavigationDrawerMenu(
+            requireActivity(),
+            postDrawerMenus.adminDrawerMenu
+        )
+        sharedViewModel.bottomDrawerManager.registerNavigationDrawerMenu(
+            requireActivity(),
+            postDrawerMenus.creatorDrawerMenu
+        )
+        sharedViewModel.bottomDrawerManager.registerNavigationDrawerMenu(
+            requireActivity(),
+            commentDrawerMenus.drawerMenu
+        )
+        sharedViewModel.bottomDrawerManager.registerNavigationDrawerMenu(
+            requireActivity(),
+            commentDrawerMenus.adminDrawerMenu
+        )
+        sharedViewModel.bottomDrawerManager.registerNavigationDrawerMenu(
+            requireActivity(),
+            commentDrawerMenus.creatorDrawerMenu
+        )
     }
 
     override fun registerListeners() {
@@ -126,14 +165,17 @@ class CommentsFragment : AppFragment() {
             viewModel.userPost.value?.let {
                 val isGroupAdmin: Boolean = viewModel.groupData.value?.isAdmin ?: false
                 editPostDialog.initialInput = UpdatePostInput(it.remoteId, it.content)
-                val drawerMenu = if (it.isCreator) postDrawerMenus.creatorDrawerMenu else if (isGroupAdmin) postDrawerMenus.adminDrawerMenu else postDrawerMenus.drawerMenu
+                val drawerMenu =
+                    if (it.isCreator) postDrawerMenus.creatorDrawerMenu else if (isGroupAdmin) postDrawerMenus.adminDrawerMenu else postDrawerMenus.drawerMenu
                 sharedViewModel.bottomDrawerManager.openDrawer(drawerMenu) {
                     putString(getString(R.string.post_remote_id), it.remoteId)
                 }
             }
         }
-        binding.postHeader.upVoteListener = ClickListener<PostDTO> { viewModel.votePost(getVoteInput(it, VoteState.UP_VOTED)) }
-        binding.postHeader.downVoteListener = ClickListener<PostDTO> { viewModel.votePost(getVoteInput(it, VoteState.DOWN_VOTED)) }
+        binding.postHeader.upVoteListener =
+            ClickListener<PostDTO> { viewModel.votePost(getVoteInput(it, VoteState.UP_VOTED)) }
+        binding.postHeader.downVoteListener =
+            ClickListener<PostDTO> { viewModel.votePost(getVoteInput(it, VoteState.DOWN_VOTED)) }
         binding.postHeader.clickListener = ClickListener<PostDTO> {
             createCommentDialog.initialInput = CreateCommentInput(null, "", it.posterName)
             sharedViewModel.dialogFormFragmentManager.openDialogForm(createCommentDialog.dialogFragmentTag)
@@ -154,7 +196,8 @@ class CommentsFragment : AppFragment() {
         viewModel.shouldReloadAdapter.observe(viewLifecycleOwner) {
             if (it) {
                 viewModel.commentsAdminPrivilege.value?.let { privilege ->
-                    binding.postComments.adapter = getCommentsAdapter(privilege.first == true || privilege.second == true)
+                    binding.postComments.adapter =
+                        getCommentsAdapter(privilege.first == true || privilege.second == true)
                 }
                 viewModel.onReloadAdapter()
             }
@@ -167,21 +210,38 @@ class CommentsFragment : AppFragment() {
 
     private fun getCommentsAdapter(isAdmin: Boolean): CommentsAdapter {
         fun getVoteInput(property: CommentDTO, targetVoteState: VoteState): UpdateCommentVoteInput {
-            val resultVoteState: VoteState = if (property.voteState == targetVoteState) VoteState.NONE else targetVoteState
+            val resultVoteState: VoteState =
+                if (property.voteState == targetVoteState) VoteState.NONE else targetVoteState
             val voteDelta = resultVoteState.value - property.voteState.value
             return UpdateCommentVoteInput(property.remoteId, resultVoteState, voteDelta)
         }
         return CommentsAdapter(
             context = requireContext(),
             replyClickListener = ClickListener {
-                createCommentDialog.initialInput = CreateCommentInput(it.remoteId, "", it.commenterName)
+                createCommentDialog.initialInput =
+                    CreateCommentInput(it.remoteId, "", it.commenterName)
                 sharedViewModel.dialogFormFragmentManager.openDialogForm(createCommentDialog.dialogFragmentTag)
             },
-            upVoteClickListener = ClickListener { viewModel.voteComment(getVoteInput(it, VoteState.UP_VOTED)) },
-            downVoteClickListener = ClickListener { viewModel.voteComment(getVoteInput(it, VoteState.DOWN_VOTED)) },
+            upVoteClickListener = ClickListener {
+                viewModel.voteComment(
+                    getVoteInput(
+                        it,
+                        VoteState.UP_VOTED
+                    )
+                )
+            },
+            downVoteClickListener = ClickListener {
+                viewModel.voteComment(
+                    getVoteInput(
+                        it,
+                        VoteState.DOWN_VOTED
+                    )
+                )
+            },
             commentMenuClickListener = ClickListener {
                 editCommentDialog.initialInput = UpdateCommentInput(it.remoteId, it.content)
-                val drawerMenu = if (it.isCreator) commentDrawerMenus.creatorDrawerMenu else if (isAdmin) commentDrawerMenus.adminDrawerMenu else commentDrawerMenus.drawerMenu
+                val drawerMenu =
+                    if (it.isCreator) commentDrawerMenus.creatorDrawerMenu else if (isAdmin) commentDrawerMenus.adminDrawerMenu else commentDrawerMenus.drawerMenu
                 sharedViewModel.bottomDrawerManager.openDrawer(drawerMenu) {
                     putString(getString(R.string.comment_remote_id), it.remoteId)
                 }
@@ -190,7 +250,8 @@ class CommentsFragment : AppFragment() {
     }
 
     private fun getVoteInput(property: PostDTO, targetVoteState: VoteState): UpdatePostVoteInput {
-        val resultVoteState: VoteState = if (property.voteState == targetVoteState) VoteState.NONE else targetVoteState
+        val resultVoteState: VoteState =
+            if (property.voteState == targetVoteState) VoteState.NONE else targetVoteState
         val voteDelta = resultVoteState.value - property.voteState.value
         return UpdatePostVoteInput(property.remoteId, resultVoteState, voteDelta)
     }

@@ -120,22 +120,28 @@ class MainActivityViewModel @Inject constructor(
     }
 
     private fun listenToSocketEvents() {
-        socketComponent.addEvent(SOCKET_CHAT_READ_EVENT, SocketEventListener<ChatReadMessage> { data ->
-            viewModelScope.launch { chatRepository.updateChatParticipantReadTime(data) }
-        })
-        socketComponent.addEvent(SOCKET_CHAT_NEW_MESSAGE_EVENT, SocketEventListener<NewEntitiesMessage> { data ->
-            viewModelScope.launch {
-                chatRepository.retrieveNewChatLogs(data.remoteIds)
-                chatRepository.getChatLogsAppNotifications(data.remoteIds)?.forEach {
-                    notificationComponent.sendChatNotification(it)
+        socketComponent.addEvent(
+            SOCKET_CHAT_READ_EVENT,
+            SocketEventListener<ChatReadMessage> { data ->
+                viewModelScope.launch { chatRepository.updateChatParticipantReadTime(data) }
+            })
+        socketComponent.addEvent(
+            SOCKET_CHAT_NEW_MESSAGE_EVENT,
+            SocketEventListener<NewEntitiesMessage> { data ->
+                viewModelScope.launch {
+                    chatRepository.retrieveNewChatLogs(data.remoteIds)
+                    chatRepository.getChatLogsAppNotifications(data.remoteIds)?.forEach {
+                        notificationComponent.sendChatNotification(it)
+                    }
                 }
-            }
-        })
-        socketComponent.addEvent(SOCKET_CHAT_CHANGED_EVENT,SocketEventListener<NewEntitiesMessage> { data ->
-            viewModelScope.launch {
-                chatRepository.retrieveNewChatNotifications(data.remoteIds)
-            }
-        })
+            })
+        socketComponent.addEvent(
+            SOCKET_CHAT_CHANGED_EVENT,
+            SocketEventListener<NewEntitiesMessage> { data ->
+                viewModelScope.launch {
+                    chatRepository.retrieveNewChatNotifications(data.remoteIds)
+                }
+            })
     }
 
     fun disconnectSocket() = viewModelScope.launch {

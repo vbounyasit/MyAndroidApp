@@ -26,21 +26,27 @@ class ChatLogsViewModel @Inject constructor(
 
     val chatRemoteId: LiveData<String> = _chatRemoteId
 
-    private val chatParticipants: LiveData<Pair<String, List<ChatParticipantDTO>>> = _chatRemoteId.switchMap { remoteId ->
-        chatRepository.getChatParticipants(remoteId).asLiveData().map { Pair(remoteId, it) }
-    }
+    private val chatParticipants: LiveData<Pair<String, List<ChatParticipantDTO>>> =
+        _chatRemoteId.switchMap { remoteId ->
+            chatRepository.getChatParticipants(remoteId).asLiveData().map { Pair(remoteId, it) }
+        }
 
     val chatBubbles: LiveData<List<ChatBubbleDTO>> = chatParticipants.switchMap {
         val (remoteId, participants) = it
         chatRepository.getChatBubbles(remoteId).map { bubbles ->
             bubbles.mapIndexed { index, bubble ->
                 if (bubble is ChatLogDTO) {
-                    val nextBubbleTime = if (index < bubbles.size - 1) bubbles[index + 1].creationTimeStamp else null
+                    val nextBubbleTime =
+                        if (index < bubbles.size - 1) bubbles[index + 1].creationTimeStamp else null
                     bubble.copy(
                         readBy = participants
                             .filter { participant ->
-                                val hasReadNext = participant.lastReadTime?.let { nextBubbleTime?.let { participant.lastReadTime > nextBubbleTime } } ?: false
-                                val hasRead = participant.lastReadTime?.let { readTime -> readTime > bubble.creationTimeStamp } ?: false
+                                val hasReadNext =
+                                    participant.lastReadTime?.let { nextBubbleTime?.let { participant.lastReadTime > nextBubbleTime } }
+                                        ?: false
+                                val hasRead =
+                                    participant.lastReadTime?.let { readTime -> readTime > bubble.creationTimeStamp }
+                                        ?: false
                                 hasRead && !hasReadNext
                             }
                     )
@@ -53,7 +59,11 @@ class ChatLogsViewModel @Inject constructor(
         chatRemoteId.value?.let { remoteId ->
             viewModelScope.launch {
                 chatRepository.createChatLog(CreateChatLogInput(remoteId, content))
-                workManager.launchNetworkBackgroundTask<CreateChatLogsWorker>(UniqueBackgroundTask(CREATE_CHAT_LOGS_WORK_NAME))
+                workManager.launchNetworkBackgroundTask<CreateChatLogsWorker>(
+                    UniqueBackgroundTask(
+                        CREATE_CHAT_LOGS_WORK_NAME
+                    )
+                )
             }
         }
     }

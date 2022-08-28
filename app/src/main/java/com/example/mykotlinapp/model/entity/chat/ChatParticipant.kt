@@ -3,7 +3,10 @@ package com.example.mykotlinapp.model.entity.chat
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 
-@Entity(tableName = "chat_participants", primaryKeys = ["participant_remote_id", "participant_chat_remote_id"])
+@Entity(
+    tableName = "chat_participants",
+    primaryKeys = ["participant_remote_id", "participant_chat_remote_id"]
+)
 data class ChatParticipant(
     @ColumnInfo(name = "participant_remote_id")
     val remoteId: String,

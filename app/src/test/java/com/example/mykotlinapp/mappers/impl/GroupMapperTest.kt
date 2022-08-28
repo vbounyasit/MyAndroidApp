@@ -39,19 +39,31 @@ class GroupMapperTest : StringSpec({
 
     "GroupMapper.toDTO should return the correct data" {
         //Given
-        val entity = getGroupProperty("remoteId1").copy(groupName = "name1, name2", groupPicture = "picture1, picture2, picture3")
+        val entity = getGroupProperty("remoteId1").copy(
+            groupName = "name1, name2",
+            groupPicture = "picture1, picture2, picture3"
+        )
         //When
         val groupDTO = GroupMapper.toDTO(context)(entity)
         //Then
-        groupDTO.toResult() shouldBe Result("remoteId1", defaultGroupName, listOf("picture1", "picture2", "picture3"))
+        groupDTO.toResult() shouldBe Result(
+            "remoteId1",
+            defaultGroupName,
+            listOf("picture1", "picture2", "picture3")
+        )
     }
 
     "GroupMapper.toPostGroupData should return the correct data" {
         //Given
-        val entity = getGroupProperty("remoteId1").copy(groupPicture = "picture1, picture2, picture3")
+        val entity =
+            getGroupProperty("remoteId1").copy(groupPicture = "picture1, picture2, picture3")
         //When
         val postGroupData = GroupMapper.toPostGroupData(context)(entity)
         //Then
-        postGroupData shouldBe PostGroupData(entity.groupName, listOf("picture1", "picture2", "picture3"), entity.isAdmin)
+        postGroupData shouldBe PostGroupData(
+            entity.groupName,
+            listOf("picture1", "picture2", "picture3"),
+            entity.isAdmin
+        )
     }
 })

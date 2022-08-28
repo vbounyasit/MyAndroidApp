@@ -23,7 +23,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 
 @AndroidEntryPoint
-class ChatCreationDialogFragment(confirmFunction: (CreateChatInput) -> Job) : DialogFormFragment<CreateChatInput>(confirmFunction) {
+class ChatCreationDialogFragment(confirmFunction: (CreateChatInput) -> Job) :
+    DialogFormFragment<CreateChatInput>(confirmFunction) {
 
     private lateinit var binding: DialogCreateChatBinding
     private val viewModel by viewModels<ChatCreationViewModel>()
@@ -44,14 +45,27 @@ class ChatCreationDialogFragment(confirmFunction: (CreateChatInput) -> Job) : Di
                 if (selectedContacts.size > 1 || viewModel.onMessagePage.value == false)
                     viewModel.updateContactSelection(it, false)
                 else
-                    Toast.makeText(requireContext(), R.string.error_no_participants_selected, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        R.string.error_no_participants_selected,
+                        Toast.LENGTH_SHORT
+                    ).show()
             }
         })
 
     private val contactSelectorAdapter =
-        ContactSelectorListAdapter { contact, selected -> viewModel.updateContactSelection(contact, selected) }
+        ContactSelectorListAdapter { contact, selected ->
+            viewModel.updateContactSelection(
+                contact,
+                selected
+            )
+        }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = DialogCreateChatBinding.inflate(inflater)
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
@@ -66,7 +80,11 @@ class ChatCreationDialogFragment(confirmFunction: (CreateChatInput) -> Job) : Di
     private fun registerListeners() {
         binding.chatCreationDialogOptions.dialogSubmitButton.setOnClickListener {
             if (!viewModel.hasSelectedContacts())
-                Toast.makeText(requireContext(), R.string.error_no_participants_selected, Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    R.string.error_no_participants_selected,
+                    Toast.LENGTH_SHORT
+                ).show()
             else
                 viewModel.toggleOnMessagePage()
         }

@@ -24,7 +24,11 @@ class PostCreationSheetFragment(
 
     override val dialogFragmentTag: String = "PostCreationDialogFragment"
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = DialogCreatePostBinding.inflate(inflater)
         binding.postCreationClose.setOnClickListener { dismiss() }
         binding.postCreationSubmit.setOnClickListener { getFormValidator().performSubmitAction() }
@@ -37,7 +41,8 @@ class PostCreationSheetFragment(
             requireContext(),
             binding.root,
             CreatePostInput(content.getContent()),
-            TextInputFieldValidator(content,
+            TextInputFieldValidator(
+                content,
                 ValueRequiredValidator,
                 MaxLengthValidator(resources.getInteger(R.integer.post_max_length))
             ),

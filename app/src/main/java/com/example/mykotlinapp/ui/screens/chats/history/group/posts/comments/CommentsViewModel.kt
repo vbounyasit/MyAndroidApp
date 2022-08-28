@@ -54,7 +54,8 @@ class CommentsViewModel @Inject constructor(
         commentRepository.getUserPostComments(it).asLiveData()
     }
 
-    val removeCommentsWorkInfo: LiveData<List<WorkInfo>> = workManager.getWorkInfosForUniqueWorkLiveData(REMOVE_COMMENTS_WORK_NAME)
+    val removeCommentsWorkInfo: LiveData<List<WorkInfo>> =
+        workManager.getWorkInfosForUniqueWorkLiveData(REMOVE_COMMENTS_WORK_NAME)
 
     private val isGroupAdmin: LiveData<Boolean> = _groupRemoteId.switchMap {
         liveData { emit(groupRepository.isGroupAdmin(it)) }
@@ -69,10 +70,14 @@ class CommentsViewModel @Inject constructor(
     val commentsAdminPrivilege = run {
         val mediatorLiveData = MediatorLiveData<Pair<Boolean?, Boolean?>>()
         mediatorLiveData.addSource(isGroupAdmin) {
-            it?.let { isAdmin -> mediatorLiveData.value = Pair(isAdmin, mediatorLiveData.value?.second) }
+            it?.let { isAdmin ->
+                mediatorLiveData.value = Pair(isAdmin, mediatorLiveData.value?.second)
+            }
         }
         mediatorLiveData.addSource(isPostCreator) {
-            it?.let { isCreator -> mediatorLiveData.value = Pair(mediatorLiveData.value?.first, isCreator) }
+            it?.let { isCreator ->
+                mediatorLiveData.value = Pair(mediatorLiveData.value?.first, isCreator)
+            }
         }
         mediatorLiveData
     }
@@ -84,21 +89,33 @@ class CommentsViewModel @Inject constructor(
     fun editPost(updatePostInput: UpdatePostInput): Job {
         return viewModelScope.launch {
             postRepository.updatePost(updatePostInput)
-            workManager.launchNetworkBackgroundTask<UpdatePostsWorker>(UniqueBackgroundTask(UPDATE_POSTS_WORK_NAME))
+            workManager.launchNetworkBackgroundTask<UpdatePostsWorker>(
+                UniqueBackgroundTask(
+                    UPDATE_POSTS_WORK_NAME
+                )
+            )
         }
     }
 
     fun votePost(updatePostVoteInput: UpdatePostVoteInput) {
         viewModelScope.launch {
             postRepository.updatePostVoteState(updatePostVoteInput)
-            workManager.launchNetworkBackgroundTask<UpdatePostVoteStatesWorker>(UniqueBackgroundTask(UPDATE_POST_VOTE_STATES_WORK_NAME), initialDelay = Duration.ofMinutes(3))
+            workManager.launchNetworkBackgroundTask<UpdatePostVoteStatesWorker>(
+                UniqueBackgroundTask(
+                    UPDATE_POST_VOTE_STATES_WORK_NAME
+                ), initialDelay = Duration.ofMinutes(3)
+            )
         }
     }
 
     fun deletePost(remoteId: String) {
         viewModelScope.launch {
             postRepository.submitPostForDeletion(remoteId)
-            workManager.launchNetworkBackgroundTask<RemovePostsWorker>(UniqueBackgroundTask(REMOVE_POSTS_WORK_NAME), initialDelay = Duration.ofMinutes(1))
+            workManager.launchNetworkBackgroundTask<RemovePostsWorker>(
+                UniqueBackgroundTask(
+                    REMOVE_POSTS_WORK_NAME
+                ), initialDelay = Duration.ofMinutes(1)
+            )
         }
     }
 
@@ -111,9 +128,24 @@ class CommentsViewModel @Inject constructor(
      * Comments
      */
 
-    fun createComment(groupRemoteId: String, postRemoteId: String, createCommentInput: CreateCommentInput): Job {
-        return submitHttpRequest({ commentRepository.sendCreateComment(groupRemoteId, postRemoteId, createCommentInput) }) {
-            submitHttpRequest({ commentRepository.retrieveCommentList(groupRemoteId, postRemoteId) }) {
+    fun createComment(
+        groupRemoteId: String,
+        postRemoteId: String,
+        createCommentInput: CreateCommentInput
+    ): Job {
+        return submitHttpRequest({
+            commentRepository.sendCreateComment(
+                groupRemoteId,
+                postRemoteId,
+                createCommentInput
+            )
+        }) {
+            submitHttpRequest({
+                commentRepository.retrieveCommentList(
+                    groupRemoteId,
+                    postRemoteId
+                )
+            }) {
                 reloadAdapter()
             }
         }
@@ -122,7 +154,11 @@ class CommentsViewModel @Inject constructor(
     fun editComment(updateCommentInput: UpdateCommentInput): Job {
         val result = viewModelScope.launch {
             commentRepository.updateComment(updateCommentInput)
-            workManager.launchNetworkBackgroundTask<UpdateCommentsWorker>(UniqueBackgroundTask(UPDATE_COMMENTS_WORK_NAME), initialDelay = Duration.ofMinutes(1))
+            workManager.launchNetworkBackgroundTask<UpdateCommentsWorker>(
+                UniqueBackgroundTask(
+                    UPDATE_COMMENTS_WORK_NAME
+                ), initialDelay = Duration.ofMinutes(1)
+            )
         }
         return result
     }
@@ -130,20 +166,32 @@ class CommentsViewModel @Inject constructor(
     fun voteComment(updateCommentVoteInput: UpdateCommentVoteInput) {
         viewModelScope.launch {
             commentRepository.updateCommentVoteState(updateCommentVoteInput)
-            workManager.launchNetworkBackgroundTask<UpdateCommentVoteStatesWorker>(UniqueBackgroundTask(UPDATE_COMMENT_VOTE_STATES_WORK_NAME), initialDelay = Duration.ofMinutes(3))
+            workManager.launchNetworkBackgroundTask<UpdateCommentVoteStatesWorker>(
+                UniqueBackgroundTask(UPDATE_COMMENT_VOTE_STATES_WORK_NAME),
+                initialDelay = Duration.ofMinutes(3)
+            )
         }
     }
 
     fun deleteComment(remoteId: String) {
         viewModelScope.launch {
             commentRepository.submitCommentForDeletion(remoteId)
-            workManager.launchNetworkBackgroundTask<RemoveCommentsWorker>(UniqueBackgroundTask(REMOVE_COMMENTS_WORK_NAME), initialDelay = Duration.ofMinutes(1))
+            workManager.launchNetworkBackgroundTask<RemoveCommentsWorker>(
+                UniqueBackgroundTask(
+                    REMOVE_COMMENTS_WORK_NAME
+                ), initialDelay = Duration.ofMinutes(1)
+            )
         }
     }
 
     fun onCommentsDeletion() {
         if (_groupRemoteId.value != null && _postRemoteId.value != null)
-            submitHttpRequest({ commentRepository.retrieveCommentList(_groupRemoteId.value!!, _postRemoteId.value!!) }) {
+            submitHttpRequest({
+                commentRepository.retrieveCommentList(
+                    _groupRemoteId.value!!,
+                    _postRemoteId.value!!
+                )
+            }) {
                 reloadAdapter()
             }
     }

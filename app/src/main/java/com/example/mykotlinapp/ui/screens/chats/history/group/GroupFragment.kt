@@ -8,11 +8,11 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.mykotlinapp.R
-import com.example.mykotlinapp.ui.activities.MainActivityViewModel
 import com.example.mykotlinapp.databinding.FragmentTabGroupPageBinding
 import com.example.mykotlinapp.model.dto.inputs.form.chat.UpdateGroupInput
 import com.example.mykotlinapp.ui.AppFragment
 import com.example.mykotlinapp.ui.WithViewPager
+import com.example.mykotlinapp.ui.activities.MainActivityViewModel
 import com.example.mykotlinapp.ui.components.view_pager.AppPagerAdapter
 import com.example.mykotlinapp.ui.components.view_pager.TabItem
 import com.example.mykotlinapp.ui.screens.chats.ChatParticipantAdapter
@@ -31,7 +31,13 @@ class GroupFragment : AppFragment(), WithViewPager {
     private lateinit var binding: FragmentTabGroupPageBinding
     private lateinit var pagerAdapter: AppPagerAdapter
 
-    private val participantsAdapter by lazy { ChatParticipantAdapter(requireContext().resources.getDimension(R.dimen.group_participant_pic_size).toInt()) }
+    private val participantsAdapter by lazy {
+        ChatParticipantAdapter(
+            requireContext().resources.getDimension(
+                R.dimen.group_participant_pic_size
+            ).toInt()
+        )
+    }
 
     private val groupEditDialog by lazy {
         GroupEditDialogFragment(
@@ -97,13 +103,19 @@ class GroupFragment : AppFragment(), WithViewPager {
         }
         viewModel.groupWindow.observe(viewLifecycleOwner) {
             it?.let { groupDTO ->
-                groupEditDialog.initialInput = UpdateGroupInput(groupDTO.remoteId, groupDTO.name, groupDTO.description)
+                groupEditDialog.initialInput =
+                    UpdateGroupInput(groupDTO.remoteId, groupDTO.name, groupDTO.description)
             }
         }
         viewModel.navigateToCreatedPostId.observe(viewLifecycleOwner) {
             it?.let { postRemoteId ->
                 viewModel.groupRemoteId.value?.let { groupRemoteId ->
-                    findNavController().navigate(ChatWindowFragmentDirections.actionGroupChatFragmentToPostFragment(postRemoteId, groupRemoteId))
+                    findNavController().navigate(
+                        ChatWindowFragmentDirections.actionGroupChatFragmentToPostFragment(
+                            postRemoteId,
+                            groupRemoteId
+                        )
+                    )
                     viewModel.onNavigatedToCreatedPost()
                 }
             }
@@ -114,8 +126,14 @@ class GroupFragment : AppFragment(), WithViewPager {
         return object : AppPagerAdapter(this) {
             override val tabItems: List<TabItem>
                 get() = listOf(
-                    TabItem(titleResource = R.string.posts_label, fragment = attach(GroupPostsFragment(), bundle)),
-                    TabItem(titleResource = R.string.event_label, fragment = attach(GroupEventsFragment(), bundle))
+                    TabItem(
+                        titleResource = R.string.posts_label,
+                        fragment = attach(GroupPostsFragment(), bundle)
+                    ),
+                    TabItem(
+                        titleResource = R.string.event_label,
+                        fragment = attach(GroupEventsFragment(), bundle)
+                    )
                 )
         }
     }

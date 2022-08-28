@@ -22,7 +22,12 @@ class CommentMapperTest : StringSpec({
     mockkObject(Utils)
     every { Utils.toTimeAgo(any(), any(), any()) } returns "Now"
 
-    fun getUserComment(remoteId: String, depthLevel: Int, isLast: Boolean, parentCommentId: String? = null) = UserComment(
+    fun getUserComment(
+        remoteId: String,
+        depthLevel: Int,
+        isLast: Boolean,
+        parentCommentId: String? = null
+    ) = UserComment(
         remoteId,
         "parent_post_$remoteId",
         "parent_group_$remoteId",

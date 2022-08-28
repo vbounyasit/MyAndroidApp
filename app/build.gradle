@@ -93,11 +93,12 @@ dependencies {
     /**
      * Tests
      */
-    //Mockk
+    // Mockk
     testImplementation "io.mockk:mockk:$version_mockk"
     testImplementation "io.mockk:mockk-agent-jvm:$version_mockk"
 
-    // Dependencies for local unit tests
+    // Coroutines
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutine_version"
 
     // AndroidX Test - JVM testing
     testImplementation "io.kotest:kotest-runner-junit5:$version_kotest"

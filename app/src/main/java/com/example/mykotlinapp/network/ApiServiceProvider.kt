@@ -10,7 +10,7 @@ object ApiServiceProvider {
 
     const val BASE_URL = "http://10.0.2.2:3000"
 
-    fun getRetrofitService(moshi: Moshi): ApiService {
+    inline fun <reified T : ApiService> getRetrofitService(moshi: Moshi): T {
 
         val okHttpClient = OkHttpClient()
             .newBuilder()
@@ -30,7 +30,7 @@ object ApiServiceProvider {
             .client(okHttpClient)
             .build()
 
-        return retrofit.create(ApiService::class.java)
+        return retrofit.create(T::class.java)
     }
 
 

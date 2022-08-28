@@ -57,7 +57,10 @@ class BottomDrawerManager {
      * @param activity The activity lifecycle owner
      * @param bottomDrawerMenu a BottomDrawerMenu containing information on the drawer's menu
      */
-    fun registerNavigationDrawerMenu(activity: FragmentActivity, bottomDrawerMenu: BottomDrawerMenu) {
+    fun registerNavigationDrawerMenu(
+        activity: FragmentActivity,
+        bottomDrawerMenu: BottomDrawerMenu
+    ) {
         bottomDrawerMenuMenuMap[bottomDrawerMenu.tag] = bottomDrawerMenu
         _navigationDrawerMenuItemSelected.removeObservers(activity)
         _navigationDrawerMenuItemSelected.observe(activity) {

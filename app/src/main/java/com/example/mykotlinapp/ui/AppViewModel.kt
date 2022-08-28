@@ -31,7 +31,10 @@ open class AppViewModel : ViewModel() {
         return submitHttpRequest(action) {}
     }
 
-    protected inline fun <T> submitHttpRequest(noinline action: suspend () -> Result<T>, crossinline handleResult: (T) -> Unit): Job {
+    protected inline fun <T> submitHttpRequest(
+        noinline action: suspend () -> Result<T>,
+        crossinline handleResult: (T) -> Unit
+    ): Job {
         setHttpRequestState(ApiRequestState.LOADING)
         return viewModelScope.launch {
             with(
@@ -55,7 +58,11 @@ open class AppViewModel : ViewModel() {
 
     companion object {
 
-        fun getWorkRequest(builder: WorkRequest.Builder<*, out WorkRequest>, inputData: Data?, initialDelay: Duration?): WorkRequest {
+        fun getWorkRequest(
+            builder: WorkRequest.Builder<*, out WorkRequest>,
+            inputData: Data?,
+            initialDelay: Duration?
+        ): WorkRequest {
             val constraints = Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build()
@@ -66,18 +73,37 @@ open class AppViewModel : ViewModel() {
             return requestBuilder.build()
         }
 
-        inline fun <reified T : ListenableWorker> WorkManager.launchNetworkBackgroundTask(workConfig: BackgroundWorkConfig, inputData: Data? = null, initialDelay: Duration? = null) {
+        inline fun <reified T : ListenableWorker> WorkManager.launchNetworkBackgroundTask(
+            workConfig: BackgroundWorkConfig,
+            inputData: Data? = null,
+            initialDelay: Duration? = null
+        ) {
             when (workConfig) {
                 is UniquePeriodicBackgroundTask -> run {
-                    val workRequest = getWorkRequest(PeriodicWorkRequestBuilder<T>(workConfig.repeatInterval, workConfig.repeatIntervalTimeUnit), inputData, initialDelay)
-                    this.enqueueUniquePeriodicWork(workConfig.workName, workConfig.existingWorkPolicy, workRequest as PeriodicWorkRequest)
+                    val workRequest = getWorkRequest(
+                        PeriodicWorkRequestBuilder<T>(
+                            workConfig.repeatInterval,
+                            workConfig.repeatIntervalTimeUnit
+                        ), inputData, initialDelay
+                    )
+                    this.enqueueUniquePeriodicWork(
+                        workConfig.workName,
+                        workConfig.existingWorkPolicy,
+                        workRequest as PeriodicWorkRequest
+                    )
                 }
                 is UniqueBackgroundTask -> run {
-                    val workRequest = getWorkRequest(OneTimeWorkRequestBuilder<T>(), inputData, initialDelay)
-                    this.beginUniqueWork(workConfig.workName, workConfig.existingWorkPolicy, workRequest as OneTimeWorkRequest).enqueue()
+                    val workRequest =
+                        getWorkRequest(OneTimeWorkRequestBuilder<T>(), inputData, initialDelay)
+                    this.beginUniqueWork(
+                        workConfig.workName,
+                        workConfig.existingWorkPolicy,
+                        workRequest as OneTimeWorkRequest
+                    ).enqueue()
                 }
                 is RegularBackgroundTask -> run {
-                    val workRequest = getWorkRequest(OneTimeWorkRequestBuilder<T>(), inputData, initialDelay)
+                    val workRequest =
+                        getWorkRequest(OneTimeWorkRequestBuilder<T>(), inputData, initialDelay)
                     this.beginWith(workRequest as OneTimeWorkRequest).enqueue()
                 }
             }

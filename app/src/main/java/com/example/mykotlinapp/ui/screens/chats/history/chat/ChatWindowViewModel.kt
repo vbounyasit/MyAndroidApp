@@ -34,7 +34,14 @@ class ChatWindowViewModel @Inject constructor(
     val chatMetaData: LiveData<ChatMetaData?> = _chatRemoteId.switchMap { remoteId ->
         liveData {
             val chatData = chatRepository.getChat(remoteId)
-            emit(chatData?.let { ChatMetaData(it.remoteId, it.groupRemoteId, it.isAdmin, it.profilePictures.size > 1) })
+            emit(chatData?.let {
+                ChatMetaData(
+                    it.remoteId,
+                    it.groupRemoteId,
+                    it.isAdmin,
+                    it.profilePictures.size > 1
+                )
+            })
         }
     }
 
@@ -43,19 +50,28 @@ class ChatWindowViewModel @Inject constructor(
     }
 
     val unreadPostsCount: LiveData<Int> = groupRemoteId.switchMap { remoteId ->
-        remoteId?.let { groupRepository.getUnreadPostsCount(it).asLiveData() } ?: liveData { emit(0) }
+        remoteId?.let { groupRepository.getUnreadPostsCount(it).asLiveData() }
+            ?: liveData { emit(0) }
     }
 
     fun updateChatRemoteId(chatRemoteId: String) {
         _chatRemoteId.value = chatRemoteId
     }
 
-    fun retrieveChatData(chatRemoteId: String) = submitHttpRequest { chatRepository.retrieveChatData(chatRemoteId) }
+    fun retrieveChatData(chatRemoteId: String) =
+        submitHttpRequest { chatRepository.retrieveChatData(chatRemoteId) }
 
-    fun retrieveChatLogs(chatRemoteId: String) = submitHttpRequest { chatRepository.retrieveChatBubbles(chatRemoteId) }
+    fun retrieveChatLogs(chatRemoteId: String) =
+        submitHttpRequest { chatRepository.retrieveChatBubbles(chatRemoteId) }
 
-    fun retrievePosts(groupRemoteId: String) = submitHttpRequest { postRepository.retrievePostList(groupRemoteId) }
+    fun retrievePosts(groupRemoteId: String) =
+        submitHttpRequest { postRepository.retrievePostList(groupRemoteId) }
 
-    data class ChatMetaData(val remoteId: String, val groupRemoteId: String, val isAdmin: Boolean, val isGroupChat: Boolean)
+    data class ChatMetaData(
+        val remoteId: String,
+        val groupRemoteId: String,
+        val isAdmin: Boolean,
+        val isGroupChat: Boolean
+    )
 
 }

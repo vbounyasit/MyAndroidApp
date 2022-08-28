@@ -4,10 +4,6 @@ import android.content.Context
 import com.example.mykotlinapp.model.AppDatabase
 import com.example.mykotlinapp.model.dao.*
 import com.example.mykotlinapp.model.mappers.impl.user.UserSettingMapper
-import com.example.mykotlinapp.network.ApiService
-import com.example.mykotlinapp.network.ApiServiceProvider
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,6 +14,18 @@ import kotlinx.coroutines.CoroutineDispatcher
 @InstallIn(SingletonComponent::class)
 @Module
 class DataModule {
+
+    /**
+     * Database
+     */
+
+    @Provides
+    fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase =
+        AppDatabase.getInstance(context)
+
+    /**
+     * DAO
+     */
 
     @Provides
     fun provideUserDao(appDatabase: AppDatabase): UserDao = appDatabase.userDao
@@ -38,27 +46,17 @@ class DataModule {
     fun provideCommentDao(appDatabase: AppDatabase): CommentDao = appDatabase.commentDao
 
     /**
-     * Database
-     */
-
-    @Provides
-    fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase = AppDatabase.getInstance(context)
-
-    /**
-     * Network
-     */
-
-    @Provides
-    fun provideApiService(moshi: Moshi): ApiService = ApiServiceProvider.getRetrofitService(moshi)
-
-    /**
      * Preferences
      */
 
     @Provides
-    fun provideSharedPreferencesDao(@ApplicationContext context: Context, @Qualifiers.IoDispatcher dispatcher: CoroutineDispatcher): SharedPreferenceDao = SharedPreferenceDao(context, dispatcher)
+    fun provideSharedPreferencesDao(
+        @ApplicationContext context: Context,
+        @Qualifiers.IoDispatcher dispatcher: CoroutineDispatcher
+    ): SharedPreferenceDao = SharedPreferenceDao(context, dispatcher)
 
     @Provides
-    fun provideUserSettingsMapper(@ApplicationContext context: Context): UserSettingMapper = UserSettingMapper(context)
+    fun provideUserSettingsMapper(@ApplicationContext context: Context): UserSettingMapper =
+        UserSettingMapper(context)
 
 }

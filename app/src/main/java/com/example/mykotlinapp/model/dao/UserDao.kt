@@ -33,10 +33,10 @@ interface UserDao {
     suspend fun getContact(remoteId: String): UserContact?
 
     @Query("SELECT * from user_contacts WHERE contact_sync_state = :syncState")
-    suspend fun getContactsToDelete(syncState: SyncState = SyncState.PENDING_REMOVAL): List<UserContact>
+    suspend fun getContactsBySyncState(syncState: SyncState): List<UserContact>
 
     @Query("SELECT contact_remote_id from user_contacts WHERE contact_sync_state != :syncState")
-    suspend fun getPendingContacts(syncState: SyncState = SyncState.UP_TO_DATE): List<String>
+    suspend fun getContactIdsByNotSyncState(syncState: SyncState): List<String>
 
     /**
      * Update

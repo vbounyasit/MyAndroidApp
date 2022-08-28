@@ -8,7 +8,8 @@ import com.example.mykotlinapp.ui.components.form.ValidationErrorData
 import com.example.mykotlinapp.ui.components.form.validators.RadioGroupValidator
 import com.example.mykotlinapp.ui.components.form.validators.ValidatorData
 
-class RadioGroupFieldValidator(val context: Context, radioGroup: RadioGroup) : FieldValidator<RadioGroup>(radioGroup) {
+class RadioGroupFieldValidator(val context: Context, radioGroup: RadioGroup) :
+    FieldValidator<RadioGroup>(radioGroup) {
     override val validators: List<ValidatorData<RadioGroup>>
         get() = listOf(RadioGroupValidator("a Gender"))
     override val errorData: ValidationErrorData

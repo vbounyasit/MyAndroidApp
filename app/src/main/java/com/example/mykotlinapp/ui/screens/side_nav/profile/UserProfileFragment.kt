@@ -9,10 +9,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.example.mykotlinapp.R
-import com.example.mykotlinapp.ui.activities.MainActivityViewModel
 import com.example.mykotlinapp.databinding.FragmentUserProfilePageBinding
 import com.example.mykotlinapp.model.dto.inputs.form.user.UpdateUserInput
 import com.example.mykotlinapp.ui.AppFragment
+import com.example.mykotlinapp.ui.activities.MainActivityViewModel
 import com.example.mykotlinapp.ui.components.drawer.BottomDrawerMenu
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -24,7 +24,11 @@ class UserProfileFragment : AppFragment() {
 
     private lateinit var binding: FragmentUserProfilePageBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentUserProfilePageBinding.inflate(inflater)
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
@@ -39,7 +43,10 @@ class UserProfileFragment : AppFragment() {
 
     override fun registerUIComponents() {
         super.registerUIComponents()
-        sharedViewModel.bottomDrawerManager.registerNavigationDrawerMenu(requireActivity(), bottomDrawerMenu)
+        sharedViewModel.bottomDrawerManager.registerNavigationDrawerMenu(
+            requireActivity(),
+            bottomDrawerMenu
+        )
         sharedViewModel.dialogFormFragmentManager.registerDialogForm(userProfileEditDialog)
     }
 
@@ -50,7 +57,11 @@ class UserProfileFragment : AppFragment() {
             sharedViewModel.bottomDrawerManager.openDrawer(bottomDrawerMenu)
         }
         binding.userProfileEditButton.setOnClickListener {
-            viewModel.userData.value?.let { sharedViewModel.dialogFormFragmentManager.openDialogForm(userProfileEditDialog.dialogFragmentTag) }
+            viewModel.userData.value?.let {
+                sharedViewModel.dialogFormFragmentManager.openDialogForm(
+                    userProfileEditDialog.dialogFragmentTag
+                )
+            }
         }
     }
 
@@ -88,11 +99,12 @@ class UserProfileFragment : AppFragment() {
         }
     }
 
-    private val selectImageFromGalleryResult = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-        uri?.let {
+    private val selectImageFromGalleryResult =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            uri?.let {
 
+            }
         }
-    }
 
     private fun selectImageFromGallery() = selectImageFromGalleryResult.launch("image/*")
 

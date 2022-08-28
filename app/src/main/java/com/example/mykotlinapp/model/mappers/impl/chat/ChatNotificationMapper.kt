@@ -7,7 +7,8 @@ import com.example.mykotlinapp.model.mappers.DTOMapper
 import com.example.mykotlinapp.model.mappers.NetworkResponseMapper
 import com.example.mykotlinapp.network.dto.responses.chat.ChatNotificationResponse
 
-object ChatNotificationMapper : DTOMapper<ChatNotification, ChatNotificationDTO>, NetworkResponseMapper<ChatNotificationResponse, ChatNotification> {
+object ChatNotificationMapper : DTOMapper<ChatNotification, ChatNotificationDTO>,
+    NetworkResponseMapper<ChatNotificationResponse, ChatNotification> {
     override fun toDTO(entity: ChatNotification): ChatNotificationDTO {
         return ChatNotificationDTO(
             entity.remoteId,

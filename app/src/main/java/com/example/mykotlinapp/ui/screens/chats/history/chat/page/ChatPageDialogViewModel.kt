@@ -39,6 +39,10 @@ class ChatPageDialogViewModel @Inject constructor(
             builder.putString(WORK_CREATE_CONTACT_INPUT_KEY, remoteId)
             builder.build()
         }
-        workManager.launchNetworkBackgroundTask<CreateContactWorker>(BackgroundWorkConfig.UniqueBackgroundTask(CREATE_CONTACT_WORK_NAME), inputData)
+        workManager.launchNetworkBackgroundTask<CreateContactWorker>(
+            BackgroundWorkConfig.UniqueBackgroundTask(
+                CREATE_CONTACT_WORK_NAME
+            ), inputData
+        )
     }
 }

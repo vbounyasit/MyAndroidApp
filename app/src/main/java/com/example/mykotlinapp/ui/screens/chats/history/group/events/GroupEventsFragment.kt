@@ -17,7 +17,10 @@ class GroupEventsFragment : AppFragment() {
     private val viewModel by viewModels<GroupEventsViewModel>()
 
     private val adapter by lazy {
-        GroupEventsAdapter(ClickListener { viewModel.onEventClicked(it) }, requireContext().resources.getDimension(R.dimen.event_participant_pic_size).toInt())
+        GroupEventsAdapter(
+            ClickListener { viewModel.onEventClicked(it) },
+            requireContext().resources.getDimension(R.dimen.event_participant_pic_size).toInt()
+        )
     }
 
     override fun onCreateView(

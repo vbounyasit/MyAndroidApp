@@ -10,7 +10,10 @@ import kotlinx.coroutines.withContext
  */
 abstract class AppRepository {
 
-    suspend fun performAction(dispatcher: CoroutineDispatcher, action: suspend () -> Unit): Result<Unit> {
+    suspend fun performAction(
+        dispatcher: CoroutineDispatcher,
+        action: suspend () -> Unit
+    ): Result<Unit> {
         return withContext(dispatcher) {
             try {
                 Result.success(action())

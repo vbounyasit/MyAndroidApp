@@ -7,7 +7,8 @@ import com.example.mykotlinapp.model.mappers.InputUpdateMapper
 import com.example.mykotlinapp.model.mappers.NetworkRequestMapper
 import com.example.mykotlinapp.network.dto.requests.post.UpdatePostRequest
 
-object UpdatePostMapper : InputUpdateMapper<UpdatePostInput, UserPost>, NetworkRequestMapper<UserPost, UpdatePostRequest> {
+object UpdatePostMapper : InputUpdateMapper<UpdatePostInput, UserPost>,
+    NetworkRequestMapper<UserPost, UpdatePostRequest> {
     override fun toLocalUpdateWithInput(inputData: UpdatePostInput): (UserPost) -> UserPost {
         return { it.copy(content = inputData.content, syncState = SyncState.PENDING_UPDATE) }
     }

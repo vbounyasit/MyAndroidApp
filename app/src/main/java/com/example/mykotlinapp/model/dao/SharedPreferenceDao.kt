@@ -25,7 +25,8 @@ class SharedPreferenceDao(
     /**
      * @return The saved authenticated user remote id of empty string
      */
-    suspend fun getAuthUserRemoteId(): String? = getString(context.getString(R.string.user_remote_id_key))
+    suspend fun getAuthUserRemoteId(): String? =
+        getString(context.getString(R.string.user_remote_id_key))
 
     /**
      * @return The saved authentication token
@@ -37,25 +38,40 @@ class SharedPreferenceDao(
      */
     suspend fun getUserSettings(): UserSettingsPreference =
         withContext(dispatcher) {
-            val languageIndex = getDefaultSharedPreferences().getString(context.getString(R.string.language_key), null)
+            val languageIndex = getDefaultSharedPreferences().getString(
+                context.getString(R.string.language_key),
+                null
+            )
             UserSettingsPreference(
                 languageIndex?.let { Language.values()[it.toInt()] } ?: Language.ENGLISH,
-                getDefaultSharedPreferences().getBoolean(context.getString(R.string.event_notifications_key), true),
-                getDefaultSharedPreferences().getBoolean(context.getString(R.string.chat_notifications_key), true)
+                getDefaultSharedPreferences().getBoolean(
+                    context.getString(R.string.event_notifications_key),
+                    true
+                ),
+                getDefaultSharedPreferences().getBoolean(
+                    context.getString(R.string.chat_notifications_key),
+                    true
+                )
             )
         }
 
     /**
      * @return Whether we should automatically authenticate user on application launch
      */
-    suspend fun shouldRememberMe(): Boolean = getBoolean(context.getString(R.string.remember_me_key))
+    suspend fun shouldRememberMe(): Boolean =
+        getBoolean(context.getString(R.string.remember_me_key))
 
     /**
      * @return Whether dark mode is enabled
      */
     suspend fun isDarkMode(): Boolean {
         if (!getSharedPreferences().contains(context.getString(R.string.dark_mode_key)))
-            updateSharedPreferences { it.putBoolean(context.getString(R.string.dark_mode_key), true) }
+            updateSharedPreferences {
+                it.putBoolean(
+                    context.getString(R.string.dark_mode_key),
+                    true
+                )
+            }
         return getSharedPreferences().getBoolean(context.getString(R.string.dark_mode_key), false)
     }
 
@@ -120,7 +136,11 @@ class SharedPreferenceDao(
      * @param userRemoteId The user remote id
      * @param rememberMe Whether we should automatically authenticate with saved data on launch
      */
-    suspend fun updateAuthenticatedUserPrefs(authToken: String, userRemoteId: String, rememberMe: Boolean) {
+    suspend fun updateAuthenticatedUserPrefs(
+        authToken: String,
+        userRemoteId: String,
+        rememberMe: Boolean
+    ) {
         updateSharedPreferences {
             it
                 .putString(context.getString(R.string.auth_token_key), authToken)
@@ -200,7 +220,8 @@ class SharedPreferenceDao(
     fun newUserRemoteIdLiveData() = SharedPreferenceStringLiveData(
         getSharedPreferences(),
         context.getString(R.string.user_remote_id_key),
-        "")
+        ""
+    )
 
     /**
      * Generates livedata instance containing the saved Dark Mode flag from SharedPreferences
@@ -215,7 +236,10 @@ class SharedPreferenceDao(
      * Gets the custom shared preferences instance
      */
     private fun getSharedPreferences(): SharedPreferences {
-        return context.getSharedPreferences(context.resources.getString(R.string.shared_pref), Context.MODE_PRIVATE)
+        return context.getSharedPreferences(
+            context.resources.getString(R.string.shared_pref),
+            Context.MODE_PRIVATE
+        )
     }
 
     /**

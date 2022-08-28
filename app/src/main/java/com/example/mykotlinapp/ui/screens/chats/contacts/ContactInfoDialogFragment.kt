@@ -15,7 +15,11 @@ class ContactInfoDialogFragment(
     private val removeOperation: () -> Unit = {},
 ) : DialogFragment() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val binding = DialogContactInfoBinding.inflate(inflater)
         binding.property = userContactDTO
         binding.contactInfoRemove.setOnClickListener {

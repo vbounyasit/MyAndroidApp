@@ -21,7 +21,8 @@ object ChatListItemMapper : DTOContextMapper<Pair<ChatItem, ChatLog>, ChatListIt
                     "${chatLog.author.firstName}$delimiter"
             val lastChatLog = "$prefix${chatLog.content}"
             val lastChatLogCreationDate: String = Utils.toTimeAgo(context, chatLog.creationDate)
-            val read = chatItem.lastReadTime?.let { chatLog.creationDate <= it || chatLog.isMe } ?: false
+            val read =
+                chatItem.lastReadTime?.let { chatLog.creationDate <= it || chatLog.isMe } ?: false
             ChatListItemDTO(
                 ChatItemMapper.toDTO(context)(chatItem),
                 ChatLogMapper.toDTO(context)(chatLog)

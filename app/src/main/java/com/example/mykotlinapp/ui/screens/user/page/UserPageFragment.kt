@@ -6,10 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import com.example.mykotlinapp.R
-import com.example.mykotlinapp.ui.activities.UserActivityViewModel
 import com.example.mykotlinapp.databinding.FragmentUserPageBinding
 import com.example.mykotlinapp.ui.AppFragment
 import com.example.mykotlinapp.ui.WithViewPager
+import com.example.mykotlinapp.ui.activities.UserActivityViewModel
 import com.example.mykotlinapp.ui.components.view_pager.AppPagerAdapter
 import com.example.mykotlinapp.ui.components.view_pager.TabItem
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,7 +28,11 @@ class UserPageFragment : AppFragment(), WithViewPager {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val binding = FragmentUserPageBinding.inflate(inflater)
         val pagerAdapter: AppPagerAdapter = getPagerAdapter()
         binding.activityViewModel = sharedViewModel

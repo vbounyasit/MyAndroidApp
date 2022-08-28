@@ -39,12 +39,17 @@ class GroupPostsViewModel @Inject constructor(
         postRepository.getUserPosts(it).asLiveData()
     }
 
-    fun retrieveData(groupRemoteId: String) = submitHttpRequest { postRepository.retrievePostList(groupRemoteId) }
+    fun retrieveData(groupRemoteId: String) =
+        submitHttpRequest { postRepository.retrievePostList(groupRemoteId) }
 
     fun editPost(updatePostInput: UpdatePostInput): Job {
         return viewModelScope.launch {
             postRepository.updatePost(updatePostInput)
-            workManager.launchNetworkBackgroundTask<UpdatePostsWorker>(UniqueBackgroundTask(UPDATE_POSTS_WORK_NAME), initialDelay = Duration.ofMinutes(1))
+            workManager.launchNetworkBackgroundTask<UpdatePostsWorker>(
+                UniqueBackgroundTask(
+                    UPDATE_POSTS_WORK_NAME
+                ), initialDelay = Duration.ofMinutes(1)
+            )
         }
     }
 
@@ -55,14 +60,22 @@ class GroupPostsViewModel @Inject constructor(
     fun votePost(updatePostVoteInput: UpdatePostVoteInput) {
         viewModelScope.launch {
             postRepository.updatePostVoteState(updatePostVoteInput)
-            workManager.launchNetworkBackgroundTask<UpdatePostVoteStatesWorker>(UniqueBackgroundTask(UPDATE_POST_VOTE_STATES_WORK_NAME), initialDelay = Duration.ofMinutes(3))
+            workManager.launchNetworkBackgroundTask<UpdatePostVoteStatesWorker>(
+                UniqueBackgroundTask(
+                    UPDATE_POST_VOTE_STATES_WORK_NAME
+                ), initialDelay = Duration.ofMinutes(3)
+            )
         }
     }
 
     fun deletePost(remoteId: String) {
         viewModelScope.launch {
             postRepository.submitPostForDeletion(remoteId)
-            workManager.launchNetworkBackgroundTask<RemovePostsWorker>(UniqueBackgroundTask(REMOVE_POSTS_WORK_NAME))
+            workManager.launchNetworkBackgroundTask<RemovePostsWorker>(
+                UniqueBackgroundTask(
+                    REMOVE_POSTS_WORK_NAME
+                )
+            )
         }
     }
 

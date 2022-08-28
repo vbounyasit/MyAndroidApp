@@ -40,7 +40,10 @@ abstract class BottomDrawerUI {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 val baseColor = Color.BLACK
                 // 87% opacity
-                val baseAlpha = ResourcesCompat.getFloat(navigationView.context.resources, R.dimen.material_emphasis_high_type)
+                val baseAlpha = ResourcesCompat.getFloat(
+                    navigationView.context.resources,
+                    R.dimen.material_emphasis_high_type
+                )
                 // Map slideOffset from [-1.0, 1.0] to [0.0, 1.0]
                 val offset = (slideOffset - (-1f)) / (1f - (-1f)) * (1f - 0f) + 0f
                 val alpha = MathUtils.lerp(0f, 255f, offset * baseAlpha).toInt()

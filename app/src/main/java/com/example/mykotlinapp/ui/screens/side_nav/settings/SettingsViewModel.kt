@@ -10,6 +10,9 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel @Inject constructor(val workManager: WorkManager) : AppViewModel() {
 
-    fun launchUserSettingsWork() = workManager.launchNetworkBackgroundTask<UpdateUserSettingsWorker>(BackgroundWorkConfig.UniqueBackgroundTask(UPDATE_USER_SETTINGS_WORK_NAME))
+    fun launchUserSettingsWork() =
+        workManager.launchNetworkBackgroundTask<UpdateUserSettingsWorker>(
+            BackgroundWorkConfig.UniqueBackgroundTask(UPDATE_USER_SETTINGS_WORK_NAME)
+        )
 
 }

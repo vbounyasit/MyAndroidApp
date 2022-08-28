@@ -6,11 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import com.example.mykotlinapp.R
-import com.example.mykotlinapp.ui.activities.UserActivityViewModel
 import com.example.mykotlinapp.databinding.FragmentTabUserSignupBinding
 import com.example.mykotlinapp.domain.pojo.Gender
 import com.example.mykotlinapp.model.dto.inputs.form.user.CreateUserInput
 import com.example.mykotlinapp.ui.AppFragment
+import com.example.mykotlinapp.ui.activities.UserActivityViewModel
 import com.example.mykotlinapp.ui.components.DatePickerDialogFragment
 import com.example.mykotlinapp.ui.components.form.FormValidator
 import com.example.mykotlinapp.ui.components.form.field_validators.RadioGroupFieldValidator
@@ -26,7 +26,11 @@ class UserRegistrationFragment : AppFragment() {
 
     private lateinit var binding: FragmentTabUserSignupBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentTabUserSignupBinding.inflate(inflater)
         binding.lifecycleOwner = requireActivity()
         binding.activityViewModel = sharedViewModel
@@ -56,7 +60,8 @@ class UserRegistrationFragment : AppFragment() {
         val password = binding.inputCreatePasswordField
         val birthDay = binding.inputBirthdayField
         val gender = binding.genderRadioGroup
-        val resultGender = if (gender.checkedRadioButtonId == R.id.choice_male_gender) Gender.MALE else Gender.FEMALE
+        val resultGender =
+            if (gender.checkedRadioButtonId == R.id.choice_male_gender) Gender.MALE else Gender.FEMALE
 
         return FormValidator(
             requireContext(),
@@ -70,7 +75,12 @@ class UserRegistrationFragment : AppFragment() {
                 birthDay.getContent(),
                 resultGender
             ),
-            TextInputFieldValidator(email, *lengthValidators, EmailValidator, clearOnSubmit = false),
+            TextInputFieldValidator(
+                email,
+                *lengthValidators,
+                EmailValidator,
+                clearOnSubmit = false
+            ),
             TextInputFieldValidator(username, *nameFieldValidator, clearOnSubmit = false),
             TextInputFieldValidator(firstName, *nameFieldValidator, clearOnSubmit = false),
             TextInputFieldValidator(lastName, *nameFieldValidator, clearOnSubmit = false),

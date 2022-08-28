@@ -8,10 +8,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.mykotlinapp.R
-import com.example.mykotlinapp.ui.activities.UserActivityViewModel
 import com.example.mykotlinapp.databinding.FragmentWelcomePageBinding
 import com.example.mykotlinapp.domain.pojo.ApiRequestState
 import com.example.mykotlinapp.ui.AppFragment
+import com.example.mykotlinapp.ui.activities.UserActivityViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -22,7 +22,11 @@ class WelcomePageFragment : AppFragment() {
 
     private lateinit var binding: FragmentWelcomePageBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentWelcomePageBinding.inflate(inflater)
         binding.lifecycleOwner = requireActivity()
         binding.activityViewModel = sharedViewModel
@@ -53,7 +57,8 @@ class WelcomePageFragment : AppFragment() {
 
     private fun skipWelcomePage(): Boolean {
         //skip welcome page if user logged out
-        val shouldSkip = requireActivity().intent.getBooleanExtra(getString(R.string.skip_welcome_page), false)
+        val shouldSkip =
+            requireActivity().intent.getBooleanExtra(getString(R.string.skip_welcome_page), false)
         if (shouldSkip) viewModel.navigateToUserPage()
         return shouldSkip
     }

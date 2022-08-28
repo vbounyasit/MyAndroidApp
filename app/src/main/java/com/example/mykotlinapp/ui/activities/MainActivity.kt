@@ -39,11 +39,13 @@ class MainActivity : AppActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        headerNavViewBinding =
+            HeaderNavigationDrawerBinding.bind(binding.userNavView.getHeaderView(0))
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
-        headerNavViewBinding = HeaderNavigationDrawerBinding.bind(binding.userNavView.getHeaderView(0))
         headerNavViewBinding.lifecycleOwner = this
         headerNavViewBinding.viewModel = viewModel
+        registerComponents()
         handleStartFromNotification()
         viewModel.retrieveInitialData()
         viewModel.showBottomNav()
@@ -65,7 +67,10 @@ class MainActivity : AppActivity() {
 
     override fun registerUIComponents() {
         viewModel.initializeAndConnectSocket()
-        viewModel.notificationComponent.createChatChannel(getString(R.string.chat_notification_channel_key), getString(R.string.chat_notification_channel_name))
+        viewModel.notificationComponent.createChatChannel(
+            getString(R.string.chat_notification_channel_key),
+            getString(R.string.chat_notification_channel_name)
+        )
         viewModel.bottomDrawerManager.registerNavigationUI(this, bottomDrawerUI)
         viewModel.dialogFormFragmentManager.registerLifeCycle(this, supportFragmentManager)
     }

@@ -24,8 +24,11 @@ class ReplyMessageReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         val remoteInput = intent?.let { RemoteInput.getResultsFromIntent(it) }
         remoteInput?.let {
-            val chatRemoteId: String? = intent.getStringExtra(context?.getString(R.string.chat_remote_id))
-            val replyContent: String? = it.getCharSequence(context?.getString(R.string.chat_notification_reply_key))?.toString()
+            val chatRemoteId: String? =
+                intent.getStringExtra(context?.getString(R.string.chat_remote_id))
+            val replyContent: String? =
+                it.getCharSequence(context?.getString(R.string.chat_notification_reply_key))
+                    ?.toString()
             if (chatRemoteId != null && replyContent != null) {
                 val inputData: Data = run {
                     val builder = Data.Builder()
@@ -33,7 +36,10 @@ class ReplyMessageReceiver : BroadcastReceiver() {
                     builder.putString(WORK_REPLY_CHAT_CONTENT_INPUT_KEY, replyContent)
                     builder.build()
                 }
-                workManager.launchNetworkBackgroundTask<CreateReplyWorker>(RegularBackgroundTask, inputData)
+                workManager.launchNetworkBackgroundTask<CreateReplyWorker>(
+                    RegularBackgroundTask,
+                    inputData
+                )
             }
         }
     }

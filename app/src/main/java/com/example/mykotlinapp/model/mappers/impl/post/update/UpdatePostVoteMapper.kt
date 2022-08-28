@@ -7,9 +7,16 @@ import com.example.mykotlinapp.model.mappers.InputUpdateMapper
 import com.example.mykotlinapp.model.mappers.NetworkRequestMapper
 import com.example.mykotlinapp.network.dto.requests.post.UpdatePostVoteRequest
 
-object UpdatePostVoteMapper : InputUpdateMapper<UpdatePostVoteInput, UserPost>, NetworkRequestMapper<UserPost, UpdatePostVoteRequest> {
+object UpdatePostVoteMapper : InputUpdateMapper<UpdatePostVoteInput, UserPost>,
+    NetworkRequestMapper<UserPost, UpdatePostVoteRequest> {
     override fun toLocalUpdateWithInput(inputData: UpdatePostVoteInput): (UserPost) -> UserPost {
-        return { it.copy(voteState = inputData.voteState, votesCount = it.votesCount + inputData.votesCountDelta, syncState = SyncState.PENDING_UPDATE) }
+        return {
+            it.copy(
+                voteState = inputData.voteState,
+                votesCount = it.votesCount + inputData.votesCountDelta,
+                syncState = SyncState.PENDING_UPDATE
+            )
+        }
     }
 
     override fun toNetworkRequest(entity: UserPost): UpdatePostVoteRequest {

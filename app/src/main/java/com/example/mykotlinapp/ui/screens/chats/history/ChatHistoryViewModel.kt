@@ -12,7 +12,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ChatHistoryViewModel @Inject constructor(private val chatRepository: ChatRepository) : AppViewModel() {
+class ChatHistoryViewModel @Inject constructor(private val chatRepository: ChatRepository) :
+    AppViewModel() {
 
     private val _navigateToGroupChatId = MutableLiveData<String?>()
 

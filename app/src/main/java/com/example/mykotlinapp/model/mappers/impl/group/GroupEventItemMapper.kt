@@ -5,7 +5,8 @@ import com.example.mykotlinapp.model.entity.group.GroupEvent
 import com.example.mykotlinapp.model.entity.group.GroupEventParticipant
 import com.example.mykotlinapp.model.mappers.DTOMapper
 
-object GroupEventItemMapper : DTOMapper<Pair<GroupEvent, List<GroupEventParticipant>>, GroupEventItemDTO> {
+object GroupEventItemMapper :
+    DTOMapper<Pair<GroupEvent, List<GroupEventParticipant>>, GroupEventItemDTO> {
     override fun toDTO(entity: Pair<GroupEvent, List<GroupEventParticipant>>): GroupEventItemDTO =
         GroupEventItemDTO(
             "",//entity.first.id, //todo

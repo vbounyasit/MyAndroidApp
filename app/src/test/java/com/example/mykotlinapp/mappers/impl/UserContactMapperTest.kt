@@ -33,7 +33,16 @@ class UserContactMapperTest : StringSpec({
 
     "UserContactMapper.toEntity should return the correct list of contacts" {
         //Given
-        fun getContactResponse(remoteId: String) = UserContactResponse(remoteId, "firstName1", "lastName1", "fullName1", "picture1", "description1", 3000)
+        fun getContactResponse(remoteId: String) = UserContactResponse(
+            remoteId,
+            "firstName1",
+            "lastName1",
+            "fullName1",
+            "picture1",
+            "description1",
+            3000
+        )
+
         val networkResponse = UserContactListResponse(
             sentRequests = listOf(getContactResponse("id1")),
             receivedRequests = listOf(getContactResponse("id2"), getContactResponse("id3")),
@@ -59,7 +68,8 @@ class UserContactMapperTest : StringSpec({
         )
 
         //When
-        val result: List<UserContactDTO> = UserContactMapper.toSearchContactResult(context)(networkResponse)
+        val result: List<UserContactDTO> =
+            UserContactMapper.toSearchContactResult(context)(networkResponse)
 
         //Then
         result.map { Result(it.remoteId, it.relationType) } shouldContainExactly listOf(

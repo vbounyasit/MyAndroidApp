@@ -10,9 +10,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.work.WorkInfo
 import com.example.mykotlinapp.WORK_CREATE_CONTACT_INPUT_KEY
-import com.example.mykotlinapp.ui.activities.MainActivityViewModel
 import com.example.mykotlinapp.databinding.FragmentSearchPageBinding
 import com.example.mykotlinapp.ui.AppFragment
+import com.example.mykotlinapp.ui.activities.MainActivityViewModel
 import com.example.mykotlinapp.ui.components.recycler_view.ClickListener
 import com.example.mykotlinapp.ui.screens.chats.contacts.ContactInfoDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,7 +36,11 @@ class ContactSearchFragment : AppFragment() {
         )
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentSearchPageBinding.inflate(inflater)
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
@@ -75,7 +79,8 @@ class ContactSearchFragment : AppFragment() {
 
     private fun showSoftKeyboard(view: View) {
         if (view.requestFocus()) {
-            val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val imm =
+                requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
         }
     }
