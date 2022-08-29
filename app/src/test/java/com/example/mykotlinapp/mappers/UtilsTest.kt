@@ -7,6 +7,7 @@ import com.example.mykotlinapp.domain.pojo.VoteState
 import com.example.mykotlinapp.model.mappers.impl.Utils
 import com.example.mykotlinapp.model.mappers.impl.Utils.getFormattedAmount
 import com.example.mykotlinapp.model.mappers.impl.Utils.getVoteStateValue
+import com.example.mykotlinapp.model.mappers.impl.Utils.toCapitalized
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.every
@@ -21,7 +22,7 @@ class UtilsTest : WordSpec({
             //Given
             val word = "uncapitalized"
             //When
-            val result = Utils.capitalize(word)
+            val result = word.toCapitalized()
             //Then
             result shouldBe "Uncapitalized"
         }

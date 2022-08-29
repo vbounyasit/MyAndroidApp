@@ -51,7 +51,6 @@ class UserRepository @Inject constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
     private val userDao: UserDao,
     private val sharedPreferenceDao: SharedPreferenceDao,
-    private val userSettingsMapper: UserSettingMapper,
 ) : AppRepository() {
 
     /**
@@ -112,9 +111,9 @@ class UserRepository @Inject constructor(
      */
     fun getUserContactsWithRequests(): Flow<List<UserContactDTO>> {
         return userDao.getContactsNotOfRelationFlow(FRIENDS)
-            .map { contact ->
-                contact
-                    .filter { it.syncState != SyncState.PENDING_REMOVAL }
+            .map {
+                it
+                    .filter { contact -> contact.syncState != SyncState.PENDING_REMOVAL }
                     .map((UserContactMapper::toDTO)(context))
                     .take(context.resources.getInteger(R.integer.max_contact_requests_to_display))
             }
@@ -182,8 +181,7 @@ class UserRepository @Inject constructor(
      * @param userResponse The API response
      */
     private suspend fun updateUserFromResponse(userResponse: UserResponse) {
-        val pendingUser =
-            userDao.getUserBySyncState(userResponse.remoteId, SyncState.PENDING_UPDATE)
+        val pendingUser = userDao.getUserBySyncState(userResponse.remoteId, SyncState.PENDING_UPDATE)
         pendingUser ?: userDao.insert(UserMapper.toEntity(userResponse))
     }
 
@@ -194,12 +192,10 @@ class UserRepository @Inject constructor(
      */
     private suspend fun updateUserContactsFromResponse(contactsResponse: UserContactListResponse) {
         val pendingContacts = userDao.getContactIdsByNotSyncState(SyncState.UP_TO_DATE)
-        val newContacts = UserContactMapper.toEntity(contactsResponse)
-            .filter { !pendingContacts.contains(it.remoteId) }
+        val newContacts = UserContactMapper.toEntity(contactsResponse).filter { !pendingContacts.contains(it.remoteId) }
         userDao.clearContacts(
-            (contactsResponse.contacts + contactsResponse.receivedRequests + contactsResponse.sentRequests).map(
-                UserContactResponse::remoteId
-            )
+            (contactsResponse.contacts + contactsResponse.receivedRequests + contactsResponse.sentRequests)
+                .map(UserContactResponse::remoteId)
         )
         userDao.insert(newContacts)
     }
@@ -211,9 +207,7 @@ class UserRepository @Inject constructor(
      */
     private suspend fun updateUserSettingsFromResponse(userSettingsResponse: UserSettingsResponse) {
         sharedPreferenceDao.updateDefaultSharedPreferences(
-            userSettingsMapper.toEntity(
-                userSettingsResponse
-            )
+            UserSettingMapper.toEntity(userSettingsResponse)
         )
     }
 
@@ -343,8 +337,7 @@ class UserRepository @Inject constructor(
     suspend fun sendUserUpdate(): Result<Unit> {
         return withContext(dispatcher) {
             sharedPreferenceDao.performAPIAuthenticatedAction { authHeader ->
-                val authenticatedUser: User? = sharedPreferenceDao.getAuthUserRemoteId()
-                    ?.let { userDao.getUserBySyncState(it, SyncState.PENDING_UPDATE) }
+                val authenticatedUser: User? = sharedPreferenceDao.getAuthUserRemoteId()?.let { userDao.getUserBySyncState(it, SyncState.PENDING_UPDATE) }
                 authenticatedUser?.let { user ->
                     val request: UpdateUserRequest = UpdateUserUpdateMapper.toNetworkRequest(user)
                     userApiService.updateAuthenticatedUser(authHeader, request)
@@ -362,8 +355,7 @@ class UserRepository @Inject constructor(
     suspend fun sendUserSettingsUpdate(): Result<Unit> {
         return withContext(dispatcher) {
             sharedPreferenceDao.performAPIAuthenticatedAction { authHeader ->
-                val request: UpdateUserSettingsRequest =
-                    userSettingsMapper.toNetworkRequest(sharedPreferenceDao.getUserSettings())
+                val request: UpdateUserSettingsRequest = UserSettingMapper.toNetworkRequest(sharedPreferenceDao.getUserSettings())
                 userApiService.updateUserSettings(authHeader, request)
             }
         }

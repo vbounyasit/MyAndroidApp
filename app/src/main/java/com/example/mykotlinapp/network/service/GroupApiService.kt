@@ -12,16 +12,10 @@ import retrofit2.http.Path
 interface GroupApiService : ApiService {
 
     @PATCH("/groups")
-    suspend fun updateGroups(
-        @Header("Authorization") authorization: String,
-        @Body updateGroupRequest: List<UpdateGroupRequest>
-    ): UpdateOperationResponse
+    suspend fun updateGroups(@Header("Authorization") authorization: String, @Body updateGroupRequest: List<UpdateGroupRequest>): UpdateOperationResponse
 
 
     @PATCH("/groups/{remoteId}/read")
-    suspend fun readGroup(
-        @Header("Authorization") authorization: String,
-        @Path("remoteId") groupRemoteId: String
-    ): ReadGroupResponse
+    suspend fun readGroup(@Header("Authorization") authorization: String, @Path("remoteId") groupRemoteId: String): ReadGroupResponse
 
 }

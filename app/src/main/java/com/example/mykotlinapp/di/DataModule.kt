@@ -3,7 +3,6 @@ package com.example.mykotlinapp.di
 import android.content.Context
 import com.example.mykotlinapp.model.AppDatabase
 import com.example.mykotlinapp.model.dao.*
-import com.example.mykotlinapp.model.mappers.impl.user.UserSettingMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -54,9 +53,5 @@ class DataModule {
         @ApplicationContext context: Context,
         @Qualifiers.IoDispatcher dispatcher: CoroutineDispatcher
     ): SharedPreferenceDao = SharedPreferenceDao(context, dispatcher)
-
-    @Provides
-    fun provideUserSettingsMapper(@ApplicationContext context: Context): UserSettingMapper =
-        UserSettingMapper(context)
 
 }

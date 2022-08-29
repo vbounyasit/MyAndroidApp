@@ -111,8 +111,8 @@ class SharedPreferenceDao(
      * @param changes The changes to user settings
      * @receiver
      */
-    suspend fun updateDefaultSharedPreferences(changes: (Editor) -> Editor) =
-        getDefaultSharedPreferences().updatePreferences(changes)
+    suspend fun updateDefaultSharedPreferences(userSettingsPreference: UserSettingsPreference) =
+        getDefaultSharedPreferences().updatePreferences(userSettingsPreference.getSharedPrefEdits(context))
 
 
     /**

@@ -69,8 +69,7 @@ object Utils {
      *
      * @param word The word to capitalize
      */
-    fun capitalize(word: String) =
-        word.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+    fun String.toCapitalized() = this.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
 
     fun truncate(number: Double): String {
         val df = DecimalFormat("#.#")

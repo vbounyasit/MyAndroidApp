@@ -22,28 +22,15 @@ interface CommentApiService : ApiService {
     ): CreateOperationResponse
 
     @GET("/groups/{groupRemoteId}/posts/{postRemoteId}/comments")
-    suspend fun getCommentList(
-        @Header("Authorization") authorization: String,
-        @Path("groupRemoteId") groupRemoteId: String,
-        @Path("postRemoteId") postRemoteId: String
-    ): List<CommentResponse>
+    suspend fun getCommentList(@Header("Authorization") authorization: String, @Path("groupRemoteId") groupRemoteId: String, @Path("postRemoteId") postRemoteId: String): List<CommentResponse>
 
     @PATCH("/groups/posts/comments")
-    suspend fun updateComments(
-        @Header("Authorization") authorization: String,
-        @Body updateCommentsRequest: List<UpdateCommentRequest>
-    ): UpdateOperationResponse
+    suspend fun updateComments(@Header("Authorization") authorization: String, @Body updateCommentsRequest: List<UpdateCommentRequest>): UpdateOperationResponse
 
     @PATCH("/groups/posts/comments/votes")
-    suspend fun updateCommentVotes(
-        @Header("Authorization") authorization: String,
-        @Body updateCommentVotesRequest: List<UpdateCommentVoteRequest>
-    ): UpdateOperationResponse
+    suspend fun updateCommentVotes(@Header("Authorization") authorization: String, @Body updateCommentVotesRequest: List<UpdateCommentVoteRequest>): UpdateOperationResponse
 
     @HTTP(method = "DELETE", path = "/groups/posts/comments", hasBody = true)
-    suspend fun deleteComments(
-        @Header("Authorization") authorization: String,
-        @Body deleteCommentsRequest: List<DeleteCommentRequest>
-    ): DeleteOperationResponse
+    suspend fun deleteComments(@Header("Authorization") authorization: String, @Body deleteCommentsRequest: List<DeleteCommentRequest>): DeleteOperationResponse
 
 }

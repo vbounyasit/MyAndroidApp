@@ -26,10 +26,7 @@ interface UserApiService : ApiService {
     suspend fun getAuthenticatedUser(@Header("Authorization") authorization: String): AuthenticatedUserResponse
 
     @PATCH("/users/me")
-    suspend fun updateAuthenticatedUser(
-        @Header("Authorization") authorization: String,
-        @Body userUpdateUserRequest: UpdateUserRequest
-    ): UpdateOperationResponse
+    suspend fun updateAuthenticatedUser(@Header("Authorization") authorization: String, @Body userUpdateUserRequest: UpdateUserRequest): UpdateOperationResponse
 
     @POST("/users")
     suspend fun signUserUp(@Body signUserUpRequest: SignUserUpRequest): UserSignUpResponse
@@ -38,27 +35,15 @@ interface UserApiService : ApiService {
     suspend fun getUserContacts(@Header("Authorization") authorization: String): UserContactListResponse
 
     @HTTP(method = "DELETE", path = "/users/contacts", hasBody = true)
-    suspend fun deleteUserContact(
-        @Header("Authorization") authorization: String,
-        @Body removeUserContactRequest: List<RemoveContactIdRequest>
-    ): DeleteOperationResponse
+    suspend fun deleteUserContact(@Header("Authorization") authorization: String, @Body removeUserContactRequest: List<RemoveContactIdRequest>): DeleteOperationResponse
 
     @POST("/users/contacts")
-    suspend fun createUserContactRequest(
-        @Header("Authorization") authorization: String,
-        @Body createContactRequest: CreateContactRequest
-    ): CreatedContactResponse
+    suspend fun createUserContactRequest(@Header("Authorization") authorization: String, @Body createContactRequest: CreateContactRequest): CreatedContactResponse
 
     @GET("/users")
-    suspend fun searchContacts(
-        @Header("Authorization") authorization: String,
-        @Query("searchTag") searchTag: String
-    ): SearchContactResponse
+    suspend fun searchContacts(@Header("Authorization") authorization: String, @Query("searchTag") searchTag: String): SearchContactResponse
 
     @PATCH("/users/settings")
-    suspend fun updateUserSettings(
-        @Header("Authorization") authorization: String,
-        @Body updateUserSettingsRequest: UpdateUserSettingsRequest
-    ): UpdateOperationResponse
+    suspend fun updateUserSettings(@Header("Authorization") authorization: String, @Body updateUserSettingsRequest: UpdateUserSettingsRequest): UpdateOperationResponse
 
 }

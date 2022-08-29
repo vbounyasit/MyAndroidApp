@@ -1,23 +1,21 @@
 package com.example.mykotlinapp.model.mappers.impl.user
 
-import android.content.Context
-import android.content.SharedPreferences.Editor
 import com.example.mykotlinapp.model.entity.user.UserSettingsPreference
 import com.example.mykotlinapp.model.mappers.NetworkRequestMapper
 import com.example.mykotlinapp.model.mappers.NetworkResponseMapper
 import com.example.mykotlinapp.network.dto.requests.user.UpdateUserSettingsRequest
 import com.example.mykotlinapp.network.dto.responses.user.UserResponses.UserSettingsResponse
 
-class UserSettingMapper(val context: Context) :
+object UserSettingMapper :
     NetworkRequestMapper<UserSettingsPreference, UpdateUserSettingsRequest>,
-    NetworkResponseMapper<UserSettingsResponse, (Editor) -> Editor> {
+    NetworkResponseMapper<UserSettingsResponse, UserSettingsPreference> {
 
-    override fun toEntity(networkData: UserSettingsResponse): (Editor) -> Editor {
+    override fun toEntity(networkData: UserSettingsResponse): UserSettingsPreference {
         return UserSettingsPreference(
             networkData.language,
             networkData.eventPushNotifications,
             networkData.chatPushNotifications
-        ).getSharedPrefEdits(context)
+        )
     }
 
     override fun toNetworkRequest(entity: UserSettingsPreference): UpdateUserSettingsRequest {

@@ -14,42 +14,21 @@ import retrofit2.http.*
 interface PostApiService : ApiService {
 
     @POST("/groups/{remoteId}/posts")
-    suspend fun createPost(
-        @Header("Authorization") authorization: String,
-        @Path("remoteId") groupRemoteId: String,
-        @Body createPostRequest: CreatePostRequest
-    ): CreateOperationResponse
+    suspend fun createPost(@Header("Authorization") authorization: String, @Path("remoteId") groupRemoteId: String, @Body createPostRequest: CreatePostRequest): CreateOperationResponse
 
     @GET("/groups/{remoteId}/posts")
-    suspend fun getPostList(
-        @Header("Authorization") authorization: String,
-        @Path("remoteId") postRemoteId: String
-    ): List<PostResponse>
+    suspend fun getPostList(@Header("Authorization") authorization: String, @Path("remoteId") postRemoteId: String): List<PostResponse>
 
     @GET("/groups/{groupRemoteId}/posts/{postRemoteId}")
-    suspend fun getPostData(
-        @Header("Authorization") authorization: String,
-        @Path("groupRemoteId") groupRemoteId: String,
-        @Path("postRemoteId") postRemoteId: String
-    ): PostResponse
+    suspend fun getPostData(@Header("Authorization") authorization: String, @Path("groupRemoteId") groupRemoteId: String, @Path("postRemoteId") postRemoteId: String): PostResponse
 
     @PATCH("/groups/posts")
-    suspend fun updatePosts(
-        @Header("Authorization") authorization: String,
-        @Body updatePostsRequest: List<UpdatePostRequest>
-    ): UpdateOperationResponse
+    suspend fun updatePosts(@Header("Authorization") authorization: String, @Body updatePostsRequest: List<UpdatePostRequest>): UpdateOperationResponse
 
     @PATCH("/groups/posts/votes")
-    suspend fun updatePostVotes(
-        @Header("Authorization") authorization: String,
-        @Body updatePostVotesRequest: List<UpdatePostVoteRequest>
-    ): UpdateOperationResponse
+    suspend fun updatePostVotes(@Header("Authorization") authorization: String, @Body updatePostVotesRequest: List<UpdatePostVoteRequest>): UpdateOperationResponse
 
     @HTTP(method = "DELETE", path = "/groups/posts", hasBody = true)
-    suspend fun deletePosts(
-        @Header("Authorization") authorization: String,
-        @Body deletePostsRequest: List<DeletePostRequest>
-    ): DeleteOperationResponse
-
+    suspend fun deletePosts(@Header("Authorization") authorization: String, @Body deletePostsRequest: List<DeletePostRequest>): DeleteOperationResponse
 
 }
