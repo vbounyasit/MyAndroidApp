@@ -6,7 +6,7 @@ import com.example.mykotlinapp.model.entity.chat.ChatProperty
 import com.example.mykotlinapp.model.mappers.InputUpdateMapper
 
 object UpdateChatMapper : InputUpdateMapper<UpdateChatInput, ChatProperty> {
-    override fun toLocalUpdateWithInput(inputData: UpdateChatInput): (ChatProperty) -> ChatProperty {
+    override fun toLocalUpdate(inputData: UpdateChatInput): (ChatProperty) -> ChatProperty {
         return { it.copy(name = inputData.name, syncState = SyncState.PENDING_UPDATE) }
     }
 }

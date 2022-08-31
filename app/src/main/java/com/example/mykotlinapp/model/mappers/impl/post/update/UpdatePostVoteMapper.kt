@@ -9,7 +9,7 @@ import com.example.mykotlinapp.network.dto.requests.post.UpdatePostVoteRequest
 
 object UpdatePostVoteMapper : InputUpdateMapper<UpdatePostVoteInput, UserPost>,
     NetworkRequestMapper<UserPost, UpdatePostVoteRequest> {
-    override fun toLocalUpdateWithInput(inputData: UpdatePostVoteInput): (UserPost) -> UserPost {
+    override fun toLocalUpdate(inputData: UpdatePostVoteInput): (UserPost) -> UserPost {
         return {
             it.copy(
                 voteState = inputData.voteState,

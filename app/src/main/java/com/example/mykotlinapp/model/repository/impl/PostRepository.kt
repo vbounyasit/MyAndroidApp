@@ -91,7 +91,7 @@ class PostRepository @Inject constructor(
     suspend fun updatePost(updatePostInput: UpdatePostInput) {
         withContext(dispatcher) {
             val post: UserPost? = postDao.getUserPost(updatePostInput.remoteId)
-            post?.let { postDao.update(UpdatePostMapper.toLocalUpdateWithInput(updatePostInput)(it)) }
+            post?.let { postDao.update(UpdatePostMapper.toLocalUpdate(updatePostInput)(it)) }
         }
     }
 
@@ -104,7 +104,7 @@ class PostRepository @Inject constructor(
     suspend fun updatePostVoteState(voteInput: UpdatePostVoteInput) =
         withContext(dispatcher) {
             postDao.getUserPost(voteInput.remoteId)?.let {
-                postDao.update(UpdatePostVoteMapper.toLocalUpdateWithInput(voteInput)(it))
+                postDao.update(UpdatePostVoteMapper.toLocalUpdate(voteInput)(it))
             }
         }
 

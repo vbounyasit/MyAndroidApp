@@ -36,12 +36,10 @@ import com.example.mykotlinapp.ui.components.SharedPreferenceLiveData.Companion.
 import com.example.mykotlinapp.ui.components.SharedPreferenceLiveData.Companion.SharedPreferenceStringLiveData
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class UserRepository @Inject constructor(
@@ -51,7 +49,7 @@ class UserRepository @Inject constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
     private val userDao: UserDao,
     private val sharedPreferenceDao: SharedPreferenceDao,
-) : AppRepository() {
+) : AppRepository(sharedPreferenceDao) {
 
     /**
      * Shared prefs
@@ -152,28 +150,26 @@ class UserRepository @Inject constructor(
      *
      * @param updateUserInput The update user form input
      */
-    suspend fun updateUser(updateUserInput: UpdateUserInput) {
-        withContext(dispatcher) {
-            val authenticatedUser: User? =
-                sharedPreferenceDao.getAuthUserRemoteId()?.let { userDao.getUser(it) }
-            authenticatedUser?.let {
-                userDao.update(UpdateUserUpdateMapper.toLocalUpdateWithInput(updateUserInput)(it))
-            }
+    suspend fun updateUser(updateUserInput: UpdateUserInput): Result<Unit> =
+        performAction(dispatcher) {
+            sharedPreferenceDao.getAuthUserRemoteId()
+                ?.let { userDao.getUser(it) }
+                ?.let(UpdateUserUpdateMapper.toLocalUpdate(updateUserInput))
+                ?.let { userDao.update(it) }
         }
-    }
 
     /**
      * Submits a user contact for later deletion through an API request
      *
      * @param contactRemoteId The remote id of the contact to submit for deletion
      */
-    suspend fun submitContactForDeletion(contactRemoteId: String) {
-        withContext(dispatcher) {
+    suspend fun submitContactForDeletion(contactRemoteId: String): Result<Unit> =
+        performAction(dispatcher) {
             userDao.getContact(contactRemoteId)?.let {
                 userDao.update(it.copy(syncState = SyncState.PENDING_REMOVAL))
             }
         }
-    }
+
 
     /**
      * Updates local user with the response received from the API
@@ -224,8 +220,8 @@ class UserRepository @Inject constructor(
      *
      * @param logInUserInput The log in form input
      */
-    suspend fun logUserIn(logInUserInput: LogInUserInput): Result<Unit> {
-        return performAction(dispatcher) {
+    suspend fun logUserIn(logInUserInput: LogInUserInput): Result<Unit> =
+        performAction(dispatcher) {
             val deviceId = sharedPreferenceDao.getUniqueDeviceId()
             val request = LogInUserRequest(logInUserInput.id, logInUserInput.password, deviceId)
             val loginResponse: UserLoginResponse = userApiService.logUserIn(request)
@@ -237,20 +233,18 @@ class UserRepository @Inject constructor(
             updateUserFromResponse(loginResponse.user)
             updateUserSettingsFromResponse(loginResponse.settings)
         }
-    }
 
     /**
      * Sign a user up
      *
      * @param createUserInput The sign up form input
      */
-    suspend fun signUserUp(createUserInput: CreateUserInput): Result<Unit> {
-        return performAction(dispatcher) {
+    suspend fun signUserUp(createUserInput: CreateUserInput): Result<Unit> =
+        performAction(dispatcher) {
             val request = CreateUserMapper.toNetworkRequest(createUserInput)
             userApiService.signUserUp(request)
             logUserIn(LogInUserInput(createUserInput.username, createUserInput.password, true))
         }
-    }
 
     /**
      * Authenticated requests
@@ -266,14 +260,11 @@ class UserRepository @Inject constructor(
      * @param remoteId The remote id of the user to send the request to
      * @return A success or failure result
      */
-    suspend fun createContactRequest(remoteId: String): Result<Unit> {
-        return withContext(dispatcher) {
-            sharedPreferenceDao.performAPIAuthenticatedAction { authHeader ->
-                val request = CreateContactRequest(remoteId)
-                userApiService.createUserContactRequest(authHeader, request)
-            }
+    suspend fun createContactRequest(remoteId: String): Result<Unit> =
+        performAuthenticatedAction(dispatcher) { authHeader ->
+            val request = CreateContactRequest(remoteId)
+            userApiService.createUserContactRequest(authHeader, request)
         }
-    }
 
     /**
      * Read
@@ -284,31 +275,25 @@ class UserRepository @Inject constructor(
      *
      * @return A success or failure result
      */
-    suspend fun retrieveAuthenticatedUserData(): Result<Unit> {
-        return withContext(Dispatchers.IO) {
+    suspend fun retrieveAuthenticatedUserData(): Result<Unit> =
+        performAuthenticatedAction(dispatcher) { authHeader ->
             if (!sharedPreferenceDao.shouldRememberMe())
                 sharedPreferenceDao.clearAuthenticationUser()
-            sharedPreferenceDao.performAPIAuthenticatedAction { authHeader ->
-                val response = userApiService.getAuthenticatedUser(authHeader)
-                updateUserFromResponse(response.user)
-                updateUserSettingsFromResponse(response.settings)
-            }
+            val response = userApiService.getAuthenticatedUser(authHeader)
+            updateUserFromResponse(response.user)
+            updateUserSettingsFromResponse(response.settings)
         }
-    }
 
     /**
      * Retrieves the local user user contacts from the API and saves them to the local database
      *
      * @return A success or failure result
      */
-    suspend fun retrieveUserContacts(): Result<Unit> {
-        return withContext(dispatcher) {
-            sharedPreferenceDao.performAPIAuthenticatedAction { authHeader ->
-                val contactsResponse = userApiService.getUserContacts(authHeader)
-                updateUserContactsFromResponse(contactsResponse)
-            }
+    suspend fun retrieveUserContacts(): Result<Unit> =
+        performAuthenticatedAction(dispatcher) { authHeader ->
+            val contactsResponse = userApiService.getUserContacts(authHeader)
+            updateUserContactsFromResponse(contactsResponse)
         }
-    }
 
     /**
      * Retrieve the local user contact search results from the API and saves them to the local database
@@ -317,11 +302,9 @@ class UserRepository @Inject constructor(
      * @return A success result containing the list of found users or failure result
      */
     suspend fun retrieveUserContactSearchResults(searchTag: String): Result<List<UserContactDTO>> {
-        return withContext(dispatcher) {
-            sharedPreferenceDao.getAPIAuthenticatedResult { authHeader ->
-                val foundContacts = userApiService.searchContacts(authHeader, searchTag)
-                UserContactMapper.toSearchContactResult(context)(foundContacts)
-            }
+        return performAuthenticatedAction(dispatcher) { authHeader ->
+            val foundContacts = userApiService.searchContacts(authHeader, searchTag)
+            UserContactMapper.toSearchContactResult(context)(foundContacts)
         }
     }
 
@@ -335,14 +318,12 @@ class UserRepository @Inject constructor(
      * @return A success or failure result
      */
     suspend fun sendUserUpdate(): Result<Unit> {
-        return withContext(dispatcher) {
-            sharedPreferenceDao.performAPIAuthenticatedAction { authHeader ->
-                val authenticatedUser: User? = sharedPreferenceDao.getAuthUserRemoteId()?.let { userDao.getUserBySyncState(it, SyncState.PENDING_UPDATE) }
-                authenticatedUser?.let { user ->
-                    val request: UpdateUserRequest = UpdateUserUpdateMapper.toNetworkRequest(user)
-                    userApiService.updateAuthenticatedUser(authHeader, request)
-                    userDao.update(user.copy(syncState = SyncState.UP_TO_DATE))
-                }
+        return performAuthenticatedAction(dispatcher) { authHeader ->
+            val authenticatedUser: User? = sharedPreferenceDao.getAuthUserRemoteId()?.let { userDao.getUserBySyncState(it, SyncState.PENDING_UPDATE) }
+            authenticatedUser?.let { user ->
+                val request: UpdateUserRequest = UpdateUserUpdateMapper.toNetworkRequest(user)
+                userApiService.updateAuthenticatedUser(authHeader, request)
+                userDao.update(user.copy(syncState = SyncState.UP_TO_DATE))
             }
         }
     }
@@ -352,14 +333,11 @@ class UserRepository @Inject constructor(
      *
      * @return A success or failure result
      */
-    suspend fun sendUserSettingsUpdate(): Result<Unit> {
-        return withContext(dispatcher) {
-            sharedPreferenceDao.performAPIAuthenticatedAction { authHeader ->
-                val request: UpdateUserSettingsRequest = UserSettingMapper.toNetworkRequest(sharedPreferenceDao.getUserSettings())
-                userApiService.updateUserSettings(authHeader, request)
-            }
+    suspend fun sendUserSettingsUpdate(): Result<Unit> =
+        performAuthenticatedAction(dispatcher) { authHeader ->
+            val request: UpdateUserSettingsRequest = UserSettingMapper.toNetworkRequest(sharedPreferenceDao.getUserSettings())
+            userApiService.updateUserSettings(authHeader, request)
         }
-    }
 
     /**
      * Delete
@@ -370,22 +348,19 @@ class UserRepository @Inject constructor(
      *
      * @return A success or failure result
      */
-    suspend fun sendDeleteContactRequests(): Result<Unit> {
-        return withContext(dispatcher) {
-            sharedPreferenceDao.performAPIAuthenticatedAction { authHeader ->
-                val contactsToRemove: List<UserContact> =
-                    userDao.getContactsBySyncState(SyncState.PENDING_REMOVAL)
-                val request = contactsToRemove.mapNotNull {
-                    when (it.relationType) {
-                        INCOMING -> RemoveContactIdRequest(senderRemoteId = it.remoteId)
-                        OUTGOING -> RemoveContactIdRequest(receiverRemoteId = it.remoteId)
-                        FRIENDS -> RemoveContactIdRequest(contactRemoteId = it.remoteId)
-                        NONE -> null
-                    }
+    suspend fun sendDeleteContactRequests(): Result<Unit> =
+        performAuthenticatedAction(dispatcher) { authHeader ->
+            val contactsToRemove: List<UserContact> =
+                userDao.getContactsBySyncState(SyncState.PENDING_REMOVAL)
+            val request = contactsToRemove.mapNotNull {
+                when (it.relationType) {
+                    INCOMING -> RemoveContactIdRequest(senderRemoteId = it.remoteId)
+                    OUTGOING -> RemoveContactIdRequest(receiverRemoteId = it.remoteId)
+                    FRIENDS -> RemoveContactIdRequest(contactRemoteId = it.remoteId)
+                    NONE -> null
                 }
-                userApiService.deleteUserContact(authHeader, request)
-                userDao.deleteContacts(contactsToRemove)
             }
+            userApiService.deleteUserContact(authHeader, request)
+            userDao.deleteContacts(contactsToRemove)
         }
-    }
 }

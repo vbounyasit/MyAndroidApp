@@ -33,11 +33,13 @@ class UserProfileViewModel @Inject constructor(
     fun sendUserProfileUpdate(updateUserInput: UpdateUserInput): Job {
         return viewModelScope.launch {
             userRepository.updateUser(updateUserInput)
-            workManager.launchNetworkBackgroundTask<UpdateUserWorker>(
-                UniqueBackgroundTask(
-                    UPDATE_USER_WORK_NAME
-                ), initialDelay = Duration.ofMinutes(1)
-            )
+                .onSuccess {
+                    workManager.launchNetworkBackgroundTask<UpdateUserWorker>(
+                        UniqueBackgroundTask(
+                            UPDATE_USER_WORK_NAME
+                        ), initialDelay = Duration.ofMinutes(1)
+                    )
+                }
         }
     }
 }

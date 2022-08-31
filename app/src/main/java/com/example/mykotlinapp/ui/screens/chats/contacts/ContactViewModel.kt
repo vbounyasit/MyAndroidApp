@@ -30,11 +30,13 @@ class ContactViewModel @Inject constructor(
     fun removeContactOrRequest(remoteId: String) {
         viewModelScope.launch {
             userRepository.submitContactForDeletion(remoteId)
-            workManager.launchNetworkBackgroundTask<RemoveContactsWorker>(
-                UniqueBackgroundTask(
-                    REMOVE_CONTACTS_WORK_NAME
-                )
-            )
+                .onSuccess {
+                    workManager.launchNetworkBackgroundTask<RemoveContactsWorker>(
+                        UniqueBackgroundTask(
+                            REMOVE_CONTACTS_WORK_NAME
+                        )
+                    )
+                }
         }
     }
 

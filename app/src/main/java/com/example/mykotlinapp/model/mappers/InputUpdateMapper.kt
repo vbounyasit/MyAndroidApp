@@ -10,5 +10,5 @@ interface InputUpdateMapper<Input : InputDTO, Entity> {
      * @param inputData The update form input
      * @return The resulting database entity
      */
-    fun toLocalUpdateWithInput(inputData: Input): ((Entity) -> Entity)
+    fun toLocalUpdate(inputData: Input): ((Entity) -> Entity)
 }

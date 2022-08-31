@@ -65,7 +65,7 @@ class CommentRepository @Inject constructor(
             val comment: UserComment? = commentDao.getUserComment(updateCommentInput.remoteId)
             comment?.let {
                 commentDao.update(
-                    UpdateCommentMapper.toLocalUpdateWithInput(
+                    UpdateCommentMapper.toLocalUpdate(
                         updateCommentInput
                     )(it)
                 )
@@ -81,7 +81,7 @@ class CommentRepository @Inject constructor(
     suspend fun updateCommentVoteState(voteInput: UpdateCommentVoteInput) =
         withContext(dispatcher) {
             commentDao.getUserComment(voteInput.remoteId)?.let {
-                commentDao.update(UpdateCommentVoteMapper.toLocalUpdateWithInput(voteInput)(it))
+                commentDao.update(UpdateCommentVoteMapper.toLocalUpdate(voteInput)(it))
             }
         }
 

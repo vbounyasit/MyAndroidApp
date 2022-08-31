@@ -11,7 +11,7 @@ object UpdateGroupMapper :
     NetworkRequestMapper<GroupProperty, UpdateGroupRequest>,
     InputUpdateMapper<UpdateGroupInput, GroupProperty> {
 
-    override fun toLocalUpdateWithInput(inputData: UpdateGroupInput): (GroupProperty) -> GroupProperty {
+    override fun toLocalUpdate(inputData: UpdateGroupInput): (GroupProperty) -> GroupProperty {
         return {
             it.copy(
                 groupName = inputData.name ?: it.groupName,

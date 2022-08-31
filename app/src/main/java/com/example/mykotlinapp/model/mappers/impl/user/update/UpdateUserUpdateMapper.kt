@@ -20,7 +20,7 @@ object UpdateUserUpdateMapper : NetworkRequestMapper<User, UpdateUserRequest>,
         )
     }
 
-    override fun toLocalUpdateWithInput(inputData: UpdateUserInput): (User) -> User {
+    override fun toLocalUpdate(inputData: UpdateUserInput): (User) -> User {
         return {
             it.copy(
                 firstName = inputData.firstName,

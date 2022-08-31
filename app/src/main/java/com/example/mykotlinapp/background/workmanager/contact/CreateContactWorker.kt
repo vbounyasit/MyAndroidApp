@@ -20,9 +20,11 @@ class CreateContactWorker @AssistedInject constructor(
     override suspend fun doWork(): Result {
         return try {
             inputData.getString(WORK_CREATE_CONTACT_INPUT_KEY)?.let {
-                userRepository.createContactRequest(it)
                 val outputData = workDataOf(WORK_CREATE_CONTACT_INPUT_KEY to it)
-                Result.success(outputData)
+                if(userRepository.createContactRequest(it).isSuccess)
+                    Result.success(outputData)
+                else
+                    Result.failure()
             } ?: Result.failure()
         } catch (exception: Exception) {
             Result.failure()

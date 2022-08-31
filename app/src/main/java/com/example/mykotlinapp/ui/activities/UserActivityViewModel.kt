@@ -37,8 +37,10 @@ class UserActivityViewModel @Inject constructor(
     fun logIn(logInUserInput: LogInUserInput? = null) {
         _loginState.value = ApiRequestState.LOADING
         viewModelScope.launch {
-            val loginResult: Result<Unit> = logInUserInput?.let { userRepository.logUserIn(it) }
+            val loginResult: Result<Unit> = logInUserInput
+                ?.let { userRepository.logUserIn(it) }
                 ?: userRepository.retrieveAuthenticatedUserData()
+
             loginResult
                 .onSuccess { _loginState.value = ApiRequestState.SUCCESS }
                 .onFailure { exception ->
