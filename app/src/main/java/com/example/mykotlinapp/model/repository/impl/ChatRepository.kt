@@ -2,7 +2,6 @@ package com.example.mykotlinapp.model.repository.impl
 
 import android.content.Context
 import com.example.mykotlinapp.di.Qualifiers.IoDispatcher
-import com.example.mykotlinapp.domain.pojo.SyncState
 import com.example.mykotlinapp.model.dao.ChatDao
 import com.example.mykotlinapp.model.dao.GroupDao
 import com.example.mykotlinapp.model.dao.SharedPreferenceDao
@@ -22,6 +21,7 @@ import com.example.mykotlinapp.model.mappers.impl.chat.create.CreateChatMapper
 import com.example.mykotlinapp.model.mappers.impl.chat.create.PendingChatLogMapper
 import com.example.mykotlinapp.model.mappers.impl.group.GroupMapper
 import com.example.mykotlinapp.model.mappers.impl.user.UserContactMapper
+import com.example.mykotlinapp.model.repository.AppRepository
 import com.example.mykotlinapp.network.dto.requests.chat.CreateChatLogRequest
 import com.example.mykotlinapp.network.dto.requests.chat.CreateChatRequest
 import com.example.mykotlinapp.network.dto.responses.CreateOperationResponse
@@ -35,9 +35,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+//TODO remove chat AKA leave chat + participants update / add/remove
 class ChatRepository @Inject constructor(
     @ApplicationContext val context: Context,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
@@ -45,7 +45,7 @@ class ChatRepository @Inject constructor(
     private val chatApiService: ChatApiService,
     private val chatDao: ChatDao,
     private val groupDao: GroupDao,
-) {
+) : AppRepository(sharedPreferenceDao) {
 
     /**
      * Retrieve from local database
@@ -59,22 +59,14 @@ class ChatRepository @Inject constructor(
         chatDao.getChatItemsFlow().map { it.toList().map((ChatListItemMapper::toDTO)(context)) }
 
     /**
-     * Gets the chat data for a given chat remote id
-     *
-     * @param chatRemoteId The remote id of the chat to get the data for
-     * @return The chat property
-     */
-    suspend fun getChat(chatRemoteId: String): ChatDTO? =
-        chatDao.getChat(chatRemoteId)?.let((ChatPropertyMapper::toDTO)(context))
-
-    /**
      * Gets a chat property data to display
      *
      * @param chatRemoteId The remote id of the chat to get data for
      * @return A flow containing a chat property to display
      */
     fun getChatFlow(chatRemoteId: String): Flow<ChatDTO?> =
-        chatDao.getChatFlow(chatRemoteId).distinctUntilChanged()
+        chatDao.getChatFlow(chatRemoteId)
+            .distinctUntilChanged()
             .map { it?.let((ChatPropertyMapper::toDTO)(context)) }
 
     /**
@@ -84,8 +76,7 @@ class ChatRepository @Inject constructor(
      * @return A flow containing the list of chat participants
      */
     fun getChatParticipants(chatRemoteId: String): Flow<List<ChatParticipantDTO>> =
-        chatDao.getChatParticipantsFlow(chatRemoteId)
-            .map { participants -> participants.map { ChatParticipantMapper.toDTO(it) } }
+        chatDao.getChatParticipantsFlow(chatRemoteId).map { it.map(ChatParticipantMapper::toDTO) }
 
     /**
      * Get chat bubbles for a given chat to display
@@ -109,33 +100,6 @@ class ChatRepository @Inject constructor(
             .map { it.sortedBy(ChatBubbleDTO::creationTimeStamp) }
     }
 
-    /**
-     * Creates a notification out of the newly received chat logs alongside the chat history of unread messages
-     *
-     * @param logRemoteIds The newly received chat logs remote id
-     * @return The list of chat log notifications
-     */
-    suspend fun getChatLogsAppNotifications(logRemoteIds: List<String>): List<ChatLogsAppNotification>? {
-        return withContext(dispatcher) {
-            sharedPreferenceDao.getAuthUserRemoteId()?.let { userRemoteId ->
-                val newLogs = chatDao.getChatLogs(logRemoteIds)
-                val chatRemoteIds = newLogs.map(ChatLog::chatRemoteId).distinct()
-                val chatLogsWithChat: Map<ChatLog, ChatItem> =
-                    chatDao.getUnreadChatLogs(chatRemoteIds)
-                chatLogsWithChat.toList().groupBy { it.second }
-                    .map { (chatItem, value) ->
-                        val chatItemDTO = ChatItemMapper.toDTO(context)(chatItem)
-                        val chatLogs = value.map { ChatLogMapper.toDTO(context)(it.first) }
-                        ChatLogsAppNotification(
-                            userRemoteId,
-                            chatItemDTO,
-                            chatItemDTO.isGroupChat,
-                            chatLogs
-                        )
-                    }
-            }
-        }
-    }
 
     /**
      * Gets the amount of unread chat logs for a given chat to display
@@ -160,6 +124,34 @@ class ChatRepository @Inject constructor(
             }
         }
 
+    /**
+     * Creates a notification out of the newly received chat logs alongside the chat history of unread messages
+     *
+     * @param logRemoteIds The newly received chat logs remote id
+     * @return The list of chat log notifications
+     */
+    suspend fun getChatLogsAppNotifications(logRemoteIds: List<String>): Result<List<ChatLogsAppNotification>> {
+        return executeAction(dispatcher) {
+            sharedPreferenceDao.getAuthUserRemoteId()?.let { userRemoteId ->
+                val newLogs = chatDao.getChatLogsByIds(logRemoteIds)
+                val chatRemoteIds = newLogs.map(ChatLog::chatRemoteId).distinct()
+                val chatLogsWithChat: Map<ChatLog, ChatItem> = chatDao.getUnreadChatLogs(chatRemoteIds)
+                chatLogsWithChat.toList()
+                    .groupBy { it.second }
+                    .map { (chatItem, value) ->
+                        val chatItemDTO = ChatItemMapper.toDTO(context)(chatItem)
+                        val chatLogs = value.map { ChatLogMapper.toDTO(context)(it.first) }
+                        ChatLogsAppNotification(
+                            userRemoteId,
+                            chatItemDTO,
+                            chatItemDTO.isGroupChat,
+                            chatLogs
+                        )
+                    }
+            } ?: throw Exception("Unable to get authenticated user remote id")
+        }
+    }
+
 
     /**
      * Database
@@ -170,11 +162,8 @@ class ChatRepository @Inject constructor(
      *
      * @param createChatLogInput The Chat log creation input from the form (message bar)
      */
-    suspend fun createChatLog(createChatLogInput: CreateChatLogInput) {
-        withContext(dispatcher) {
-            chatDao.insert(PendingChatLogMapper.toEntity(createChatLogInput))
-        }
-    }
+    suspend fun createChatLog(createChatLogInput: CreateChatLogInput): Result<Unit> =
+        executeAction(dispatcher) { chatDao.insert(PendingChatLogMapper.toEntity(createChatLogInput)) }
 
     /**
      * Updates a local chat participant read time
@@ -182,13 +171,9 @@ class ChatRepository @Inject constructor(
      * @param chatReadMessage The chat read message object received from the server Socket connection
      */
     suspend fun updateChatParticipantReadTime(chatReadMessage: ChatReadMessage) {
-        withContext(dispatcher) {
-            chatDao.getChatParticipant(
-                chatReadMessage.participantRemoteId,
-                chatReadMessage.chatRemoteId
-            )?.let {
-                chatDao.update(it.copy(lastReadTime = chatReadMessage.readTime))
-            }
+        executeAction(dispatcher) {
+            chatDao.getChatParticipant(chatReadMessage.participantRemoteId, chatReadMessage.chatRemoteId)
+                ?.let { chatDao.update(it.copy(lastReadTime = chatReadMessage.readTime)) }
         }
     }
 
@@ -197,61 +182,71 @@ class ChatRepository @Inject constructor(
      *
      * @param chatListResponse The API response
      */
-    private suspend fun updateChatItemsFromResponse(chatListResponse: List<ChatItemResponse>) {
-        val pendingChats = chatDao.getPendingChats()
-        val newChats =
-            chatListResponse.asSequence().filter { !pendingChats.contains(it.chat.remoteId) }
-                .map { ChatItemMapper.toEntity(it) }.toList()
-        chatDao.clearChatItems(chatListResponse.map { it.chat.remoteId })
-        chatDao.insertChatItems(newChats)
-    }
+    private suspend fun updateChatItemsFromResponse(chatListResponse: List<ChatItemResponse>) =
+        updateData(
+            chatListResponse.map(ChatItemMapper::toEntity),
+            DataBulkOperations(
+                chatDao::getChatItemsByIds,
+                chatDao::insertChatItems,
+                chatDao::clearChatItemsNotIn
+            )
+        )
+
 
     /**
      * Updates a local chat property from the API response
      *
      * @param chatResponse The API response
      */
-    private suspend fun updateChatFromResponse(chatResponse: ChatResponse) {
-        val chat = chatDao.getChat(chatResponse.chat.remoteId)
-        if (chat == null || chat.syncState == SyncState.UP_TO_DATE)
-            chatDao.insert(ChatPropertyMapper.toEntity(chatResponse))
-    }
+    private suspend fun updateChatFromResponse(chatResponse: ChatResponse) =
+        updateEntity(
+            ChatPropertyMapper.toEntity(chatResponse),
+            DataOperations(
+                chatDao::getChat,
+                chatDao::insert
+            )
+        )
+
 
     /**
      * Updates local chat logs with the response received from the API
      *
      * @param chatLogsResponse The API response
      */
-    private suspend fun updateChatLogsFromResponse(chatLogsResponse: List<ChatLogResponse>) {
-        val pendingChatLogs = chatDao.getPendingChatLogs()
-        val newChatLogs =
-            chatLogsResponse.asSequence().filter { !pendingChatLogs.contains(it.remoteId) }
-                .map { ChatLogMapper.toEntity(it) }.toList()
-        chatDao.clearChatLogs(chatLogsResponse.map { it.remoteId })
-        chatDao.insertChatLogs(newChatLogs)
-    }
-
-    private suspend fun updateNewChatLogsFromResponse(chatLogsResponse: List<ChatLogResponse>) {
-        val newChatLogs = chatLogsResponse.map { ChatLogMapper.toEntity(it) }
-        chatDao.insertChatLogs(newChatLogs)
+    private suspend fun updateChatLogsFromResponse(chatLogsResponse: List<ChatLogResponse>, insert: Boolean = false) {
+        val newEntities = chatLogsResponse.map(ChatLogMapper::toEntity)
+        if (insert)
+            chatDao.insertChatLogs(newEntities)
+        else
+            updateData(
+                newEntities,
+                DataBulkOperations(
+                    chatDao::getChatLogsByIds,
+                    chatDao::insertChatLogs,
+                    chatDao::clearChatLogsNotIn
+                )
+            )
     }
 
     /**
      * Updates local chat notifications with the response received from the API
      *
      * @param chatNotificationsResponse The API response
-     * @param new Whether the notifications should only be added and not replace the local data
+     * @param insert Whether the notifications should only be added and not replace the local data
      */
-    private suspend fun updateChatNotificationsFromResponse(
-        chatNotificationsResponse: List<ChatNotificationResponse>,
-        new: Boolean = false
-    ) {
-        val pendingChatNotifications = chatDao.getPendingChatNotifications()
-        val newChatNotifications = chatNotificationsResponse.asSequence()
-            .filter { !pendingChatNotifications.contains(it.remoteId) }
-            .map { ChatNotificationMapper.toEntity(it) }.toList()
-        if (!new) chatDao.clearChatNotifications(chatNotificationsResponse.map { it.remoteId })
-        chatDao.insertChatNotifications(newChatNotifications)
+    private suspend fun updateChatNotificationsFromResponse(chatNotificationsResponse: List<ChatNotificationResponse>, insert: Boolean = false) {
+        val newEntities = chatNotificationsResponse.map(ChatNotificationMapper::toEntity)
+        if (insert)
+            chatDao.insertChatNotifications(newEntities)
+        else
+            updateData(
+                newEntities,
+                DataBulkOperations(
+                    chatDao::getChatNotificationsByIds,
+                    chatDao::insertChatNotifications,
+                    chatDao::clearChatNotificationsNotIn
+                )
+            )
     }
 
     /**
@@ -259,11 +254,14 @@ class ChatRepository @Inject constructor(
      *
      * @param chatResponse The API response
      */
-    private suspend fun updateChatGroupFromResponse(chatResponse: ChatResponse) {
-        val group = groupDao.getGroup(chatResponse.group.remoteId)
-        if (group == null || group.syncState == SyncState.UP_TO_DATE)
-            groupDao.insert(GroupMapper.toEntity(chatResponse))
-    }
+    private suspend fun updateChatGroupFromResponse(chatResponse: ChatResponse) =
+        updateEntity(
+            GroupMapper.toEntity(chatResponse),
+            DataOperations(
+                groupDao::getGroup,
+                groupDao::insert
+            )
+        )
 
     /**
      * Updates local chat participants with the response received from the API
@@ -271,7 +269,7 @@ class ChatRepository @Inject constructor(
      * @param chatResponse The API response
      */
     private suspend fun updateChatParticipantsFromResponse(chatResponse: ChatResponse) {
-        chatDao.clearChatParticipants(chatResponse.chat.remoteId)
+        chatDao.clearParticipantsByChat(chatResponse.chat.remoteId)
         chatDao.insertParticipants(ChatParticipantMapper.toEntity(chatResponse))
     }
 
@@ -289,35 +287,27 @@ class ChatRepository @Inject constructor(
      * @param createChatInput The chat creation form input
      * @return The newly created chat remote id
      */
-    suspend fun createChat(createChatInput: CreateChatInput): Result<String> {
-        return withContext(dispatcher) {
-            sharedPreferenceDao.getAPIAuthenticatedResult { authHeader ->
-                val request: CreateChatRequest = CreateChatMapper.toNetworkRequest(createChatInput)
-                val response: CreateOperationResponse =
-                    chatApiService.createChat(authHeader, request)
-                response.remoteId
-            }
+    suspend fun createChat(createChatInput: CreateChatInput): Result<String> =
+        executeAuthenticatedAction(dispatcher) { authHeader ->
+            val request: CreateChatRequest = CreateChatMapper.toNetworkRequest(createChatInput)
+            val response: CreateOperationResponse = chatApiService.createChat(authHeader, request)
+            response.remoteId
         }
-    }
 
     /**
      * Sends the chat logs creation requests from the locally saved pending chat creation requests
      *
      * @return A success or failure result
      */
-    suspend fun sendCreateChatLogs(): Result<Unit> {
-        return withContext(dispatcher) {
-            sharedPreferenceDao.performAPIAuthenticatedAction { authHeader ->
-                val chatLogsToCreate = chatDao.getPendingChatLogsCreations()
-                if (chatLogsToCreate.isNotEmpty()) {
-                    val request: List<CreateChatLogRequest> =
-                        chatLogsToCreate.map { toNetworkRequest(it) }
-                    chatApiService.createChatLogs(authHeader, request)
-                    chatDao.clearPendingChatLogsCreation()
-                }
+    suspend fun sendCreateChatLogs(): Result<Unit> =
+        executeAuthenticatedAction(dispatcher) { authHeader ->
+            val chatLogsToCreate = chatDao.getPendingChatLogsCreations()
+            if (chatLogsToCreate.isNotEmpty()) {
+                val request: List<CreateChatLogRequest> = chatLogsToCreate.map { toNetworkRequest(it) }
+                chatApiService.createChatLogs(authHeader, request)
+                chatDao.clearPendingChatLogsCreation()
             }
         }
-    }
 
     /**
      * Read
@@ -328,35 +318,28 @@ class ChatRepository @Inject constructor(
      *
      * @return A success or failure result
      */
-    suspend fun retrieveChatItems(): Result<Unit> {
-        return withContext(dispatcher) {
-            sharedPreferenceDao.performAPIAuthenticatedAction { authHeader ->
-                val chatListResponse: List<ChatItemResponse> =
-                    chatApiService.getChatItems(authHeader)
-                updateNewChatLogsFromResponse(chatListResponse.map { it.latestChatLog })
-                updateChatItemsFromResponse(chatListResponse)
-            }
+    suspend fun retrieveChatItems(): Result<Unit> =
+        executeAuthenticatedAction(dispatcher) { authHeader ->
+            val chatListResponse: List<ChatItemResponse> = chatApiService.getChatItems(authHeader)
+            updateChatLogsFromResponse(chatListResponse.map { it.latestChatLog })
+            updateChatItemsFromResponse(chatListResponse)
         }
-    }
 
     /**
      * Check for existence of the given chat items in local database, and retrieve the missing ones
      *
      * @param remoteIds The list of chat item remote ids to check for
      */
-    private suspend fun retrieveMissingChatItems(remoteIds: List<String>) {
-        return withContext(dispatcher) {
-            val existingChatItems: List<String> = chatDao.getExistingChatItemIds(remoteIds)
-            val missingChatItemIds = remoteIds.filterNot { existingChatItems.contains(it) }
-            if (missingChatItemIds.isNotEmpty()) {
-                sharedPreferenceDao.performAPIAuthenticatedAction { authHeader ->
-                    val chatListResponse: List<ChatItemResponse> =
-                        chatApiService.getChatItems(authHeader, missingChatItemIds)
-                    updateChatItemsFromResponse(chatListResponse)
-                }
+    private suspend fun retrieveNewChatItems(remoteIds: List<String>): Result<Unit> =
+        executeAuthenticatedAction(dispatcher) { authHeader ->
+            val existingChatItems: List<String> = chatDao.getChatItemIdsIn(remoteIds)
+            val newChatItemIds = remoteIds.filterNot { existingChatItems.contains(it) }
+            if (newChatItemIds.isNotEmpty()) {
+                val chatListResponse: List<ChatItemResponse> = chatApiService.getChatItems(authHeader, newChatItemIds)
+                updateChatItemsFromResponse(chatListResponse)
             }
         }
-    }
+
 
     /**
      * Retrieves a chat property from the API and saves them to the local database
@@ -364,17 +347,13 @@ class ChatRepository @Inject constructor(
      * @param chatRemoteId The remote id of the chat to retrieve data for
      * @return A success or failure result
      */
-    suspend fun retrieveChatData(chatRemoteId: String): Result<Unit> {
-        return withContext(dispatcher) {
-            sharedPreferenceDao.performAPIAuthenticatedAction { authHeader ->
-                val chatResponse: ChatResponse =
-                    chatApiService.getChatData(authHeader, chatRemoteId)
-                updateChatFromResponse(chatResponse)
-                updateChatParticipantsFromResponse(chatResponse)
-                updateChatGroupFromResponse(chatResponse)
-            }
+    suspend fun retrieveChatData(chatRemoteId: String): Result<Unit> =
+        executeAuthenticatedAction(dispatcher) { authHeader ->
+            val chatResponse: ChatResponse = chatApiService.getChatData(authHeader, chatRemoteId)
+            updateChatFromResponse(chatResponse)
+            updateChatParticipantsFromResponse(chatResponse)
+            updateChatGroupFromResponse(chatResponse)
         }
-    }
 
     /**
      * Retrieves the chat bubbles for a given chat from the API and saves them to the local database
@@ -382,16 +361,12 @@ class ChatRepository @Inject constructor(
      * @param chatRemoteId The remote id of the chat to retrieve chat logs for
      * @return A success or failure result
      */
-    suspend fun retrieveChatBubbles(chatRemoteId: String): Result<Unit> {
-        return withContext(dispatcher) {
-            sharedPreferenceDao.performAPIAuthenticatedAction { authHeader ->
-                val chatBubblesResponse: ChatBubblesResponse =
-                    chatApiService.getChatBubbles(authHeader, chatRemoteId)
-                updateChatLogsFromResponse(chatBubblesResponse.logs)
-                updateChatNotificationsFromResponse(chatBubblesResponse.notifications)
-            }
+    suspend fun retrieveChatBubbles(chatRemoteId: String): Result<Unit> =
+        executeAuthenticatedAction(dispatcher) { authHeader ->
+            val chatBubblesResponse: ChatBubblesResponse = chatApiService.getChatBubbles(authHeader, chatRemoteId)
+            updateChatLogsFromResponse(chatBubblesResponse.logs)
+            updateChatNotificationsFromResponse(chatBubblesResponse.notifications)
         }
-    }
 
     /**
      * Retrieves a list of chat logs with the given remote ids from the API and saves them to the local database
@@ -399,18 +374,13 @@ class ChatRepository @Inject constructor(
      * @param chatLogRemoteIds The remote ids of the chat logs to retrieve
      * @return A success or failure result
      */
-    suspend fun retrieveNewChatLogs(chatLogRemoteIds: List<String>): Result<Unit> {
-        return withContext(dispatcher) {
-            sharedPreferenceDao.performAPIAuthenticatedAction { authHeader ->
-                val response: List<ChatLogResponse> =
-                    chatApiService.getNewChatLogs(authHeader, chatLogRemoteIds)
-                val chatRemoteIds =
-                    response.asSequence().map { it.chatRemoteId }.distinct().toList()
-                updateNewChatLogsFromResponse(response)
-                retrieveMissingChatItems(chatRemoteIds)
-            }
+    suspend fun retrieveNewChatLogs(chatLogRemoteIds: List<String>): Result<Unit> =
+        executeAuthenticatedAction(dispatcher) { authHeader ->
+            val response: List<ChatLogResponse> = chatApiService.getNewChatLogs(authHeader, chatLogRemoteIds)
+            val responseUniqueRemoteIds = response.asSequence().map { it.chatRemoteId }.distinct().toList()
+            updateChatLogsFromResponse(response, true)
+            retrieveNewChatItems(responseUniqueRemoteIds)
         }
-    }
 
     /**
      * Retrieves a list of chat notifications with the given remote ids from the API and saves them to the local database
@@ -418,15 +388,11 @@ class ChatRepository @Inject constructor(
      * @param chatNotificationRemoteIds The remote id of the chat to retrieve chat notifications for
      * @return A success or failure result
      */
-    suspend fun retrieveNewChatNotifications(chatNotificationRemoteIds: List<String>): Result<Unit> {
-        return withContext(dispatcher) {
-            sharedPreferenceDao.performAPIAuthenticatedAction { authHeader ->
-                val response: List<ChatNotificationResponse> =
-                    chatApiService.getNewChatNotifications(authHeader, chatNotificationRemoteIds)
-                updateChatNotificationsFromResponse(response, true)
-            }
+    suspend fun retrieveNewChatNotifications(chatNotificationRemoteIds: List<String>): Result<Unit> =
+        executeAuthenticatedAction(dispatcher) { authHeader ->
+            val response: List<ChatNotificationResponse> = chatApiService.getNewChatNotifications(authHeader, chatNotificationRemoteIds)
+            updateChatNotificationsFromResponse(response, true)
         }
-    }
 
     /**
      * Update
@@ -439,20 +405,13 @@ class ChatRepository @Inject constructor(
      * @param chatRemoteId The remote id of the chat to read
      * @return A success or failure result
      */
-    suspend fun sendReadChat(chatRemoteId: String): Result<Unit> {
-        return withContext(dispatcher) {
-            sharedPreferenceDao.performAPIAuthenticatedAction { authHeader ->
-                val readChatResponse: ReadChatResponse =
-                    chatApiService.readChat(authHeader, chatRemoteId)
-                chatDao.updateReadChat(readChatResponse.chatRemoteId, readChatResponse.lastReadTime)
-                chatDao.updateReadChatItem(
-                    readChatResponse.chatRemoteId,
-                    readChatResponse.lastReadTime
-                )
-            }
+    suspend fun sendReadChat(chatRemoteId: String): Result<Unit> =
+        executeAuthenticatedAction(dispatcher) { authHeader ->
+            val readChatResponse: ReadChatResponse = chatApiService.readChat(authHeader, chatRemoteId)
+            chatDao.updateReadChat(readChatResponse.chatRemoteId, readChatResponse.lastReadTime)
+            chatDao.updateReadChatItem(
+                readChatResponse.chatRemoteId,
+                readChatResponse.lastReadTime
+            )
         }
-    }
-
-    //TODO remove chat AKA leave chat + participants update / add/remove
-
 }

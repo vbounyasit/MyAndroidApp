@@ -56,6 +56,11 @@ open class AppViewModel : ViewModel() {
         }
     }
 
+    override fun onCleared() {
+        setHttpRequestState(ApiRequestState.FINISHED)
+        super.onCleared()
+    }
+
     companion object {
 
         fun getWorkRequest(
@@ -93,8 +98,7 @@ open class AppViewModel : ViewModel() {
                     )
                 }
                 is UniqueBackgroundTask -> run {
-                    val workRequest =
-                        getWorkRequest(OneTimeWorkRequestBuilder<T>(), inputData, initialDelay)
+                    val workRequest = getWorkRequest(OneTimeWorkRequestBuilder<T>(), inputData, initialDelay)
                     this.beginUniqueWork(
                         workConfig.workName,
                         workConfig.existingWorkPolicy,
@@ -102,8 +106,7 @@ open class AppViewModel : ViewModel() {
                     ).enqueue()
                 }
                 is RegularBackgroundTask -> run {
-                    val workRequest =
-                        getWorkRequest(OneTimeWorkRequestBuilder<T>(), inputData, initialDelay)
+                    val workRequest = getWorkRequest(OneTimeWorkRequestBuilder<T>(), inputData, initialDelay)
                     this.beginWith(workRequest as OneTimeWorkRequest).enqueue()
                 }
             }

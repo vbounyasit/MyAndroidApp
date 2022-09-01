@@ -21,9 +21,10 @@ object ChatLogMapper :
             networkData.chatRemoteId,
             UserContactMapper.toEntity(networkData.author, ContactRelationType.NONE),
             networkData.content,
-            networkData.creationDate,
             networkData.isMe,
-            SyncState.UP_TO_DATE
+            SyncState.UP_TO_DATE,
+            networkData.creationTimeStamp,
+            networkData.updateTimeStamp
         )
     }
 
@@ -33,8 +34,8 @@ object ChatLogMapper :
                 entity.remoteId,
                 UserContactMapper.toDTO(context)(entity.author),
                 entity.content,
-                toChatLogTime(context, entity.creationDate),
-                entity.creationDate,
+                toChatLogTime(context, entity.creationTime),
+                entity.creationTime,
                 entity.isMe,
                 upToDate = true
             )

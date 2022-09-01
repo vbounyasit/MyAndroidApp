@@ -130,9 +130,10 @@ class MainActivityViewModel @Inject constructor(
             SocketEventListener<NewEntitiesMessage> { data ->
                 viewModelScope.launch {
                     chatRepository.retrieveNewChatLogs(data.remoteIds)
-                    chatRepository.getChatLogsAppNotifications(data.remoteIds)?.forEach {
-                        notificationComponent.sendChatNotification(it)
-                    }
+                        .onSuccess {//todo handle error
+                            chatRepository.getChatLogsAppNotifications(data.remoteIds)
+                                .onSuccess { it.forEach { notification -> notificationComponent.sendChatNotification(notification) } }
+                        }
                 }
             })
         socketComponent.addEvent(

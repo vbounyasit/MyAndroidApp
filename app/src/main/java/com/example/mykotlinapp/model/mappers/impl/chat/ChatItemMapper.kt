@@ -21,7 +21,9 @@ object ChatItemMapper : DTOContextMapper<ChatItem, ChatItemDTO>,
             networkData.lastActive,
             networkData.lastReadTime,
             networkData.isGroupChat,
-            SyncState.UP_TO_DATE
+            SyncState.UP_TO_DATE,
+            networkData.creationTimeStamp,
+            networkData.updateTimeStamp
         )
     }
 

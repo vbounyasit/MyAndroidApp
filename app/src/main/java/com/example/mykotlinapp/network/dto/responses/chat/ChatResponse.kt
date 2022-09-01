@@ -12,4 +12,6 @@ data class ChatResponse(
     val lastGroupReadTime: Long?,
     val isAdmin: Boolean,
     val participantsData: ChatParticipantsResponse,
+    val creationTimeStamp: Long,
+    val updateTimeStamp: Long
 )

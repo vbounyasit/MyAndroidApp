@@ -13,7 +13,7 @@ object ChatNotificationMapper : DTOMapper<ChatNotification, ChatNotificationDTO>
         return ChatNotificationDTO(
             entity.remoteId,
             entity.content,
-            entity.creationDate
+            entity.creationTime
         )
     }
 
@@ -22,8 +22,9 @@ object ChatNotificationMapper : DTOMapper<ChatNotification, ChatNotificationDTO>
             networkData.remoteId,
             networkData.chatRemoteId,
             networkData.content,
-            networkData.creationDate,
-            SyncState.UP_TO_DATE
+            SyncState.UP_TO_DATE,
+            networkData.creationTimeStamp,
+            networkData.updateTimeStamp
         )
     }
 }

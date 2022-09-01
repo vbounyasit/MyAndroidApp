@@ -7,6 +7,7 @@ data class ChatLogResponse(
     val chatRemoteId: String,
     val author: UserContactResponse,
     val content: String,
-    val creationDate: Long,
     val isMe: Boolean,
+    val creationTimeStamp: Long,
+    val updateTimeStamp: Long
 )

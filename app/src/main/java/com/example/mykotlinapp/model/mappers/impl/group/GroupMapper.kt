@@ -34,7 +34,9 @@ object GroupMapper :
             networkData.participantsData.remainingCount,
             networkData.lastGroupReadTime,
             networkData.isAdmin,
-            SyncState.UP_TO_DATE
+            SyncState.UP_TO_DATE,
+            networkData.creationTimeStamp,
+            networkData.updateTimeStamp
         )
 
     override fun toDTO(context: Context): (entity: GroupProperty) -> GroupDTO =

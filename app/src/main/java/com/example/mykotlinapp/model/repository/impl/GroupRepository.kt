@@ -91,20 +91,10 @@ class GroupRepository @Inject constructor(
                 updateGroupInput.name?.let { inputName ->
                     val chat = chatDao.getChat(foundGroup.chatRemoteId)
                     chat?.let { foundChat ->
-                        chatDao.update(
-                            UpdateChatMapper.toLocalUpdate(
-                                UpdateChatInput(
-                                    inputName
-                                )
-                            )(foundChat)
-                        )
+                        chatDao.update(UpdateChatMapper.toLocalUpdate(UpdateChatInput(inputName))(foundChat))
                     }
                 }
-                groupDao.update(
-                    UpdateGroupMapper.toLocalUpdate(updateGroupInput)(
-                        foundGroup
-                    )
-                )
+                groupDao.update(UpdateGroupMapper.toLocalUpdate(updateGroupInput)(foundGroup))
             }
         }
     }

@@ -75,14 +75,12 @@ class NotificationComponent(
                         notification.chatItem.remoteId
                     )
                 val replyPendingIntent =
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-                        PendingIntent.getBroadcast(
-                            context,
-                            NOTIFICATION_ID,
-                            replyIntent,
-                            PendingIntent.FLAG_UPDATE_CURRENT
-                        )
-                    else null
+                    PendingIntent.getBroadcast(
+                        context,
+                        NOTIFICATION_ID,
+                        replyIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                    )
                 val replyAction = NotificationCompat.Action.Builder(
                     R.drawable.ic_post_reply,
                     context.getString(R.string.notification_reply_icon_title),
@@ -149,19 +147,17 @@ class NotificationComponent(
      * @param channelName The name of the channel
      */
     fun createChatChannel(channelId: String, channelName: String) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationChannel = NotificationChannel(
-                channelId,
-                channelName,
-                NotificationManager.IMPORTANCE_HIGH
-            ).apply { setShowBadge(false) }
-            notificationChannel.enableLights(true)
-            notificationChannel.lightColor = Color.RED
-            notificationChannel.enableVibration(true)
-            notificationChannel.description =
-                context.getString(R.string.chat_notification_channel_desc)
-            notificationManager.createNotificationChannel(notificationChannel)
-        }
+        val notificationChannel = NotificationChannel(
+            channelId,
+            channelName,
+            NotificationManager.IMPORTANCE_HIGH
+        ).apply { setShowBadge(false) }
+        notificationChannel.enableLights(true)
+        notificationChannel.lightColor = Color.RED
+        notificationChannel.enableVibration(true)
+        notificationChannel.description =
+            context.getString(R.string.chat_notification_channel_desc)
+        notificationManager.createNotificationChannel(notificationChannel)
     }
 
     sealed interface AppNotification

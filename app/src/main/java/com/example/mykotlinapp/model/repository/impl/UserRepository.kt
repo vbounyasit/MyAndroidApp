@@ -198,7 +198,7 @@ class UserRepository @Inject constructor(
             DataBulkOperations(
                 userDao::getContactsByIds,
                 userDao::insert,
-                userDao::clearContacts
+                userDao::clearContactsNotIn
             )
         )
     }

@@ -58,7 +58,7 @@ interface UserDao {
     suspend fun deleteContacts(contacts: List<UserContact>)
 
     @Query("DELETE FROM user_contacts WHERE contact_remote_id NOT IN (:except)")
-    suspend fun clearContacts(except: List<String>)
+    suspend fun clearContactsNotIn(except: List<String>)
 
     /**
      * Flow

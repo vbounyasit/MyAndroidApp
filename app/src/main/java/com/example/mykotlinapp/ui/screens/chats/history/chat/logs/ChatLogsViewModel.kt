@@ -1,9 +1,13 @@
 package com.example.mykotlinapp.ui.screens.chats.history.chat.logs
 
 import androidx.lifecycle.*
+import androidx.work.Data
 import androidx.work.WorkManager
 import com.example.mykotlinapp.CREATE_CHAT_LOGS_WORK_NAME
+import com.example.mykotlinapp.WORK_REPLY_CHAT_CONTENT_INPUT_KEY
+import com.example.mykotlinapp.WORK_REPLY_CHAT_REMOTE_ID_INPUT_KEY
 import com.example.mykotlinapp.background.workmanager.chat.CreateChatLogsWorker
+import com.example.mykotlinapp.background.workmanager.chat.CreateReplyWorker
 import com.example.mykotlinapp.model.dto.inputs.form.chat.CreateChatLogInput
 import com.example.mykotlinapp.model.dto.ui.chat.ChatBubbleDTO
 import com.example.mykotlinapp.model.dto.ui.chat.ChatLogDTO
@@ -58,11 +62,15 @@ class ChatLogsViewModel @Inject constructor(
     fun createChatLog(content: String) {
         chatRemoteId.value?.let { remoteId ->
             viewModelScope.launch {
-                chatRepository.createChatLog(CreateChatLogInput(remoteId, content))
-                workManager.launchNetworkBackgroundTask<CreateChatLogsWorker>(
-                    UniqueBackgroundTask(
-                        CREATE_CHAT_LOGS_WORK_NAME
-                    )
+                val inputData: Data = run {
+                    val builder = Data.Builder()
+                    builder.putString(WORK_REPLY_CHAT_REMOTE_ID_INPUT_KEY, remoteId)
+                    builder.putString(WORK_REPLY_CHAT_CONTENT_INPUT_KEY, content)
+                    builder.build()
+                }
+                workManager.launchNetworkBackgroundTask<CreateReplyWorker>(
+                    BackgroundWorkConfig.RegularBackgroundTask,
+                    inputData
                 )
             }
         }
@@ -72,9 +80,7 @@ class ChatLogsViewModel @Inject constructor(
         _chatRemoteId.value = chatRemoteId
     }
 
-    fun readChat() {
-        chatRemoteId.value?.let { submitHttpRequest { chatRepository.sendReadChat(it) } }
-    }
+    fun readChat() = chatRemoteId.value?.let { submitHttpRequest { chatRepository.sendReadChat(it) } }
 
 
 }

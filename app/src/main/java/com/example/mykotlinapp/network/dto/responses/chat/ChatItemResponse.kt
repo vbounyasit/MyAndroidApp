@@ -8,4 +8,6 @@ data class ChatItemResponse(
     val lastReadTime: Long?,
     val latestChatLog: ChatLogResponse,
     val isGroupChat: Boolean,
+    val creationTimeStamp: Long,
+    val updateTimeStamp: Long
 )

@@ -64,7 +64,6 @@ class ChatWindowFragment : AppFragment(), WithViewPager {
     override fun registerObservers() {
         super.registerObservers()
         viewModel.chatRemoteId.observe(viewLifecycleOwner) {
-            viewModel.retrieveChatData(it)
             viewModel.retrieveChatLogs(it)
             sharedViewModel.notificationComponent.setCurrentChat(it)
         }

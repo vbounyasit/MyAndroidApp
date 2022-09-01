@@ -39,23 +39,20 @@ interface ChatDao {
     @Query("SELECT * from chats WHERE chat_remote_id = :remoteId")
     suspend fun getChat(remoteId: String): ChatProperty?
 
-    @Query("SELECT last_read from chats WHERE chat_remote_id = :remoteId")
-    suspend fun getChatReadTime(remoteId: String): Long?
-
-    @Query("SELECT * from chat_items WHERE chat_remote_id = :remoteId")
-    suspend fun getChatItem(remoteId: String): ChatItem?
+    @Query("SELECT * from chat_items WHERE chat_remote_id IN (:remoteIds)")
+    suspend fun getChatItemsByIds(remoteIds: List<String>): List<ChatItem>
 
     @Query("SELECT chat_remote_id from chat_items WHERE chat_remote_id IN (:remoteIds)")
-    suspend fun getExistingChatItemIds(remoteIds: List<String>): List<String>
+    suspend fun getChatItemIdsIn(remoteIds: List<String>): List<String>
 
-    @Query("SELECT COUNT(*) from chat_participants WHERE participant_chat_remote_id = :remoteId")
-    suspend fun getChatParticipantsCount(remoteId: String): Int
-
-    @Query("SELECT * FROM chat_logs JOIN chat_items ON chat_remote_id = log_chat_remote_id WHERE log_creation_date > chat_last_read AND chat_remote_id IN (:chatRemoteIds)")
+    @Query("SELECT * FROM chat_logs JOIN chat_items ON chat_remote_id = log_chat_remote_id WHERE log_creation_time > chat_last_read AND chat_remote_id IN (:chatRemoteIds)")
     suspend fun getUnreadChatLogs(chatRemoteIds: List<String>): Map<ChatLog, ChatItem>
 
     @Query("SELECT * from chat_logs WHERE log_remote_id IN (:remoteIds)")
-    suspend fun getChatLogs(remoteIds: List<String>): List<ChatLog>
+    suspend fun getChatLogsByIds(remoteIds: List<String>): List<ChatLog>
+
+    @Query("SELECT * from chat_notifications WHERE remoteId IN (:remoteIds)")
+    suspend fun getChatNotificationsByIds(remoteIds: List<String>): List<ChatNotification>
 
     @Query("SELECT * from chats WHERE sync_state = :syncState")
     suspend fun getChatsBySyncState(syncState: SyncState): List<ChatProperty>
@@ -63,17 +60,8 @@ interface ChatDao {
     @Query("SELECT * from chat_participants WHERE participant_remote_id = :remoteId AND participant_chat_remote_id = :chatRemoteId")
     suspend fun getChatParticipant(remoteId: String, chatRemoteId: String): ChatParticipant?
 
-    @Query("SELECT chat_remote_id from chats WHERE sync_state != :syncState")
-    suspend fun getPendingChats(syncState: SyncState = SyncState.UP_TO_DATE): List<String>
-
     @Query("SELECT * from pending_chat_logs_creation")
     suspend fun getPendingChatLogsCreations(): List<PendingChatLogCreation>
-
-    @Query("SELECT log_remote_id from chat_logs WHERE log_sync_state != :syncState")
-    suspend fun getPendingChatLogs(syncState: SyncState = SyncState.UP_TO_DATE): List<String>
-
-    @Query("SELECT remoteId from chat_notifications WHERE sync_state != :syncState")
-    suspend fun getPendingChatNotifications(syncState: SyncState = SyncState.UP_TO_DATE): List<String>
 
     /**
      * Update
@@ -98,20 +86,17 @@ interface ChatDao {
      * Delete
      */
 
-    @Query("DELETE from chat_items WHERE chat_sync_state = :syncState AND chat_remote_id NOT IN (:except)")
-    suspend fun clearChatItems(except: List<String>, syncState: SyncState = SyncState.UP_TO_DATE)
+    @Query("DELETE from chat_items WHERE chat_remote_id NOT IN (:except)")
+    suspend fun clearChatItemsNotIn(except: List<String>)
 
     @Query("DELETE from chat_participants WHERE participant_chat_remote_id = :chatRemoteId")
-    suspend fun clearChatParticipants(chatRemoteId: String)
+    suspend fun clearParticipantsByChat(chatRemoteId: String)
 
-    @Query("DELETE from chat_logs WHERE log_sync_state = :syncState AND log_remote_id NOT IN (:except)")
-    suspend fun clearChatLogs(except: List<String>, syncState: SyncState = SyncState.UP_TO_DATE)
+    @Query("DELETE from chat_logs WHERE log_remote_id NOT IN (:except)")
+    suspend fun clearChatLogsNotIn(except: List<String>)
 
-    @Query("DELETE from chat_notifications WHERE sync_state = :syncState AND remoteId NOT IN (:except)")
-    suspend fun clearChatNotifications(
-        except: List<String>,
-        syncState: SyncState = SyncState.UP_TO_DATE
-    )
+    @Query("DELETE from chat_notifications WHERE remoteId NOT IN (:except)")
+    suspend fun clearChatNotificationsNotIn(except: List<String>)
 
     @Query("DELETE from pending_chat_logs_creation")
     suspend fun clearPendingChatLogsCreation()
@@ -123,14 +108,14 @@ interface ChatDao {
     @Query("SELECT * from chats WHERE chat_remote_id = :chatRemoteId")
     fun getChatFlow(chatRemoteId: String): Flow<ChatProperty?>
 
-    @Query("SELECT COUNT(*) from chat_logs JOIN chats ON log_chat_remote_id = chat_remote_id WHERE log_chat_remote_id = :chatRemoteId AND (last_read IS null OR log_creation_date > last_read)")
-    fun getUnreadChatLogsCountFlow(chatRemoteId: String): Flow<Int>
-
-    @Query("SELECT * FROM chat_items JOIN chat_logs ON chat_remote_id = log_chat_remote_id GROUP BY chat_remote_id HAVING log_creation_date = MAX(log_creation_date)")
-    fun getChatItemsFlow(): Flow<Map<ChatItem, ChatLog>>
-
     @Query("SELECT * from chat_logs WHERE log_chat_remote_id = :chatRemoteId")
     fun getChatLogsFlow(chatRemoteId: String): Flow<List<ChatLog>>
+
+    @Query("SELECT * from chat_notifications WHERE chat_remote_id = :chatRemoteId")
+    fun getChatNotificationsFlow(chatRemoteId: String): Flow<List<ChatNotification>>
+
+    @Query("SELECT * from pending_chat_logs_creation WHERE chat_remote_id = :chatRemoteId")
+    fun getPendingChatLogsFlow(chatRemoteId: String): Flow<List<PendingChatLogCreation>>
 
     @Query("SELECT * from chat_participants WHERE participant_chat_remote_id = :chatRemoteId")
     fun getChatParticipantsFlow(chatRemoteId: String): Flow<List<ChatParticipant>>
@@ -138,9 +123,10 @@ interface ChatDao {
     @Query("SELECT * FROM chat_participants LEFT JOIN user_contacts ON participant_remote_id = contact_remote_id WHERE participant_chat_remote_id = :chatRemoteId")
     fun getContactParticipantsFlow(chatRemoteId: String): Flow<Map<ChatParticipant, UserContact?>>
 
-    @Query("SELECT * from pending_chat_logs_creation WHERE chat_remote_id = :chatRemoteId")
-    fun getPendingChatLogsFlow(chatRemoteId: String): Flow<List<PendingChatLogCreation>>
+    @Query("SELECT COUNT(*) from chat_logs JOIN chats ON log_chat_remote_id = chat_remote_id WHERE log_chat_remote_id = :chatRemoteId AND (last_read IS null OR log_creation_time > last_read)")
+    fun getUnreadChatLogsCountFlow(chatRemoteId: String): Flow<Int>
 
-    @Query("SELECT * from chat_notifications WHERE chat_remote_id = :chatRemoteId")
-    fun getChatNotificationsFlow(chatRemoteId: String): Flow<List<ChatNotification>>
+    @Query("SELECT * FROM chat_items JOIN chat_logs ON chat_remote_id = log_chat_remote_id GROUP BY chat_remote_id HAVING log_creation_time = MAX(log_creation_time)")
+    fun getChatItemsFlow(): Flow<Map<ChatItem, ChatLog>>
+
 }

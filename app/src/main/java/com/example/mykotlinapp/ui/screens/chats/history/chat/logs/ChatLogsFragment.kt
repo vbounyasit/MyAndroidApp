@@ -26,21 +26,17 @@ class ChatLogsFragment : AppFragment() {
         binding = FragmentChatLogsBinding.inflate(inflater)
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
-        arguments?.getBoolean(getString(R.string.is_group_chat))?.let {
-            binding.chatBubbleList.adapter = ChatLogsAdapter(
-                it,
-                requireContext().resources.getDimension(R.dimen.chat_participant_read_pic_size)
-                    .toInt()
-            )
-        }
         arguments?.getString(getString(R.string.chat_remote_id))?.let {
             viewModel.updateChatRemoteId(it)
+        }
+        arguments?.getBoolean(getString(R.string.is_group_chat))?.let {
+            binding.chatBubbleList.adapter = ChatLogsAdapter(it, requireContext().resources.getDimension(R.dimen.chat_participant_read_pic_size).toInt())
+            scrollToLatestChatLog()
         }
         return binding.root
     }
 
-    override fun registerObservers() {
-        super.registerObservers()
+    private fun scrollToLatestChatLog() {
         binding.chatBubbleList.adapter?.let {
             it.registerAdapterDataObserver(object : AdapterDataObserver() {
                 override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
@@ -53,6 +49,10 @@ class ChatLogsFragment : AppFragment() {
                 }
             })
         }
+    }
+
+    override fun registerListeners() {
+        super.registerListeners()
         binding.chatMessageToolbar.chatMessageInputField.setOnEditorActionListener { view, _, _ ->
             val input = view.text.toString().trim()
             if (input.isNotBlank()) {

@@ -4,12 +4,14 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.mykotlinapp.domain.pojo.SyncState
+import com.example.mykotlinapp.model.entity.SyncData
+import com.example.mykotlinapp.model.entity.TimeStampData
 
 @Entity(tableName = "groups")
 data class GroupProperty(
     @PrimaryKey
     @ColumnInfo(name = "group_remote_id")
-    val remoteId: String,
+    override val remoteId: String,
     @ColumnInfo(name = "linked_chat_remote_id")
     val chatRemoteId: String,
     @ColumnInfo(name = "group_name")
@@ -27,5 +29,9 @@ data class GroupProperty(
     @ColumnInfo(name = "is_admin")
     val isAdmin: Boolean,
     @ColumnInfo(name = "sync_state")
-    val syncState: SyncState,
-)
+    override val syncState: SyncState,
+    @ColumnInfo(name = "creation_time")
+    override val creationTime: Long,
+    @ColumnInfo(name = "update_time")
+    override val updateTime: Long
+): SyncData, TimeStampData

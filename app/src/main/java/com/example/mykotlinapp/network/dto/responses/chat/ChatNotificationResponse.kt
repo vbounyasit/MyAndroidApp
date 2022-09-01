@@ -4,5 +4,6 @@ data class ChatNotificationResponse(
     val remoteId: String,
     val chatRemoteId: String,
     val content: String,
-    val creationDate: Long,
+    val creationTimeStamp: Long,
+    val updateTimeStamp: Long
 )

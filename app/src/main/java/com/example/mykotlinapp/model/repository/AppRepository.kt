@@ -20,7 +20,7 @@ open class AppRepository(private val sharedPreferenceDao: SharedPreferenceDao) {
      * @param action The action to execute
      * @return The Result of the action
      */
-    suspend fun executeAction(dispatcher: CoroutineDispatcher, action: suspend () -> Unit): Result<Unit> =
+    suspend fun <T> executeAction(dispatcher: CoroutineDispatcher, action: suspend () -> T): Result<T> =
         withContext(dispatcher) {
             try {
                 Result.success(action())

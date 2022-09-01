@@ -27,7 +27,7 @@ class ChatListItemMapperTest : WordSpec({
     every { Utils.toChatLogTime(any(), any()) } returns "Now"
 
     fun getChatItem(remoteId: String, isGroupChat: Boolean): ChatItem =
-        ChatItem(remoteId, "chatName", "picture1", 0, null, isGroupChat, SyncState.UP_TO_DATE)
+        ChatItem(remoteId, "chatName", "picture1", 0, null, isGroupChat, SyncState.UP_TO_DATE, 0, 0)
 
     fun getChatLog(
         chatLogRemoteId: String,
@@ -50,9 +50,10 @@ class ChatListItemMapperTest : WordSpec({
                 SyncState.UP_TO_DATE
             ),
             "content",
-            0,
             isMe,
-            SyncState.UP_TO_DATE
+            SyncState.UP_TO_DATE,
+            0,
+            0
         )
 
     data class Result(val chatItemRemoteId: String, val read: Boolean, val logContent: String)
@@ -68,7 +69,7 @@ class ChatListItemMapperTest : WordSpec({
             "with chat read time < last log creation date - compute the correct content and be READ" {
                 //Given
                 val input: Pair<ChatItem, ChatLog> = with(baseInput) {
-                    copy(first.copy(lastReadTime = 5), second.copy(creationDate = 10))
+                    copy(first.copy(lastReadTime = 5), second.copy(creationTime = 10))
                 }
                 //When
                 val chatListItemDTO: ChatListItemDTO = ChatListItemMapper.toDTO(context)(input)
@@ -82,7 +83,7 @@ class ChatListItemMapperTest : WordSpec({
             "with chat read time >= last log creation date - compute the correct content and be READ" {
                 //Given
                 val input: Pair<ChatItem, ChatLog> = with(baseInput) {
-                    copy(first.copy(lastReadTime = 10), second.copy(creationDate = 5))
+                    copy(first.copy(lastReadTime = 10), second.copy(creationTime = 5))
                 }
                 //When
                 val chatListItemDTO: ChatListItemDTO = ChatListItemMapper.toDTO(context)(input)
@@ -108,7 +109,7 @@ class ChatListItemMapperTest : WordSpec({
             "with chat read time < last log creation date - compute the correct content and be NOT READ" {
                 //Given
                 val input: Pair<ChatItem, ChatLog> = with(baseInput) {
-                    copy(first.copy(lastReadTime = 5), second.copy(creationDate = 10))
+                    copy(first.copy(lastReadTime = 5), second.copy(creationTime = 10))
                 }
                 //When
                 val chatListItemDTO: ChatListItemDTO = ChatListItemMapper.toDTO(context)(input)
@@ -122,7 +123,7 @@ class ChatListItemMapperTest : WordSpec({
             "with chat read time >= last log creation date - compute the correct content and be read" {
                 //Given
                 val input: Pair<ChatItem, ChatLog> = with(baseInput) {
-                    copy(first.copy(lastReadTime = 10), second.copy(creationDate = 5))
+                    copy(first.copy(lastReadTime = 10), second.copy(creationTime = 5))
                 }
                 //When
                 val chatListItemDTO: ChatListItemDTO = ChatListItemMapper.toDTO(context)(input)

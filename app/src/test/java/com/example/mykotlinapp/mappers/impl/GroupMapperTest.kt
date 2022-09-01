@@ -24,7 +24,9 @@ class GroupMapperTest : StringSpec({
             0,
             null,
             true,
-            SyncState.UP_TO_DATE
+            SyncState.UP_TO_DATE,
+            0,
+            0
         )
 
     data class Result(val remoteId: String, val groupName: String, val groupPictures: List<String>)

@@ -23,7 +23,9 @@ object ChatPropertyMapper :
             networkData.lastActive,
             networkData.lastReadTime,
             networkData.isAdmin,
-            SyncState.UP_TO_DATE
+            SyncState.UP_TO_DATE,
+            networkData.creationTimeStamp,
+            networkData.updateTimeStamp
         )
     }
 

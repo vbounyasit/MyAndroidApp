@@ -1,4 +1,4 @@
-package com.example.mykotlinapp
+package com.example.mykotlinapp.dao
 
 class TestLocalStorage<Entity, Index>(val getIndex: (Entity) -> Index) {
 
@@ -10,6 +10,8 @@ class TestLocalStorage<Entity, Index>(val getIndex: (Entity) -> Index) {
 
     fun get(index: Index): Entity? = localStorage.find { getIndex(it) == index }
 
+    fun getAll(): List<Entity> = localStorage
+
     fun getWhen(predicate: (Entity) -> Boolean): Entity? = localStorage.find(predicate)
 
     fun getAllWhen(predicate: (Entity) -> Boolean): List<Entity> = localStorage.filter(predicate)
@@ -19,6 +21,18 @@ class TestLocalStorage<Entity, Index>(val getIndex: (Entity) -> Index) {
         return if (existingIndex >= 0) localStorage.set(existingIndex, entity) != entity
         else if (upsert) localStorage.add(entity)
         else false
+    }
+
+    fun updateAll(entities: List<Entity>, upsert: Boolean = true): Boolean {
+        val dictionary: Map<Index, Entity> = entities.associateBy(getIndex)
+        val newEntries = mutableListOf<Entity>()
+        localStorage.forEachIndexed { index, entity ->
+            dictionary[getIndex(entity)]?.let {
+                localStorage[index] = entity
+            } ?: newEntries.add(entity)
+        }
+        if (upsert) insert(newEntries)
+        return true
     }
 
     fun delete(index: Index): Boolean = localStorage.removeIf { getIndex(it) == index }

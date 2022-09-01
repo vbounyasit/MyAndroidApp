@@ -1,7 +1,7 @@
 package com.example.mykotlinapp.dao.impl
 
-import com.example.mykotlinapp.TestLocalStorage
 import com.example.mykotlinapp.dao.TestDao
+import com.example.mykotlinapp.dao.TestLocalStorage
 import com.example.mykotlinapp.domain.pojo.ContactRelationType
 import com.example.mykotlinapp.domain.pojo.SyncState
 import com.example.mykotlinapp.model.dao.UserDao
@@ -53,7 +53,7 @@ class UserTestDao : UserDao, TestDao {
         userContactLocalStorage.deleteEntities(contacts)
     }
 
-    override suspend fun clearContacts(except: List<String>) {
+    override suspend fun clearContactsNotIn(except: List<String>) {
         userContactLocalStorage.deleteWhen { !except.contains(it.remoteId) }
     }
 

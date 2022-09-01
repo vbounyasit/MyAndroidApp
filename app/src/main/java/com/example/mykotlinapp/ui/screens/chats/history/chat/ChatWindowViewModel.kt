@@ -22,26 +22,22 @@ class ChatWindowViewModel @Inject constructor(
 
     val chatRemoteId: LiveData<String> = _chatRemoteId
 
-    val groupRemoteId: LiveData<String?> = _chatRemoteId.switchMap {
-        liveData {
-            emit(chatRepository.getChat(it)?.groupRemoteId)
-        }
-    }
-
     val chatData: LiveData<ChatDTO?> = _chatRemoteId.switchMap {
         chatRepository.getChatFlow(it).asLiveData()
     }
-    val chatMetaData: LiveData<ChatMetaData?> = _chatRemoteId.switchMap { remoteId ->
-        liveData {
-            val chatData = chatRepository.getChat(remoteId)
-            emit(chatData?.let {
-                ChatMetaData(
-                    it.remoteId,
-                    it.groupRemoteId,
-                    it.isAdmin,
-                    it.profilePictures.size > 1
-                )
-            })
+
+    val groupRemoteId: LiveData<String?> = chatData.distinctUntilChanged().map {
+        it?.let(ChatDTO::groupRemoteId)
+    }
+
+    val chatMetaData: LiveData<ChatMetaData?> = chatData.distinctUntilChanged().map {
+        it?.let {
+            ChatMetaData(
+                it.remoteId,
+                it.groupRemoteId,
+                it.isAdmin,
+                it.profilePictures.size > 1
+            )
         }
     }
 
@@ -50,16 +46,12 @@ class ChatWindowViewModel @Inject constructor(
     }
 
     val unreadPostsCount: LiveData<Int> = groupRemoteId.switchMap { remoteId ->
-        remoteId?.let { groupRepository.getUnreadPostsCount(it).asLiveData() }
-            ?: liveData { emit(0) }
+        remoteId?.let { groupRepository.getUnreadPostsCount(it).asLiveData() } ?: liveData { emit(0) }
     }
 
     fun updateChatRemoteId(chatRemoteId: String) {
         _chatRemoteId.value = chatRemoteId
     }
-
-    fun retrieveChatData(chatRemoteId: String) =
-        submitHttpRequest { chatRepository.retrieveChatData(chatRemoteId) }
 
     fun retrieveChatLogs(chatRemoteId: String) =
         submitHttpRequest { chatRepository.retrieveChatBubbles(chatRemoteId) }
