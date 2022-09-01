@@ -14,6 +14,8 @@ object UserResponses {
         val description: String?,
         val gender: Gender,
         val age: Int,
+        val creationTimeStamp: Long,
+        val updateTimeStamp: Long
     )
 
     data class UserSettingsResponse(

@@ -35,7 +35,9 @@ object UserMapper : NetworkResponseMapper<UserResponse, User>, DTOMapper<User, U
             networkData.description,
             networkData.gender,
             networkData.age,
-            SyncState.UP_TO_DATE
+            SyncState.UP_TO_DATE,
+            networkData.creationTimeStamp,
+            networkData.updateTimeStamp
         )
     }
 

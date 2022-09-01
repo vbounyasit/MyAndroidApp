@@ -9,6 +9,8 @@ import com.example.mykotlinapp.network.socket.SocketComponent
 import com.example.mykotlinapp.ui.components.DialogFormFragmentManager
 import com.example.mykotlinapp.ui.components.drawer.BottomDrawerManager
 import com.example.mykotlinapp.ui.components.notifications.NotificationComponent
+import com.example.mykotlinapp.utils.AppTimeProvider
+import com.example.mykotlinapp.utils.TimeProvider
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -55,4 +57,7 @@ class ComponentsModule {
 
     @Provides
     fun provideMoshi(): Moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+
+    @Provides
+    fun provideTimeUtils(): TimeProvider = AppTimeProvider()
 }

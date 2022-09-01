@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.mykotlinapp.domain.pojo.ContactRelationType
 import com.example.mykotlinapp.domain.pojo.SyncState
+import com.example.mykotlinapp.model.entity.SyncData
 import com.example.mykotlinapp.ui.components.recycler_view.RecyclerViewItem
 
 @Entity(tableName = "user_contacts")
@@ -27,5 +28,5 @@ data class UserContact(
     @ColumnInfo(name = "contact_relation_type")
     val relationType: ContactRelationType,
     @ColumnInfo(name = "contact_sync_state")
-    val syncState: SyncState,
-) : RecyclerViewItem
+    override val syncState: SyncState,
+) : RecyclerViewItem, SyncData

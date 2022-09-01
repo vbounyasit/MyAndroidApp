@@ -1,5 +1,7 @@
-package com.example.mykotlinapp.dao
+package com.example.mykotlinapp.dao.impl
 
+import com.example.mykotlinapp.TestLocalStorage
+import com.example.mykotlinapp.dao.TestDao
 import com.example.mykotlinapp.domain.pojo.ContactRelationType
 import com.example.mykotlinapp.domain.pojo.SyncState
 import com.example.mykotlinapp.model.dao.UserDao
@@ -29,11 +31,11 @@ class UserTestDao : UserDao, TestDao {
     override suspend fun getContact(remoteId: String): UserContact? =
         userContactLocalStorage.get(remoteId)
 
+    override suspend fun getContactsByIds(remoteIds: List<String>): List<UserContact> =
+        userContactLocalStorage.getAllWhen { remoteIds.contains(it.remoteId) }
+
     override suspend fun getContactsBySyncState(syncState: SyncState): List<UserContact> =
         userContactLocalStorage.getAllWhen { it.syncState == syncState }
-
-    override suspend fun getContactIdsByNotSyncState(syncState: SyncState): List<String> =
-        userContactLocalStorage.getAllWhen { it.syncState != syncState }.map { it.remoteId }
 
     override suspend fun update(user: User) {
         userLocalStorage.update(user)
@@ -51,8 +53,8 @@ class UserTestDao : UserDao, TestDao {
         userContactLocalStorage.deleteEntities(contacts)
     }
 
-    override suspend fun clearContacts(except: List<String>, syncState: SyncState) {
-        userContactLocalStorage.deleteWhen { it.syncState == syncState && !except.contains(it.remoteId) }
+    override suspend fun clearContacts(except: List<String>) {
+        userContactLocalStorage.deleteWhen { !except.contains(it.remoteId) }
     }
 
     override fun getUserFlow(remoteId: String): Flow<User?> = flow {

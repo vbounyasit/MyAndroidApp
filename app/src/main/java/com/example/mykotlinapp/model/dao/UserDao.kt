@@ -32,11 +32,11 @@ interface UserDao {
     @Query("SELECT * FROM user_contacts WHERE contact_remote_id = :remoteId")
     suspend fun getContact(remoteId: String): UserContact?
 
+    @Query("SELECT * from user_contacts WHERE contact_remote_id IN (:remoteIds)")
+    suspend fun getContactsByIds(remoteIds: List<String>): List<UserContact>
+
     @Query("SELECT * from user_contacts WHERE contact_sync_state = :syncState")
     suspend fun getContactsBySyncState(syncState: SyncState): List<UserContact>
-
-    @Query("SELECT contact_remote_id from user_contacts WHERE contact_sync_state != :syncState")
-    suspend fun getContactIdsByNotSyncState(syncState: SyncState): List<String>
 
     /**
      * Update
@@ -57,8 +57,8 @@ interface UserDao {
     @Delete
     suspend fun deleteContacts(contacts: List<UserContact>)
 
-    @Query("DELETE FROM user_contacts WHERE contact_sync_state = :syncState AND contact_remote_id NOT IN (:except)")
-    suspend fun clearContacts(except: List<String>, syncState: SyncState = SyncState.UP_TO_DATE)
+    @Query("DELETE FROM user_contacts WHERE contact_remote_id NOT IN (:except)")
+    suspend fun clearContacts(except: List<String>)
 
     /**
      * Flow

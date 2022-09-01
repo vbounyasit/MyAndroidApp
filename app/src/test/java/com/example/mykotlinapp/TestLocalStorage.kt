@@ -1,4 +1,4 @@
-package com.example.mykotlinapp.dao
+package com.example.mykotlinapp
 
 class TestLocalStorage<Entity, Index>(val getIndex: (Entity) -> Index) {
 

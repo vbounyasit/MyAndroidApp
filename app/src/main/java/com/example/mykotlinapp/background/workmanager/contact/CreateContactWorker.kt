@@ -21,7 +21,7 @@ class CreateContactWorker @AssistedInject constructor(
         return try {
             inputData.getString(WORK_CREATE_CONTACT_INPUT_KEY)?.let {
                 val outputData = workDataOf(WORK_CREATE_CONTACT_INPUT_KEY to it)
-                if(userRepository.createContactRequest(it).isSuccess)
+                if (userRepository.createContactRequest(it).isSuccess)
                     Result.success(outputData)
                 else
                     Result.failure()

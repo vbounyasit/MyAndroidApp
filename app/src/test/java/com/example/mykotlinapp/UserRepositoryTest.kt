@@ -1,7 +1,7 @@
 package com.example.mykotlinapp
 
 import android.content.Context
-import com.example.mykotlinapp.dao.UserTestDao
+import com.example.mykotlinapp.dao.impl.UserTestDao
 import com.example.mykotlinapp.domain.pojo.ContactRelationType
 import com.example.mykotlinapp.domain.pojo.Gender
 import com.example.mykotlinapp.domain.pojo.SyncState
@@ -15,6 +15,7 @@ import com.example.mykotlinapp.model.mappers.impl.user.UserContactMapper
 import com.example.mykotlinapp.model.mappers.impl.user.UserMapper
 import com.example.mykotlinapp.model.repository.impl.UserRepository
 import com.example.mykotlinapp.network.service.UserApiService
+import com.example.mykotlinapp.utils.TimeProvider
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
@@ -45,7 +46,7 @@ class UserRepositoryTest : WordSpec({
 
     val user = User(
         authUserRemoteId, "mail1", "firstName1", "lastName1", "profile", "bg", "desc",
-        Gender.MALE, 15, SyncState.UP_TO_DATE
+        Gender.MALE, 15, SyncState.UP_TO_DATE, 0, 0
     )
 
     fun newContact(firstName: String = "firstName", lastName: String = "lastName", relationType: ContactRelationType = ContactRelationType.FRIENDS) = UserContact(
@@ -55,13 +56,17 @@ class UserRepositoryTest : WordSpec({
 
     beforeTest {
         runTest {
+            val timeProvider = object : TimeProvider {
+                override fun provideCurrentTimeMillis(): Long = 0
+            }
             userRepository = UserRepository(
                 context,
                 apiService,
                 appDatabase,
                 UnconfinedTestDispatcher(),
                 userDao,
-                sharedPreferenceDao
+                sharedPreferenceDao,
+                timeProvider
             )
         }
     }

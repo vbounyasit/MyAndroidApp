@@ -57,8 +57,7 @@ class WelcomePageFragment : AppFragment() {
 
     private fun skipWelcomePage(): Boolean {
         //skip welcome page if user logged out
-        val shouldSkip =
-            requireActivity().intent.getBooleanExtra(getString(R.string.skip_welcome_page), false)
+        val shouldSkip = requireActivity().intent.getBooleanExtra(getString(R.string.skip_welcome_page), false)
         if (shouldSkip) viewModel.navigateToUserPage()
         return shouldSkip
     }
