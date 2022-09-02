@@ -21,20 +21,20 @@ object PostMapper : DTOContextMapper<Pair<UserPost, List<PostMedia>>, PostDTO>,
             networkData.groupRemoteId,
             networkData.creator.fullName,
             networkData.creator.profilePicture,
-            networkData.creationDate,
-            networkData.editDate,
             networkData.content,
             networkData.votesCount,
             networkData.commentsCount,
             networkData.voteState.getVoteStateValue(),
             networkData.isCreator,
-            SyncState.UP_TO_DATE
+            SyncState.UP_TO_DATE,
+            networkData.creationTimeStamp,
+            networkData.updateTimeStamp
         )
     }
 
     override fun toDTO(context: Context): (entity: Pair<UserPost, List<PostMedia>>) -> PostDTO =
         { (post, media) ->
-            val timePosted: String = toTimeAgo(context, post.time)
+            val timePosted: String = toTimeAgo(context, post.creationTime)
             PostDTO(
                 post.remoteId,
                 post.groupRemoteId,
@@ -47,7 +47,7 @@ object PostMapper : DTOContextMapper<Pair<UserPost, List<PostMedia>>, PostDTO>,
                 post.commentsCount.getFormattedAmount(),
                 post.voteState,
                 post.isCreator,
-                post.editTime != null
+                post.updateTime > post.creationTime
             )
         }
 

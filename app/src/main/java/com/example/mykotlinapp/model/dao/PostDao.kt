@@ -14,7 +14,7 @@ interface PostDao {
      */
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(userPosts: UserPost)
+    suspend fun insert(userPost: UserPost)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUserPosts(userPosts: List<UserPost>)
@@ -29,11 +29,15 @@ interface PostDao {
     @Query("SELECT * from user_posts WHERE post_remote_id = :postRemoteId")
     suspend fun getUserPost(postRemoteId: String): UserPost?
 
-    @Query("SELECT * from user_posts WHERE sync_state = :syncState")
-    suspend fun getPostsBySyncState(syncState: SyncState): List<UserPost>
+    @Query("SELECT * FROM user_posts WHERE post_remote_id IN (:remoteIds)")
+    suspend fun getUserPostsByIds(remoteIds: List<String>): List<UserPost>
 
-    @Query("SELECT post_remote_id from user_posts WHERE sync_state != :syncState")
-    suspend fun getPendingPosts(syncState: SyncState = SyncState.UP_TO_DATE): List<String>
+    @Query("SELECT * FROM post_medias WHERE post_media_remote_id IN (:remoteIds)")
+    suspend fun getPostMediasByIds(remoteIds: List<String>): List<PostMedia>
+
+
+    @Query("SELECT * from user_posts WHERE post_sync_state = :syncState")
+    suspend fun getPostsBySyncState(syncState: SyncState): List<UserPost>
 
     @Query("SELECT is_creator from user_posts WHERE post_remote_id = :postRemoteId")
     suspend fun isCreator(postRemoteId: String): Boolean?
@@ -52,11 +56,11 @@ interface PostDao {
     @Delete
     suspend fun deletePosts(posts: List<UserPost>)
 
-    @Query("DELETE FROM user_posts WHERE sync_state = :syncState AND post_remote_id NOT IN (:except)")
-    suspend fun clearPosts(except: List<String>, syncState: SyncState = SyncState.UP_TO_DATE)
+    @Query("DELETE FROM user_posts WHERE post_remote_id NOT IN (:except)")
+    suspend fun clearPostsNotIn(except: List<String>)
 
-    @Query("DELETE FROM post_medias WHERE sync_state = :syncState AND post_media_remote_id NOT IN (:except)")
-    suspend fun clearPostMedias(except: List<String>, syncState: SyncState = SyncState.UP_TO_DATE)
+    @Query("DELETE FROM post_medias WHERE post_media_remote_id NOT IN (:except)")
+    suspend fun clearPostMediasNotIn(except: List<String>)
 
     /**
      * Flow
@@ -68,7 +72,7 @@ interface PostDao {
     @Query("SELECT * from post_medias WHERE parent_post_remote_id = :postRemoteId")
     fun getPostImagesFlow(postRemoteId: String): Flow<List<PostMedia>>
 
-    @Query("SELECT * from user_posts LEFT JOIN post_medias ON user_posts.post_remote_id = post_medias.parent_post_remote_id WHERE user_posts.parent_group_remote_id = :groupRemoteId ORDER BY post_time DESC")
+    @Query("SELECT * from user_posts LEFT JOIN post_medias ON post_remote_id = parent_post_remote_id WHERE parent_group_remote_id = :groupRemoteId ORDER BY post_creation_time DESC")
     fun getUserPostsWithImagesFlow(groupRemoteId: String): Flow<Map<UserPost, List<PostMedia>>>
 
 }

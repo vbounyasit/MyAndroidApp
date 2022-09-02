@@ -30,7 +30,6 @@ import kotlinx.coroutines.test.runTest
 class UserRepositoryTest : WordSpec({
 
     val authUserRemoteId = "authUserRemoteId"
-    val userContactRemoteId = "contactRemoteId"
 
     val apiService = mockk<UserApiService>()
     val appDatabase = mockk<AppDatabase>()
@@ -49,8 +48,8 @@ class UserRepositoryTest : WordSpec({
         Gender.MALE, 15, SyncState.UP_TO_DATE, 0, 0
     )
 
-    fun newContact(firstName: String = "firstName", lastName: String = "lastName", relationType: ContactRelationType = ContactRelationType.FRIENDS) = UserContact(
-        userContactRemoteId, firstName, lastName, "$firstName $lastName", "profile", "desc",
+    fun newContact(remoteId: String, firstName: String = "firstName", lastName: String = "lastName", relationType: ContactRelationType = ContactRelationType.FRIENDS) = UserContact(
+        remoteId, firstName, lastName, "$firstName $lastName", "profile", "desc",
         0, relationType, SyncState.UP_TO_DATE
     )
 
@@ -88,12 +87,12 @@ class UserRepositoryTest : WordSpec({
 
     "getUserContactsWithRequests and getUserContacts" should {
         val contacts = listOf(
-            newContact("first4", "last4", ContactRelationType.FRIENDS),
-            newContact("first1", "last1", ContactRelationType.INCOMING),
-            newContact("first2", "last2", ContactRelationType.INCOMING),
-            newContact("first3", "last3", ContactRelationType.OUTGOING),
-            newContact("first5", "last5", ContactRelationType.FRIENDS),
-            newContact("first6", "last6", ContactRelationType.FRIENDS),
+            newContact("remote4", "first4", "last4", ContactRelationType.FRIENDS),
+            newContact("remote1", "first1", "last1", ContactRelationType.INCOMING),
+            newContact("remote2", "first2", "last2", ContactRelationType.INCOMING),
+            newContact("remote3", "first3", "last3", ContactRelationType.OUTGOING),
+            newContact("remote5", "first5", "last5", ContactRelationType.FRIENDS),
+            newContact("remote6", "first6", "last6", ContactRelationType.FRIENDS),
         )
         "get friend contacts when we call getUserContacts" {
             runTest {
@@ -102,9 +101,9 @@ class UserRepositoryTest : WordSpec({
                 //When
                 val userContacts = userRepository.getUserContacts().first()
                 val expected: List<UserContactDTO> = listOf(
-                    newContact("first4", "last4", ContactRelationType.FRIENDS),
-                    newContact("first5", "last5", ContactRelationType.FRIENDS),
-                    newContact("first6", "last6", ContactRelationType.FRIENDS),
+                    newContact("remote4", "first4", "last4", ContactRelationType.FRIENDS),
+                    newContact("remote5", "first5", "last5", ContactRelationType.FRIENDS),
+                    newContact("remote6", "first6", "last6", ContactRelationType.FRIENDS),
                 ).map((UserContactMapper::toDTO)(context))
                 //Then
                 userContacts shouldBe expected
@@ -117,11 +116,11 @@ class UserRepositoryTest : WordSpec({
                 //When
                 val userContacts = userRepository.getUserContactsWithRequests().first()
                 val expected: List<UserContactDTO> = listOf(
-                    newContact("first1", "last1", ContactRelationType.INCOMING),
-                    newContact("first2", "last2", ContactRelationType.INCOMING),
-                    newContact("first4", "last4", ContactRelationType.FRIENDS),
-                    newContact("first5", "last5", ContactRelationType.FRIENDS),
-                    newContact("first6", "last6", ContactRelationType.FRIENDS),
+                    newContact("remote1", "first1", "last1", ContactRelationType.INCOMING),
+                    newContact("remote2", "first2", "last2", ContactRelationType.INCOMING),
+                    newContact("remote4", "first4", "last4", ContactRelationType.FRIENDS),
+                    newContact("remote5", "first5", "last5", ContactRelationType.FRIENDS),
+                    newContact("remote6", "first6", "last6", ContactRelationType.FRIENDS),
                 ).map((UserContactMapper::toDTO)(context))
                 //Then
                 userContacts shouldBe expected
@@ -155,13 +154,14 @@ class UserRepositoryTest : WordSpec({
         "correctly update a contact for deletion" {
             runTest {
                 //Given
-                val contact = newContact()
+                val remoteId = "remoteId"
+                val contact = newContact(remoteId)
                 userDao.insert(user)
                 userDao.insert(listOf(contact))
                 //When
-                userRepository.submitContactForDeletion(userContactRemoteId)
+                userRepository.submitContactForDeletion(remoteId)
                 //Then
-                userDao.getContact(userContactRemoteId) shouldBe contact.copy(syncState = SyncState.PENDING_REMOVAL)
+                userDao.getContact(remoteId) shouldBe contact.copy(syncState = SyncState.PENDING_REMOVAL)
             }
         }
     }

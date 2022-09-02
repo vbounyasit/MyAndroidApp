@@ -10,10 +10,10 @@ data class CommentResponse(
     val voteCount: Int,
     val depthLevel: Int,
     val isLast: Boolean,
-    val creationDate: Long,
-    val editDate: Long?,
     val parentRemoteId: String?,
     val voteState: Int,
     val creator: UserContactResponse,
     val isCreator: Boolean,
+    val creationTimeStamp: Long,
+    val updateTimeStamp: Long
 )

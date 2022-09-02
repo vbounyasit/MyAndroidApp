@@ -9,12 +9,12 @@ import com.example.mykotlinapp.model.dto.inputs.form.comment.CreateCommentInput
 import com.example.mykotlinapp.model.dto.inputs.form.comment.UpdateCommentInput
 import com.example.mykotlinapp.model.dto.inputs.form.comment.UpdateCommentVoteInput
 import com.example.mykotlinapp.model.dto.ui.post.CommentDTO
-import com.example.mykotlinapp.model.entity.post.UserComment
 import com.example.mykotlinapp.model.mappers.impl.comment.CommentMapper
 import com.example.mykotlinapp.model.mappers.impl.comment.create.CreateCommentMapper
 import com.example.mykotlinapp.model.mappers.impl.comment.delete.DeleteCommentMapper
 import com.example.mykotlinapp.model.mappers.impl.comment.update.UpdateCommentMapper
 import com.example.mykotlinapp.model.mappers.impl.comment.update.UpdateCommentVoteMapper
+import com.example.mykotlinapp.model.repository.AppRepository
 import com.example.mykotlinapp.network.dto.requests.comment.CreateCommentRequest
 import com.example.mykotlinapp.network.dto.requests.comment.DeleteCommentRequest
 import com.example.mykotlinapp.network.dto.requests.comment.UpdateCommentRequest
@@ -27,16 +27,15 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class CommentRepository @Inject constructor(
     @ApplicationContext val context: Context,
     @Qualifiers.IoDispatcher private val dispatcher: CoroutineDispatcher,
-    private val sharedPreferenceDao: SharedPreferenceDao,
+    sharedPreferenceDao: SharedPreferenceDao,
     private val commentApiService: CommentApiService,
     private val commentDao: CommentDao,
-) {
+) : AppRepository(sharedPreferenceDao) {
 
     /**
      * Retrieve local data
@@ -60,29 +59,24 @@ class CommentRepository @Inject constructor(
      *
      * @param updateCommentInput The update comment form input
      */
-    suspend fun updateComment(updateCommentInput: UpdateCommentInput) {
-        withContext(dispatcher) {
-            val comment: UserComment? = commentDao.getUserComment(updateCommentInput.remoteId)
-            comment?.let {
-                commentDao.update(
-                    UpdateCommentMapper.toLocalUpdate(
-                        updateCommentInput
-                    )(it)
-                )
-            }
+    suspend fun updateComment(updateCommentInput: UpdateCommentInput): Result<Unit> =
+        executeAction(dispatcher) {
+            commentDao
+                .getUserComment(updateCommentInput.remoteId)
+                ?.let(UpdateCommentMapper.toLocalUpdate(updateCommentInput))
+                ?.let { commentDao.update(it) }
         }
-    }
 
     /**
      * Updates a local comment vote state
      *
      * @param voteInput The comment vote input
      */
-    suspend fun updateCommentVoteState(voteInput: UpdateCommentVoteInput) =
-        withContext(dispatcher) {
-            commentDao.getUserComment(voteInput.remoteId)?.let {
-                commentDao.update(UpdateCommentVoteMapper.toLocalUpdate(voteInput)(it))
-            }
+    suspend fun updateCommentVoteState(voteInput: UpdateCommentVoteInput): Result<Unit> =
+        executeAction(dispatcher) {
+            commentDao.getUserComment(voteInput.remoteId)
+                ?.let(UpdateCommentVoteMapper.toLocalUpdate(voteInput))
+                ?.let { commentDao.update(it) }
         }
 
     /**
@@ -90,26 +84,27 @@ class CommentRepository @Inject constructor(
      *
      * @param commentRemoteId The remote id of the comment to submit for deletion
      */
-    suspend fun submitCommentForDeletion(commentRemoteId: String) {
-        withContext(dispatcher) {
+    suspend fun submitCommentForDeletion(commentRemoteId: String): Result<Unit> =
+        executeAction(dispatcher) {
             commentDao.getUserComment(commentRemoteId)?.let {
                 commentDao.update(it.copy(syncState = SyncState.PENDING_REMOVAL))
             }
         }
-    }
 
     /**
      * Updates local comments with the response received from the API
      *
      * @param commentResponseList The API response
      */
-    private suspend fun updateCommentsFromResponse(commentResponseList: List<CommentResponse>) {
-        val pendingComments = commentDao.getPendingComments()
-        val newComments =
-            CommentMapper.toEntity(commentResponseList.filter { !pendingComments.contains(it.remoteId) })
-        commentDao.clearComments(commentResponseList.map { it.remoteId })
-        commentDao.insertUserComments(newComments)
-    }
+    private suspend fun updateCommentsFromResponse(commentResponseList: List<CommentResponse>) =
+        updateData(
+            CommentMapper.toEntity(commentResponseList),
+            DataBulkOperations(
+                commentDao::getUserCommentsByIds,
+                commentDao::insertUserComments,
+                commentDao::clearCommentsNotIn
+            )
+        )
 
     /**
      * Network
@@ -131,21 +126,18 @@ class CommentRepository @Inject constructor(
         groupRemoteId: String,
         postRemoteId: String,
         createCommentInput: CreateCommentInput
-    ): Result<String> {
-        return withContext(dispatcher) {
-            sharedPreferenceDao.getAPIAuthenticatedResult { authHeader ->
-                val request: CreateCommentRequest =
-                    CreateCommentMapper.toNetworkRequest(createCommentInput)
-                val response: CreateOperationResponse = commentApiService.createComment(
+    ): Result<String> =
+        executeAuthenticatedAction(dispatcher) { authHeader ->
+            val request: CreateCommentRequest = CreateCommentMapper.toNetworkRequest(createCommentInput)
+            val response: CreateOperationResponse =
+                commentApiService.createComment(
                     authHeader,
                     groupRemoteId,
                     postRemoteId,
                     request
                 )
-                response.remoteId
-            }
+            response.remoteId
         }
-    }
 
     /**
      * Read
@@ -158,15 +150,12 @@ class CommentRepository @Inject constructor(
      * @param postRemoteId The remote id of the post to retrieve the comments for
      * @return A success or failure result
      */
-    suspend fun retrieveCommentList(groupRemoteId: String, postRemoteId: String): Result<Unit> {
-        return withContext(dispatcher) {
-            sharedPreferenceDao.performAPIAuthenticatedAction { authHeader ->
-                val commentListResponse: List<CommentResponse> =
-                    commentApiService.getCommentList(authHeader, groupRemoteId, postRemoteId)
-                updateCommentsFromResponse(commentListResponse)
-            }
+    suspend fun retrieveCommentList(groupRemoteId: String, postRemoteId: String): Result<Unit> =
+        executeAuthenticatedAction(dispatcher) { authHeader ->
+            val commentListResponse: List<CommentResponse> =
+                commentApiService.getCommentList(authHeader, groupRemoteId, postRemoteId)
+            updateCommentsFromResponse(commentListResponse)
         }
-    }
 
     /**
      * Update
@@ -177,42 +166,36 @@ class CommentRepository @Inject constructor(
      *
      * @return A success or failure result
      */
-    suspend fun sendUpdateComments(): Result<Unit> {
-        return withContext(dispatcher) {
-            sharedPreferenceDao.performAPIAuthenticatedAction { authHeader ->
-                val commentsToUpdate = commentDao.getCommentsBySyncState(SyncState.PENDING_UPDATE)
-                if (commentsToUpdate.isNotEmpty()) {
-                    val request: List<UpdateCommentRequest> =
-                        commentsToUpdate.map { UpdateCommentMapper.toNetworkRequest(it) }
-                    val response: UpdateOperationResponse =
-                        commentApiService.updateComments(authHeader, request)
-                    if (response.modified == commentsToUpdate.size)
-                        commentDao.insertUserComments(commentsToUpdate.map { it.copy(syncState = SyncState.UP_TO_DATE) })
-                }
+    suspend fun sendUpdateComments(): Result<Unit> =
+        executeAuthenticatedAction(dispatcher) { authHeader ->
+            val commentsToUpdate = commentDao.getUserCommentsBySyncState(SyncState.PENDING_UPDATE)
+            if (commentsToUpdate.isNotEmpty()) {
+                val request: List<UpdateCommentRequest> =
+                    commentsToUpdate.map { UpdateCommentMapper.toNetworkRequest(it) }
+                val response: UpdateOperationResponse =
+                    commentApiService.updateComments(authHeader, request)
+                if (response.modified == commentsToUpdate.size)
+                    commentDao.insertUserComments(commentsToUpdate.map { it.copy(syncState = SyncState.UP_TO_DATE) })
             }
         }
-    }
 
     /**
      * Sends an update request to the API for the locally updated comment votes
      *
      * @return A success or failure result
      */
-    suspend fun sendUpdateCommentVoteStates(): Result<Unit> {
-        return withContext(dispatcher) {
-            sharedPreferenceDao.performAPIAuthenticatedAction { authHeader ->
-                val commentsToUpdate = commentDao.getCommentsBySyncState(SyncState.PENDING_UPDATE)
-                if (commentsToUpdate.isNotEmpty()) {
-                    val request: List<UpdateCommentVoteRequest> =
-                        commentsToUpdate.map { UpdateCommentVoteMapper.toNetworkRequest(it) }
-                    val response: UpdateOperationResponse =
-                        commentApiService.updateCommentVotes(authHeader, request)
-                    if (response.modified == commentsToUpdate.size)
-                        commentDao.insertUserComments(commentsToUpdate.map { it.copy(syncState = SyncState.UP_TO_DATE) })
-                }
+    suspend fun sendUpdateCommentVoteStates(): Result<Unit> =
+        executeAuthenticatedAction(dispatcher) { authHeader ->
+            val commentsToUpdate = commentDao.getUserCommentsBySyncState(SyncState.PENDING_UPDATE)
+            if (commentsToUpdate.isNotEmpty()) {
+                val request: List<UpdateCommentVoteRequest> =
+                    commentsToUpdate.map { UpdateCommentVoteMapper.toNetworkRequest(it) }
+                val response: UpdateOperationResponse =
+                    commentApiService.updateCommentVotes(authHeader, request)
+                if (response.modified == commentsToUpdate.size)
+                    commentDao.insertUserComments(commentsToUpdate.map { it.copy(syncState = SyncState.UP_TO_DATE) })
             }
         }
-    }
 
     /**
      * Delete
@@ -223,17 +206,13 @@ class CommentRepository @Inject constructor(
      *
      * @return A success or failure result
      */
-    suspend fun sendDeleteComments(): Result<Unit> {
-        return withContext(dispatcher) {
-            sharedPreferenceDao.performAPIAuthenticatedAction { authHeader ->
-                val commentsToRemove = commentDao.getCommentsBySyncState(SyncState.PENDING_REMOVAL)
-                if (commentsToRemove.isNotEmpty()) {
-                    val request: List<DeleteCommentRequest> =
-                        commentsToRemove.map { DeleteCommentMapper.toNetworkRequest(it) }
-                    commentApiService.deleteComments(authHeader, request)
-                    commentDao.deleteComments(commentsToRemove)
-                }
+    suspend fun sendDeleteComments(): Result<Unit> =
+        executeAuthenticatedAction(dispatcher) { authHeader ->
+            val commentsToRemove = commentDao.getUserCommentsBySyncState(SyncState.PENDING_REMOVAL)
+            if (commentsToRemove.isNotEmpty()) {
+                val request: List<DeleteCommentRequest> = commentsToRemove.map { DeleteCommentMapper.toNetworkRequest(it) }
+                commentApiService.deleteComments(authHeader, request)
+                commentDao.deleteComments(commentsToRemove)
             }
         }
-    }
 }

@@ -22,11 +22,11 @@ interface CommentDao {
     @Query("SELECT * from user_comments WHERE remote_id = :commentRemoteId")
     suspend fun getUserComment(commentRemoteId: String): UserComment?
 
-    @Query("SELECT * from user_comments WHERE sync_state = :syncState")
-    suspend fun getCommentsBySyncState(syncState: SyncState): List<UserComment>
+    @Query("SELECT * FROM user_comments WHERE remote_id IN (:remoteIds)")
+    suspend fun getUserCommentsByIds(remoteIds: List<String>): List<UserComment>
 
-    @Query("SELECT remote_id from user_comments WHERE sync_state != :syncState")
-    suspend fun getPendingComments(syncState: SyncState = SyncState.UP_TO_DATE): List<String>
+    @Query("SELECT * from user_comments WHERE sync_state = :syncState")
+    suspend fun getUserCommentsBySyncState(syncState: SyncState): List<UserComment>
 
     /**
      * Update
@@ -42,8 +42,8 @@ interface CommentDao {
     @Delete
     suspend fun deleteComments(comments: List<UserComment>)
 
-    @Query("DELETE FROM user_comments WHERE sync_state = :syncState AND remote_id NOT IN (:except)")
-    suspend fun clearComments(except: List<String>, syncState: SyncState = SyncState.UP_TO_DATE)
+    @Query("DELETE FROM user_comments WHERE remote_id NOT IN (:except)")
+    suspend fun clearCommentsNotIn(except: List<String>)
 
     /**
      * Flow

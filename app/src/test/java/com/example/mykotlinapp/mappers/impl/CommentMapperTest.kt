@@ -35,15 +35,15 @@ class CommentMapperTest : StringSpec({
         "name",
         "picture1",
         "content",
-        0,
-        null,
         1,
         depthLevel,
         isLast,
         VoteState.NONE,
         true,
         0,
-        SyncState.UP_TO_DATE
+        SyncState.UP_TO_DATE,
+        0,
+        0
     )
 
     data class Result(val remoteId: String, val depthFlags: List<Boolean>)

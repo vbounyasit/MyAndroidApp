@@ -26,7 +26,7 @@ interface GroupDao {
     @Query("SELECT * from groups WHERE group_remote_id = :remoteId")
     suspend fun getGroup(remoteId: String): GroupProperty?
 
-    @Query("SELECT * from groups WHERE sync_state = :syncState")
+    @Query("SELECT * from groups WHERE group_sync_state = :syncState")
     suspend fun getGroupsBySyncState(syncState: SyncState): List<GroupProperty>
 
     @Query("SELECT is_admin from groups WHERE group_remote_id = :remoteId")
@@ -52,7 +52,7 @@ interface GroupDao {
     @Query("SELECT * from groups WHERE group_remote_id = :remoteId")
     fun getGroupFlow(remoteId: String): Flow<GroupProperty?>
 
-    @Query("SELECT COUNT(*) from user_posts JOIN groups ON parent_group_remote_id = group_remote_id WHERE group_remote_id = :groupRemoteId AND (last_read IS null OR post_time > last_read)")
+    @Query("SELECT COUNT(*) from user_posts JOIN groups ON parent_group_remote_id = group_remote_id WHERE group_remote_id = :groupRemoteId AND (last_read IS null OR post_creation_time > last_read)")
     fun getUnreadPostsCountFlow(groupRemoteId: String): Flow<Int>
 
 }

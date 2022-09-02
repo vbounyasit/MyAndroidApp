@@ -28,10 +28,10 @@ data class GroupProperty(
     val lastReadTime: Long?,
     @ColumnInfo(name = "is_admin")
     val isAdmin: Boolean,
-    @ColumnInfo(name = "sync_state")
+    @ColumnInfo(name = "group_sync_state")
     override val syncState: SyncState,
-    @ColumnInfo(name = "creation_time")
+    @ColumnInfo(name = "group_creation_time")
     override val creationTime: Long,
-    @ColumnInfo(name = "update_time")
+    @ColumnInfo(name = "group_update_time")
     override val updateTime: Long
 ): SyncData, TimeStampData

@@ -48,11 +48,11 @@ class GroupViewModel @Inject constructor(
     fun sendGroupUpdate(updateGroupInput: UpdateGroupInput): Job {
         val result = viewModelScope.launch {
             groupRepository.updateGroup(updateGroupInput)
-            workManager.launchNetworkBackgroundTask<UpdateGroupWorker>(
-                UniqueBackgroundTask(
-                    UPDATE_GROUP_WORK_NAME
-                )
-            )
+                .onSuccess {
+                    workManager.launchNetworkBackgroundTask<UpdateGroupWorker>(
+                        UniqueBackgroundTask(UPDATE_GROUP_WORK_NAME)
+                    )
+                }
         }
         return result
     }

@@ -5,12 +5,14 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.mykotlinapp.domain.pojo.SyncState
 import com.example.mykotlinapp.domain.pojo.VoteState
+import com.example.mykotlinapp.model.entity.SyncData
+import com.example.mykotlinapp.model.entity.TimeStampData
 
 @Entity(tableName = "user_comments")
 data class UserComment(
     @PrimaryKey
     @ColumnInfo(name = "remote_id")
-    val remoteId: String,
+    override val remoteId: String,
     @ColumnInfo(name = "parent_post_remote_id")
     val parentPostRemoteId: String,
     @ColumnInfo(name = "parent_group_remote_id")
@@ -23,10 +25,6 @@ data class UserComment(
     val commenterProfilePicture: String,
     @ColumnInfo(name = "content")
     val content: String,
-    @ColumnInfo(name = "time")
-    val time: Long,
-    @ColumnInfo(name = "edit_time")
-    val editTime: Long?,
     @ColumnInfo(name = "votes_count")
     val votesCount: Int,
     @ColumnInfo(name = "depth_level")
@@ -40,5 +38,9 @@ data class UserComment(
     @ColumnInfo(name = "order_index")
     val index: Int,
     @ColumnInfo(name = "sync_state")
-    val syncState: SyncState,
-)
+    override val syncState: SyncState,
+    @ColumnInfo(name = "creation_time")
+    override val creationTime: Long,
+    @ColumnInfo(name = "update_time")
+    override val updateTime: Long
+): SyncData, TimeStampData

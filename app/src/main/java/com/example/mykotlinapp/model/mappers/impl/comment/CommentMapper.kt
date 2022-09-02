@@ -25,27 +25,25 @@ object CommentMapper :
                 commentResponse.creator.fullName,
                 commentResponse.creator.profilePicture,
                 commentResponse.content,
-                commentResponse.creationDate,
-                commentResponse.editDate,
                 commentResponse.voteCount,
                 commentResponse.depthLevel,
                 commentResponse.isLast,
                 commentResponse.voteState.getVoteStateValue(),
                 commentResponse.isCreator,
                 index,
-                SyncState.UP_TO_DATE
+                SyncState.UP_TO_DATE,
+                commentResponse.creationTimeStamp,
+                commentResponse.updateTimeStamp
             )
         }
     }
 
     override fun toDTO(context: Context): (entity: List<UserComment>) -> List<CommentDTO> =
         { entity ->
-            val depthFLags =
-                BooleanArray(context.resources.getInteger(R.integer.comments_max_depth)) { true }
+            val depthFLags = BooleanArray(context.resources.getInteger(R.integer.comments_max_depth)) { true }
             entity.map {
-                val timePosted: String = toTimeAgo(context, it.time)
-                if (it.isLast && it.depthLevel > 0)
-                    depthFLags[it.depthLevel - 1] = false
+                val timePosted: String = toTimeAgo(context, it.creationTime)
+                if (it.isLast && it.depthLevel > 0) depthFLags[it.depthLevel - 1] = false
                 CommentDTO(
                     it.remoteId,
                     it.commenterName,
@@ -56,12 +54,12 @@ object CommentMapper :
                     it.depthLevel,
                     it.isLast,
                     depthFLags.joinToString(
-                        context.getString(R.string.profile_pictures_delimiter),
+                        separator = context.getString(R.string.profile_pictures_delimiter),
                         transform = Boolean::toString
                     ),
                     it.voteState,
                     it.isCreator,
-                    it.editTime != null
+                    it.updateTime > it.creationTime
                 )
             }
         }

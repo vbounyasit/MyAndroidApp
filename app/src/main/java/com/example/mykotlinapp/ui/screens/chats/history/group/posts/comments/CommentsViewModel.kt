@@ -154,11 +154,13 @@ class CommentsViewModel @Inject constructor(
     fun editComment(updateCommentInput: UpdateCommentInput): Job {
         val result = viewModelScope.launch {
             commentRepository.updateComment(updateCommentInput)
-            workManager.launchNetworkBackgroundTask<UpdateCommentsWorker>(
-                UniqueBackgroundTask(
-                    UPDATE_COMMENTS_WORK_NAME
-                ), initialDelay = Duration.ofMinutes(1)
-            )
+                .onSuccess {
+                    workManager.launchNetworkBackgroundTask<UpdateCommentsWorker>(
+                        UniqueBackgroundTask(
+                            UPDATE_COMMENTS_WORK_NAME
+                        ), initialDelay = Duration.ofMinutes(1)
+                    )
+                }
         }
         return result
     }
@@ -166,21 +168,25 @@ class CommentsViewModel @Inject constructor(
     fun voteComment(updateCommentVoteInput: UpdateCommentVoteInput) {
         viewModelScope.launch {
             commentRepository.updateCommentVoteState(updateCommentVoteInput)
-            workManager.launchNetworkBackgroundTask<UpdateCommentVoteStatesWorker>(
-                UniqueBackgroundTask(UPDATE_COMMENT_VOTE_STATES_WORK_NAME),
-                initialDelay = Duration.ofMinutes(3)
-            )
+                .onSuccess {
+                    workManager.launchNetworkBackgroundTask<UpdateCommentVoteStatesWorker>(
+                        UniqueBackgroundTask(UPDATE_COMMENT_VOTE_STATES_WORK_NAME),
+                        initialDelay = Duration.ofMinutes(3)
+                    )
+                }
         }
     }
 
     fun deleteComment(remoteId: String) {
         viewModelScope.launch {
             commentRepository.submitCommentForDeletion(remoteId)
-            workManager.launchNetworkBackgroundTask<RemoveCommentsWorker>(
-                UniqueBackgroundTask(
-                    REMOVE_COMMENTS_WORK_NAME
-                ), initialDelay = Duration.ofMinutes(1)
-            )
+                .onSuccess {
+                    workManager.launchNetworkBackgroundTask<RemoveCommentsWorker>(
+                        UniqueBackgroundTask(
+                            REMOVE_COMMENTS_WORK_NAME
+                        ), initialDelay = Duration.ofMinutes(1)
+                    )
+                }
         }
     }
 

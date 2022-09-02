@@ -15,6 +15,7 @@ import com.example.mykotlinapp.model.entity.group.GroupProperty
 import com.example.mykotlinapp.model.mappers.impl.chat.update.UpdateChatMapper
 import com.example.mykotlinapp.model.mappers.impl.group.GroupMapper
 import com.example.mykotlinapp.model.mappers.impl.group.update.UpdateGroupMapper
+import com.example.mykotlinapp.model.repository.AppRepository
 import com.example.mykotlinapp.network.dto.requests.chat.UpdateGroupRequest
 import com.example.mykotlinapp.network.dto.responses.UpdateOperationResponse
 import com.example.mykotlinapp.network.dto.responses.chat.ReadGroupResponse
@@ -24,17 +25,16 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class GroupRepository @Inject constructor(
     @ApplicationContext val context: Context,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
-    private val sharedPreferenceDao: SharedPreferenceDao,
+    sharedPreferenceDao: SharedPreferenceDao,
     private val groupApiService: GroupApiService,
     private val groupDao: GroupDao,
     private val chatDao: ChatDao,
-) {
+) : AppRepository(sharedPreferenceDao) {
 
     /**
      * Retrieve from local database
@@ -47,7 +47,9 @@ class GroupRepository @Inject constructor(
      * @return A flow containing the retrieved group to display
      */
     fun getGroup(groupRemoteId: String): Flow<GroupDTO?> =
-        groupDao.getGroupFlow(groupRemoteId).distinctUntilChanged()
+        groupDao
+            .getGroupFlow(groupRemoteId)
+            .distinctUntilChanged()
             .map { it?.let((GroupMapper::toDTO)(context)) }
 
     /**
@@ -57,7 +59,9 @@ class GroupRepository @Inject constructor(
      * @return A flow containing the data for the post app bar
      */
     fun getUserPostAppBar(groupRemoteId: String): Flow<PostGroupData?> =
-        groupDao.getGroupFlow(groupRemoteId).distinctUntilChanged()
+        groupDao
+            .getGroupFlow(groupRemoteId)
+            .distinctUntilChanged()
             .map { it?.let((GroupMapper::toPostGroupData)(context)) }
 
     /**
@@ -66,8 +70,7 @@ class GroupRepository @Inject constructor(
      * @param groupRemoteId The remote id of the group to get the count for
      * @return A flow containing the count of unread posts
      */
-    fun getUnreadPostsCount(groupRemoteId: String): Flow<Int> =
-        groupDao.getUnreadPostsCountFlow(groupRemoteId).distinctUntilChanged()
+    fun getUnreadPostsCount(groupRemoteId: String): Flow<Int> = groupDao.getUnreadPostsCountFlow(groupRemoteId).distinctUntilChanged()
 
     /**
      * @param remoteId The id of the group
@@ -84,20 +87,19 @@ class GroupRepository @Inject constructor(
      *
      * @param updateGroupInput The update group form input
      */
-    suspend fun updateGroup(updateGroupInput: UpdateGroupInput) {
-        withContext(dispatcher) {
-            val group = groupDao.getGroup(updateGroupInput.remoteId)
-            group?.let { foundGroup ->
-                updateGroupInput.name?.let { inputName ->
-                    val chat = chatDao.getChat(foundGroup.chatRemoteId)
-                    chat?.let { foundChat ->
-                        chatDao.update(UpdateChatMapper.toLocalUpdate(UpdateChatInput(inputName))(foundChat))
-                    }
+    suspend fun updateGroup(updateGroupInput: UpdateGroupInput): Result<Unit> =
+        executeAction(dispatcher) {
+            groupDao.getGroup(updateGroupInput.remoteId)
+                ?.let { group ->
+                    updateGroupInput.name
+                        ?.let { inputName ->
+                            chatDao.getChat(group.chatRemoteId)
+                                ?.let(UpdateChatMapper.toLocalUpdate(UpdateChatInput(inputName)))
+                                ?.let { chatDao.update(it) }
+                        }
+                    groupDao.update(UpdateGroupMapper.toLocalUpdate(updateGroupInput)(group))
                 }
-                groupDao.update(UpdateGroupMapper.toLocalUpdate(updateGroupInput)(foundGroup))
-            }
         }
-    }
 
     /**
      * Network
@@ -109,42 +111,31 @@ class GroupRepository @Inject constructor(
      * @param groupRemoteId The remote id of the group to send read action for
      * @return A success or failure result
      */
-    suspend fun sendReadGroup(groupRemoteId: String): Result<Unit> {
-        return withContext(dispatcher) {
-            sharedPreferenceDao.performAPIAuthenticatedAction { authHeader ->
-                val readGroupResponse: ReadGroupResponse =
-                    groupApiService.readGroup(authHeader, groupRemoteId)
-                groupDao.readGroup(
-                    readGroupResponse.groupRemoteId,
-                    readGroupResponse.lastGroupReadTime
-                )
-            }
+    suspend fun sendReadGroup(groupRemoteId: String): Result<Unit> =
+        executeAuthenticatedAction(dispatcher) { authHeader ->
+            val readGroupResponse: ReadGroupResponse = groupApiService.readGroup(authHeader, groupRemoteId)
+            groupDao.readGroup(
+                readGroupResponse.groupRemoteId,
+                readGroupResponse.lastGroupReadTime
+            )
         }
-    }
 
     /**
      * Sends an update requests to the API for the locally updated groups
      *
      * @return A success or failure result
      */
-    suspend fun sendUpdateGroups(): Result<Unit> {
-        return withContext(dispatcher) {
-            sharedPreferenceDao.performAPIAuthenticatedAction { authHeader ->
-                val groupsToUpdate: List<GroupProperty> =
-                    groupDao.getGroupsBySyncState(SyncState.PENDING_UPDATE)
-                val chatsToUpdate: List<ChatProperty> =
-                    chatDao.getChatsBySyncState(SyncState.PENDING_UPDATE)
-                if (groupsToUpdate.isNotEmpty()) {
-                    val request: List<UpdateGroupRequest> =
-                        groupsToUpdate.map { UpdateGroupMapper.toNetworkRequest(it) }
-                    val response: UpdateOperationResponse =
-                        groupApiService.updateGroups(authHeader, request)
-                    if (response.modified == groupsToUpdate.size) {
-                        groupDao.update(groupsToUpdate.map { it.copy(syncState = SyncState.UP_TO_DATE) })
-                        chatDao.update(chatsToUpdate.map { it.copy(syncState = SyncState.UP_TO_DATE) })
-                    }
+    suspend fun sendUpdateGroups(): Result<Unit> =
+        executeAuthenticatedAction(dispatcher) { authHeader ->
+            val groupsToUpdate: List<GroupProperty> = groupDao.getGroupsBySyncState(SyncState.PENDING_UPDATE)
+            val chatsToUpdate: List<ChatProperty> = chatDao.getChatsBySyncState(SyncState.PENDING_UPDATE)
+            if (groupsToUpdate.isNotEmpty()) {
+                val request: List<UpdateGroupRequest> = groupsToUpdate.map(UpdateGroupMapper::toNetworkRequest)
+                val response: UpdateOperationResponse = groupApiService.updateGroups(authHeader, request)
+                if (response.modified == groupsToUpdate.size) {
+                    groupDao.update(groupsToUpdate.map { it.copy(syncState = SyncState.UP_TO_DATE) })
+                    chatDao.update(chatsToUpdate.map { it.copy(syncState = SyncState.UP_TO_DATE) })
                 }
             }
         }
-    }
 }

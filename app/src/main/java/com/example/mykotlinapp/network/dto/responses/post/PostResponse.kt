@@ -9,9 +9,9 @@ data class PostResponse(
     val medias: List<PostMediaResponse>,
     val votesCount: Int,
     val commentsCount: Int,
-    val creationDate: Long,
-    val editDate: Long?,
     val voteState: Int,
     val creator: UserContactResponse,
     val isCreator: Boolean,
+    val creationTimeStamp: Long,
+    val updateTimeStamp: Long
 )
