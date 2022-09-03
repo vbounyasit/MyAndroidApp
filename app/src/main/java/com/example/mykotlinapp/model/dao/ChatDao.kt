@@ -51,11 +51,14 @@ interface ChatDao {
     @Query("SELECT * from chat_logs WHERE log_remote_id IN (:remoteIds)")
     suspend fun getChatLogsByIds(remoteIds: List<String>): List<ChatLog>
 
+    @Query("SELECT DISTINCT log_remote_id from chat_logs WHERE log_remote_id IN (:remoteIds)")
+    suspend fun getUniqueChatLogIdsIn(remoteIds: List<String>): List<String>
+
     @Query("SELECT * from chat_notifications WHERE remoteId IN (:remoteIds)")
     suspend fun getChatNotificationsByIds(remoteIds: List<String>): List<ChatNotification>
 
-    @Query("SELECT * from chats WHERE sync_state = :syncState")
-    suspend fun getChatsBySyncState(syncState: SyncState): List<ChatProperty>
+    @Query("SELECT chat_remote_id from chats WHERE sync_state = :syncState")
+    suspend fun getChatIdsBySyncState(syncState: SyncState): List<String>
 
     @Query("SELECT * from chat_participants WHERE participant_remote_id = :remoteId AND participant_chat_remote_id = :chatRemoteId")
     suspend fun getChatParticipant(remoteId: String, chatRemoteId: String): ChatParticipant?
@@ -75,6 +78,12 @@ interface ChatDao {
 
     @Update
     suspend fun update(chatParticipant: ChatParticipant)
+
+    @Query("UPDATE chats SET sync_state = :syncState WHERE chat_remote_id IN (:remoteIds)")
+    suspend fun updateChatSyncStateByIds(remoteIds: List<String>, syncState: SyncState)
+
+    @Query("UPDATE chat_participants SET last_read_time = :readTime WHERE participant_remote_id = :remoteId AND participant_chat_remote_id = :chatRemoteId")
+    suspend fun updateParticipantReadTime(remoteId: String, chatRemoteId: String, readTime: Long)
 
     @Query("UPDATE chats SET last_read = :lastReadTime WHERE chat_remote_id = :chatRemoteId")
     suspend fun updateReadChat(chatRemoteId: String, lastReadTime: Long)

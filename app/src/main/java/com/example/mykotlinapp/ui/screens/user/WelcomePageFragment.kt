@@ -38,7 +38,7 @@ class WelcomePageFragment : AppFragment() {
     override fun registerObservers() {
         super.registerObservers()
         sharedViewModel.loginState.observe(viewLifecycleOwner) {
-            if (it == ApiRequestState.FAILED) viewModel.navigateToUserPage()
+            if (it == ApiRequestState.FAILED || it == ApiRequestState.FAILED_UNAUTHORIZED) viewModel.navigateToUserPage()
         }
         viewModel.requestedLogIn.observe(viewLifecycleOwner) {
             if (it) {

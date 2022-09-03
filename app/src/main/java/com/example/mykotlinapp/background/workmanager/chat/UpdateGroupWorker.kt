@@ -17,7 +17,7 @@ class UpdateGroupWorker @AssistedInject constructor(
 
     override suspend fun doWork(): Result {
         return try {
-            groupRepository.sendUpdateGroups()
+            groupRepository.sendUpdateGroupChats()
             Result.success()
         } catch (e: Exception) {
             Result.failure()

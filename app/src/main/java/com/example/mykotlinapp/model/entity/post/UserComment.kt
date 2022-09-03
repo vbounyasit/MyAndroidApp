@@ -43,4 +43,4 @@ data class UserComment(
     override val creationTime: Long,
     @ColumnInfo(name = "update_time")
     override val updateTime: Long
-): SyncData, TimeStampData
+) : SyncData, TimeStampData

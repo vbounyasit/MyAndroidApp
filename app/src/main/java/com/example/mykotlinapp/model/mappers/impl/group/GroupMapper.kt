@@ -6,12 +6,12 @@ import com.example.mykotlinapp.domain.pojo.SyncState
 import com.example.mykotlinapp.model.dto.ui.group.GroupDTO
 import com.example.mykotlinapp.model.dto.ui.post.PostGroupData
 import com.example.mykotlinapp.model.entity.group.GroupProperty
-import com.example.mykotlinapp.model.mappers.DTOContextMapper
+import com.example.mykotlinapp.model.mappers.DTOMapperWithParam
 import com.example.mykotlinapp.model.mappers.NetworkResponseMapper
 import com.example.mykotlinapp.network.dto.responses.chat.ChatResponse
 
 object GroupMapper :
-    DTOContextMapper<GroupProperty, GroupDTO>,
+    DTOMapperWithParam<GroupProperty, GroupDTO, Context>,
     NetworkResponseMapper<ChatResponse, GroupProperty> {
 
     fun toPostGroupData(context: Context): (GroupProperty) -> PostGroupData =
@@ -39,13 +39,13 @@ object GroupMapper :
             networkData.updateTimeStamp
         )
 
-    override fun toDTO(context: Context): (entity: GroupProperty) -> GroupDTO =
+    override fun toDTO(parameter: Context): (entity: GroupProperty) -> GroupDTO =
         { entity ->
             val groupPictures: List<String> =
-                entity.groupPicture.split(context.getString(R.string.profile_pictures_delimiter))
+                entity.groupPicture.split(parameter.getString(R.string.profile_pictures_delimiter))
             val groupName = with(entity.groupName) {
-                if (contains(context.getString(R.string.profile_pictures_delimiter)))
-                    context.getString(R.string.default_group_name)
+                if (contains(parameter.getString(R.string.profile_pictures_delimiter)))
+                    parameter.getString(R.string.default_group_name)
                 else
                     entity.groupName
             }

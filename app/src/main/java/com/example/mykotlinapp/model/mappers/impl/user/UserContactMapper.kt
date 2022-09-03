@@ -5,7 +5,7 @@ import com.example.mykotlinapp.domain.pojo.ContactRelationType
 import com.example.mykotlinapp.domain.pojo.SyncState
 import com.example.mykotlinapp.model.dto.ui.user.UserContactDTO
 import com.example.mykotlinapp.model.entity.user.UserContact
-import com.example.mykotlinapp.model.mappers.DTOContextMapper
+import com.example.mykotlinapp.model.mappers.DTOMapperWithParam
 import com.example.mykotlinapp.model.mappers.NetworkResponseMapper
 import com.example.mykotlinapp.model.mappers.impl.Utils
 import com.example.mykotlinapp.network.dto.responses.user.UserResponses.UserContactResponse
@@ -13,7 +13,7 @@ import com.example.mykotlinapp.network.dto.responses.user.contact.SearchContactR
 import com.example.mykotlinapp.network.dto.responses.user.contact.UserContactListResponse
 
 object UserContactMapper :
-    DTOContextMapper<UserContact, UserContactDTO>,
+    DTOMapperWithParam<UserContact, UserContactDTO, Context>,
     NetworkResponseMapper<UserContactListResponse, List<UserContact>> {
 
     override fun toEntity(networkData: UserContactListResponse): List<UserContact> {
@@ -59,7 +59,7 @@ object UserContactMapper :
             SyncState.UP_TO_DATE
         )
 
-    override fun toDTO(context: Context): (entity: UserContact) -> UserContactDTO =
+    override fun toDTO(parameter: Context): (entity: UserContact) -> UserContactDTO =
         { entity ->
             UserContactDTO(
                 entity.remoteId,
@@ -68,7 +68,7 @@ object UserContactMapper :
                 entity.fullName,
                 entity.profilePicture,
                 entity.description,
-                Utils.toActivityStatus(context, System.currentTimeMillis(), entity.lastActive),
+                Utils.toActivityStatus(parameter, System.currentTimeMillis(), entity.lastActive),
                 entity.relationType
             )
         }

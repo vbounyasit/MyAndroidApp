@@ -17,7 +17,7 @@ class UtilsInstrumentedTest {
         //Given
         val timeAgo = 1659559220L
         //When
-        val timeAgoText = Utils.toTimeAgo(appContext, timeAgo)
+        val timeAgoText = Utils.toFormattedTimeAgo(appContext, timeAgo)
         //Then
         assert(timeAgoText == "Gey")
     }

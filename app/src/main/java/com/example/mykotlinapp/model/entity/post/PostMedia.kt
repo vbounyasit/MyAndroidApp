@@ -5,7 +5,6 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.mykotlinapp.domain.pojo.SyncState
 import com.example.mykotlinapp.model.entity.SyncData
-import com.example.mykotlinapp.model.entity.TimeStampData
 
 @Entity(tableName = "post_medias")
 class PostMedia(
@@ -18,4 +17,4 @@ class PostMedia(
     val media: String,
     @ColumnInfo(name = "post_media_sync_state")
     override val syncState: SyncState
-): SyncData
+) : SyncData

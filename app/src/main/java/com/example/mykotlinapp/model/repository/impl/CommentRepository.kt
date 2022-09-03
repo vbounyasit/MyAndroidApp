@@ -122,20 +122,10 @@ class CommentRepository @Inject constructor(
      * @param createCommentInput The comment creation form input
      * @return The newly created comment remote id
      */
-    suspend fun sendCreateComment(
-        groupRemoteId: String,
-        postRemoteId: String,
-        createCommentInput: CreateCommentInput
-    ): Result<String> =
+    suspend fun sendCreateComment(groupRemoteId: String, postRemoteId: String, createCommentInput: CreateCommentInput): Result<String> =
         executeAuthenticatedAction(dispatcher) { authHeader ->
             val request: CreateCommentRequest = CreateCommentMapper.toNetworkRequest(createCommentInput)
-            val response: CreateOperationResponse =
-                commentApiService.createComment(
-                    authHeader,
-                    groupRemoteId,
-                    postRemoteId,
-                    request
-                )
+            val response: CreateOperationResponse = commentApiService.createComment(authHeader, groupRemoteId, postRemoteId, request)
             response.remoteId
         }
 
@@ -152,8 +142,7 @@ class CommentRepository @Inject constructor(
      */
     suspend fun retrieveCommentList(groupRemoteId: String, postRemoteId: String): Result<Unit> =
         executeAuthenticatedAction(dispatcher) { authHeader ->
-            val commentListResponse: List<CommentResponse> =
-                commentApiService.getCommentList(authHeader, groupRemoteId, postRemoteId)
+            val commentListResponse: List<CommentResponse> = commentApiService.getCommentList(authHeader, groupRemoteId, postRemoteId)
             updateCommentsFromResponse(commentListResponse)
         }
 
@@ -170,12 +159,11 @@ class CommentRepository @Inject constructor(
         executeAuthenticatedAction(dispatcher) { authHeader ->
             val commentsToUpdate = commentDao.getUserCommentsBySyncState(SyncState.PENDING_UPDATE)
             if (commentsToUpdate.isNotEmpty()) {
-                val request: List<UpdateCommentRequest> =
-                    commentsToUpdate.map { UpdateCommentMapper.toNetworkRequest(it) }
+                val request: List<UpdateCommentRequest> = commentsToUpdate.map(UpdateCommentMapper::toNetworkRequest)
                 val response: UpdateOperationResponse =
                     commentApiService.updateComments(authHeader, request)
                 if (response.modified == commentsToUpdate.size)
-                    commentDao.insertUserComments(commentsToUpdate.map { it.copy(syncState = SyncState.UP_TO_DATE) })
+                    commentDao.update(commentsToUpdate.map { it.copy(syncState = SyncState.UP_TO_DATE) })
             }
         }
 
@@ -188,12 +176,11 @@ class CommentRepository @Inject constructor(
         executeAuthenticatedAction(dispatcher) { authHeader ->
             val commentsToUpdate = commentDao.getUserCommentsBySyncState(SyncState.PENDING_UPDATE)
             if (commentsToUpdate.isNotEmpty()) {
-                val request: List<UpdateCommentVoteRequest> =
-                    commentsToUpdate.map { UpdateCommentVoteMapper.toNetworkRequest(it) }
+                val request: List<UpdateCommentVoteRequest> = commentsToUpdate.map(UpdateCommentVoteMapper::toNetworkRequest)
                 val response: UpdateOperationResponse =
                     commentApiService.updateCommentVotes(authHeader, request)
                 if (response.modified == commentsToUpdate.size)
-                    commentDao.insertUserComments(commentsToUpdate.map { it.copy(syncState = SyncState.UP_TO_DATE) })
+                    commentDao.update(commentsToUpdate.map { it.copy(syncState = SyncState.UP_TO_DATE) })
             }
         }
 

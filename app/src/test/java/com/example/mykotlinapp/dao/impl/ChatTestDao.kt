@@ -59,26 +59,29 @@ class ChatTestDao : ChatDao, TestDao {
 
     override suspend fun getChatLogsByIds(remoteIds: List<String>): List<ChatLog> = chatLogsTable.getAllWhen { remoteIds.contains(it.remoteId) }
 
+    override suspend fun getUniqueChatLogIdsIn(remoteIds: List<String>): List<String> = getChatLogsByIds(remoteIds).map { it.remoteId }.distinct()
+
     override suspend fun getChatNotificationsByIds(remoteIds: List<String>): List<ChatNotification> = chatNotificationsTable.getAllWhen { remoteIds.contains(it.remoteId) }
 
-    override suspend fun getChatsBySyncState(syncState: SyncState): List<ChatProperty> = chatTable.getAllWhen { it.syncState == syncState }
+    override suspend fun getChatIdsBySyncState(syncState: SyncState): List<String> = chatTable.getAllWhen { it.syncState == syncState }.map { it.remoteId }
 
     override suspend fun getChatParticipant(remoteId: String, chatRemoteId: String): ChatParticipant? =
         chatParticipantsTable.getWhen { it.remoteId == remoteId && it.chatRemoteId == chatRemoteId }
 
     override suspend fun getPendingChatLogsCreations(): List<PendingChatLogCreation> = pendingChatLogTable.getAll()
 
-    override suspend fun update(chatProperty: ChatProperty) {
-        chatTable.update(chatProperty)
-    }
+    override suspend fun update(chatProperty: ChatProperty) = chatTable.update(chatProperty)
 
-    override suspend fun update(chats: List<ChatProperty>) {
-        chatTable.updateAll(chats)
-    }
+    override suspend fun update(chats: List<ChatProperty>) = chatTable.updateAll(chats)
 
-    override suspend fun update(chatParticipant: ChatParticipant) {
-        chatParticipantsTable.update(chatParticipant)
-    }
+    override suspend fun update(chatParticipant: ChatParticipant) = chatParticipantsTable.update(chatParticipant)
+
+    override suspend fun updateChatSyncStateByIds(remoteIds: List<String>, syncState: SyncState) = chatTable.update(remoteIds) { it.copy(syncState = syncState) }
+
+    override suspend fun updateParticipantReadTime(remoteId: String, chatRemoteId: String, readTime: Long) =
+        chatParticipantsTable.update(remoteId) {
+            if (it.chatRemoteId == chatRemoteId) it.copy(lastReadTime = readTime) else it
+        }
 
     override suspend fun updateReadChat(chatRemoteId: String, lastReadTime: Long) =
         chatTable.update(chatRemoteId) { it.copy(lastReadTime = lastReadTime) }

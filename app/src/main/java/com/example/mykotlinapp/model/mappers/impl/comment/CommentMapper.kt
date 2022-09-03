@@ -5,14 +5,14 @@ import com.example.mykotlinapp.R
 import com.example.mykotlinapp.domain.pojo.SyncState
 import com.example.mykotlinapp.model.dto.ui.post.CommentDTO
 import com.example.mykotlinapp.model.entity.post.UserComment
-import com.example.mykotlinapp.model.mappers.DTOContextMapper
+import com.example.mykotlinapp.model.mappers.DTOMapperWithParam
 import com.example.mykotlinapp.model.mappers.NetworkResponseMapper
 import com.example.mykotlinapp.model.mappers.impl.Utils.getVoteStateValue
-import com.example.mykotlinapp.model.mappers.impl.Utils.toTimeAgo
+import com.example.mykotlinapp.model.mappers.impl.Utils.toFormattedTimeAgo
 import com.example.mykotlinapp.network.dto.responses.post.CommentResponse
 
 object CommentMapper :
-    DTOContextMapper<List<UserComment>, List<CommentDTO>>,
+    DTOMapperWithParam<List<UserComment>, List<CommentDTO>, Context>,
     NetworkResponseMapper<List<CommentResponse>, List<UserComment>> {
 
     override fun toEntity(networkData: List<CommentResponse>): List<UserComment> {
@@ -38,11 +38,11 @@ object CommentMapper :
         }
     }
 
-    override fun toDTO(context: Context): (entity: List<UserComment>) -> List<CommentDTO> =
+    override fun toDTO(parameter: Context): (entity: List<UserComment>) -> List<CommentDTO> =
         { entity ->
-            val depthFLags = BooleanArray(context.resources.getInteger(R.integer.comments_max_depth)) { true }
+            val depthFLags = BooleanArray(parameter.resources.getInteger(R.integer.comments_max_depth)) { true }
             entity.map {
-                val timePosted: String = toTimeAgo(context, it.creationTime)
+                val timePosted: String = toFormattedTimeAgo(parameter, it.creationTime)
                 if (it.isLast && it.depthLevel > 0) depthFLags[it.depthLevel - 1] = false
                 CommentDTO(
                     it.remoteId,
@@ -54,7 +54,7 @@ object CommentMapper :
                     it.depthLevel,
                     it.isLast,
                     depthFLags.joinToString(
-                        separator = context.getString(R.string.profile_pictures_delimiter),
+                        separator = parameter.getString(R.string.profile_pictures_delimiter),
                         transform = Boolean::toString
                     ),
                     it.voteState,

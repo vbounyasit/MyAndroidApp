@@ -28,11 +28,13 @@ class TestDataSource<Index, Entity>(val getIndex: (Entity) -> Index) {
         localStorage[getIndex(entity)] = entity
     }
 
+    fun updateAll(entities: List<Entity>) = localStorage.putAll(entities.map { Pair(getIndex(it), it) })
+
     fun update(index: Index, transformation: (Entity) -> Entity) {
         localStorage[index]?.let { localStorage[index] = transformation(it) }
     }
 
-    fun updateAll(entities: List<Entity>) = localStorage.putAll(entities.map { Pair(getIndex(it), it) })
+    fun update(indexes: List<Index>, transformation: (Entity) -> Entity) = indexes.forEach { update(it, transformation) }
 
     fun delete(index: Index) {
         localStorage.remove(index)

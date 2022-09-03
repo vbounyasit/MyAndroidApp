@@ -28,7 +28,6 @@ import com.example.mykotlinapp.network.service.PostApiService
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -52,13 +51,13 @@ class PostRepository @Inject constructor(
      * @return A flow containing the list of posts
      */
     fun getUserPosts(groupRemoteId: String): Flow<List<PostDTO>> =
-        postDao
-            .getUserPostsWithImagesFlow(groupRemoteId)
-            .map {
-                it.toList()
-                    .filter { post -> post.first.syncState != SyncState.PENDING_REMOVAL }
-                    .map((PostMapper::toDTO)(context))
-            }
+        postDao.getUserPostsWithImagesFlow(groupRemoteId).map { postsWithMedia ->
+            postsWithMedia
+                .asSequence()
+                .filter { (userPost, _) -> userPost.syncState != SyncState.PENDING_REMOVAL }
+                .map((PostMapper::toDTO)(context))
+                .toList()
+        }
 
     /**
      * Gets a user post to display
@@ -67,10 +66,9 @@ class PostRepository @Inject constructor(
      * @return A flow containing the post to display
      */
     fun getUserPost(remoteId: String): Flow<PostDTO?> =
-        postDao.getUserPostFlow(remoteId)
+        postDao.getUserPostWithImagesFlow(remoteId)
             .distinctUntilChanged()
-            .combine(postDao.getPostImagesFlow(remoteId)) { post, medias -> post?.let { Pair(post, medias) } }
-            .map { it?.let((PostMapper::toDTO)(context)) }
+            .map { it.firstNotNullOfOrNull((PostMapper::toDTO)(context)) }
 
     /**
      * @param remoteId The remote id of the given post
@@ -235,7 +233,7 @@ class PostRepository @Inject constructor(
                 val request: List<UpdatePostRequest> = postsToUpdate.map { UpdatePostMapper.toNetworkRequest(it) }
                 val response: UpdateOperationResponse = postApiService.updatePosts(authHeader, request)
                 if (response.modified == postsToUpdate.size)
-                    postDao.insertUserPosts(postsToUpdate.map { it.copy(syncState = SyncState.UP_TO_DATE) })
+                    postDao.update(postsToUpdate.map { it.copy(syncState = SyncState.UP_TO_DATE) })
             }
         }
 
@@ -251,7 +249,7 @@ class PostRepository @Inject constructor(
                 val request: List<UpdatePostVoteRequest> = postsToUpdate.map { UpdatePostVoteMapper.toNetworkRequest(it) }
                 val response: UpdateOperationResponse = postApiService.updatePostVotes(authHeader, request)
                 if (response.modified == postsToUpdate.size)
-                    postDao.insertUserPosts(postsToUpdate.map { it.copy(syncState = SyncState.UP_TO_DATE) })
+                    postDao.update(postsToUpdate.map { it.copy(syncState = SyncState.UP_TO_DATE) })
             }
         }
 

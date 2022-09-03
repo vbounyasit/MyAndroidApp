@@ -20,7 +20,7 @@ class CommentMapperTest : StringSpec({
     every { context.resources.getInteger(R.integer.comments_max_depth) } returns 4
     every { context.getString(R.string.profile_pictures_delimiter) } returns delimiter
     mockkObject(Utils)
-    every { Utils.toTimeAgo(any(), any(), any()) } returns "Now"
+    every { Utils.toFormattedTimeAgo(any(), any(), any()) } returns "Now"
 
     fun getUserComment(
         remoteId: String,

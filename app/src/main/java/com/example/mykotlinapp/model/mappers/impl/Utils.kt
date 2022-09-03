@@ -14,6 +14,8 @@ import kotlin.math.pow
 
 object Utils {
 
+    data class TimeAgo(val weeks: Int, val days: Int, val hours: Int, val minutes: Int, val default: String)
+
     /**
      * converts timestamp to a 'time ago' text format for displaying on UI
      *
@@ -22,23 +24,14 @@ object Utils {
      * @param suffix A suffix to add to the result (ex: '3m ago')
      * @return The resulting time ago text
      */
-    fun toTimeAgo(context: Context, time: Long, suffix: String = ""): String {
-        val calendar = Calendar.getInstance()
-        val lastLogDate = Date(time)
-        val default = DateFormat.getDateInstance(
-            DateFormat.MEDIUM,
-            context.resources.configuration.locales[0]
-        ).format(Date(time))
-
-        fun diff(field: Int) = abs(calendar.fieldDifference(lastLogDate, field))
-        val weeksAgo = diff(Calendar.WEEK_OF_YEAR)
-        val daysAgo = diff(Calendar.DAY_OF_YEAR)
-        val hoursAgo = diff(Calendar.HOUR_OF_DAY)
-        val minutesAgo = diff(Calendar.MINUTE)
-        return if (weeksAgo > 0) default
-        else if (daysAgo > 0) "${daysAgo}d$suffix"
-        else if (hoursAgo > 0) "${hoursAgo}h$suffix"
-        else if (minutesAgo > 1) "${minutesAgo}m$suffix"
+    fun toFormattedTimeAgo(context: Context, time: Long, suffix: String = ""): String {
+        val dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM, context.resources.configuration.locales[0])
+        val timeAgo = toTimeAgo(time, dateFormat)
+        val (weeks, days, hours, minutes, default) = timeAgo
+        return if (weeks > 0) default
+        else if (days > 0) "${days}d$suffix"
+        else if (hours > 0) "${hours}h$suffix"
+        else if (minutes > 0) "${minutes}m$suffix"
         else "Now"
     }
 
@@ -50,24 +43,41 @@ object Utils {
      * @return The resulting text
      */
     fun toChatLogTime(context: Context, time: Long): String {
-        val calendar = Calendar.getInstance()
-        val lastLogDate = Date(time)
-        fun diff(field: Int) = abs(calendar.fieldDifference(lastLogDate, field))
-        val hoursAgo = diff(Calendar.HOUR_OF_DAY)
-        val minutesAgo = diff(Calendar.MINUTE)
-        return if (hoursAgo > 0) DateFormat.getDateTimeInstance(
+        val dateFormat = DateFormat.getDateTimeInstance(
             DateFormat.NONE,
             DateFormat.SHORT,
             context.resources.configuration.locales[0]
-        ).format(time).toString()
-        else if (minutesAgo > 0) "$minutesAgo min"
+        )
+        val timeAgo = toTimeAgo(time, dateFormat)
+        val (_, _, hours, minutes, default) = timeAgo
+        return if (hours > 0) default
+        else if (minutes > 0) "$minutes min"
         else "Now"
     }
 
     /**
-     * Capitalizes a word
+     * Computes the time difference between now and a given time
      *
-     * @param word The word to capitalize
+     * @param time The given time to compute the difference for
+     * @param defaultDateFormat The default result format
+     * @return A TimeAgo object containing the diff result in weeks, days, hours and minutes
+     */
+    private fun toTimeAgo(time: Long, defaultDateFormat: DateFormat): TimeAgo {
+        val calendar = Calendar.getInstance()
+        val date = Date(time)
+        fun diff(field: Int) = abs(calendar.fieldDifference(date, field))
+        return TimeAgo(
+            diff(Calendar.WEEK_OF_YEAR),
+            diff(Calendar.DAY_OF_YEAR),
+            diff(Calendar.HOUR_OF_DAY),
+            diff(Calendar.MINUTE),
+            defaultDateFormat.format(date)
+        )
+    }
+
+    /**
+     * Capitalizes a word
+     * @receiver a String value
      */
     fun String.toCapitalized() = this.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
 

@@ -34,7 +34,7 @@ import com.example.mykotlinapp.model.entity.user.UserContact
         UserComment::class,
         PendingChatLogCreation::class
     ],
-    version = 2,
+    version = 1,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

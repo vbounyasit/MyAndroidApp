@@ -1,6 +1,7 @@
-package com.example.mykotlinapp
+package com.example.mykotlinapp.repositories.impl
 
 import android.content.Context
+import com.example.mykotlinapp.R
 import com.example.mykotlinapp.dao.impl.UserTestDao
 import com.example.mykotlinapp.domain.pojo.ContactRelationType
 import com.example.mykotlinapp.domain.pojo.Gender
@@ -43,16 +44,6 @@ class UserRepositoryTest : WordSpec({
     lateinit var userRepository: UserRepository
     val userDao = UserTestDao()
 
-    val user = User(
-        authUserRemoteId, "mail1", "firstName1", "lastName1", "profile", "bg", "desc",
-        Gender.MALE, 15, SyncState.UP_TO_DATE, 0, 0
-    )
-
-    fun newContact(remoteId: String, firstName: String = "firstName", lastName: String = "lastName", relationType: ContactRelationType = ContactRelationType.FRIENDS) = UserContact(
-        remoteId, firstName, lastName, "$firstName $lastName", "profile", "desc",
-        0, relationType, SyncState.UP_TO_DATE
-    )
-
     beforeTest {
         runTest {
             val timeProvider = object : TimeProvider {
@@ -70,6 +61,16 @@ class UserRepositoryTest : WordSpec({
         }
     }
     afterEach { userDao.clear() }
+
+    val user = User(
+        authUserRemoteId, "mail1", "firstName1", "lastName1", "profile", "bg", "desc",
+        Gender.MALE, 15, SyncState.UP_TO_DATE, 0, 0
+    )
+
+    fun newContact(remoteId: String, firstName: String = "firstName", lastName: String = "lastName", relationType: ContactRelationType = ContactRelationType.FRIENDS) = UserContact(
+        remoteId, firstName, lastName, "$firstName $lastName", "profile", "desc",
+        0, relationType, SyncState.UP_TO_DATE
+    )
 
     "getUserData" should {
         "compute the correct data" {

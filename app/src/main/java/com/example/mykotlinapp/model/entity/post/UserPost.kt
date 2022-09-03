@@ -35,4 +35,4 @@ data class UserPost(
     override val creationTime: Long,
     @ColumnInfo(name = "post_update_time")
     override val updateTime: Long
-): SyncData, TimeStampData
+) : SyncData, TimeStampData

@@ -10,6 +10,10 @@ import kotlinx.coroutines.withContext
 /**
  * base class implemented by all repositories - work in progress
  * TODO use performAction in all subclasses
+ * TODO implement helper functions for sending updates to API
+ * TODO implement helper functions to get flows of lists and filter PENDING_REMOVAL
+ * TODO implement helper functions to update database with a given input
+ * TODO implement helper functions to create API request, handle API responses
  */
 open class AppRepository(private val sharedPreferenceDao: SharedPreferenceDao) {
 

@@ -23,7 +23,7 @@ class ChatListItemMapperTest : WordSpec({
     every { context.getString(R.string.chat_log_author_delimiter) } returns delimiter
     every { context.getString(R.string.chat_item_author_me) } returns me
     mockkObject(Utils)
-    every { Utils.toTimeAgo(any(), any(), any()) } returns "Now"
+    every { Utils.toFormattedTimeAgo(any(), any(), any()) } returns "Now"
     every { Utils.toChatLogTime(any(), any()) } returns "Now"
 
     fun getChatItem(remoteId: String, isGroupChat: Boolean): ChatItem =

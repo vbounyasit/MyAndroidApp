@@ -22,6 +22,8 @@ class CommentTestDao : CommentDao, TestDao {
 
     override suspend fun update(comment: UserComment) = commentsTable.update(comment)
 
+    override suspend fun update(comments: List<UserComment>) = commentsTable.updateAll(comments)
+
     override suspend fun deleteComments(comments: List<UserComment>) = commentsTable.deleteAll(comments)
 
     override suspend fun clearCommentsNotIn(except: List<String>) = commentsTable.deleteWhen { except.contains(it.remoteId) }

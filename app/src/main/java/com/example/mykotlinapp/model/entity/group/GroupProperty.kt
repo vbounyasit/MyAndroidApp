@@ -34,4 +34,4 @@ data class GroupProperty(
     override val creationTime: Long,
     @ColumnInfo(name = "group_update_time")
     override val updateTime: Long
-): SyncData, TimeStampData
+) : SyncData, TimeStampData

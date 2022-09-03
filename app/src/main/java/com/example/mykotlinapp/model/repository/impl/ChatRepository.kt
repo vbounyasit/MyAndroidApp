@@ -16,7 +16,7 @@ import com.example.mykotlinapp.model.entity.chat.ChatItem
 import com.example.mykotlinapp.model.entity.chat.ChatLog
 import com.example.mykotlinapp.model.mappers.impl.chat.*
 import com.example.mykotlinapp.model.mappers.impl.chat.ChatParticipantMapper.ChatContactParticipantMapper
-import com.example.mykotlinapp.model.mappers.impl.chat.create.CreateChatLogMapper.toNetworkRequest
+import com.example.mykotlinapp.model.mappers.impl.chat.create.CreateChatLogMapper
 import com.example.mykotlinapp.model.mappers.impl.chat.create.CreateChatMapper
 import com.example.mykotlinapp.model.mappers.impl.chat.create.PendingChatLogMapper
 import com.example.mykotlinapp.model.mappers.impl.group.GroupMapper
@@ -65,9 +65,7 @@ class ChatRepository @Inject constructor(
      * @return A flow containing a chat property to display
      */
     fun getChatFlow(chatRemoteId: String): Flow<ChatDTO?> =
-        chatDao.getChatFlow(chatRemoteId)
-            .distinctUntilChanged()
-            .map { it?.let((ChatPropertyMapper::toDTO)(context)) }
+        chatDao.getChatFlow(chatRemoteId).distinctUntilChanged().map { it?.let((ChatPropertyMapper::toDTO)(context)) }
 
     /**
      * Get chat participants for a given chat to display
@@ -118,10 +116,7 @@ class ChatRepository @Inject constructor(
      */
     fun getContactParticipants(chatRemoteId: String): Flow<List<UserContactDTO>> =
         chatDao.getContactParticipantsFlow(chatRemoteId).map {
-            it.map { (participant, contact) ->
-                contact?.let((UserContactMapper::toDTO)(context))
-                    ?: ChatContactParticipantMapper.toDTO(participant)
-            }
+            it.map { (participant, contact) -> contact?.let((UserContactMapper::toDTO)(context)) ?: ChatContactParticipantMapper.toDTO(participant) }
         }
 
     /**
@@ -133,21 +128,23 @@ class ChatRepository @Inject constructor(
     suspend fun getChatLogsAppNotifications(logRemoteIds: List<String>): Result<List<ChatLogsAppNotification>> {
         return executeAction(dispatcher) {
             sharedPreferenceDao.getAuthUserRemoteId()?.let { userRemoteId ->
-                val newLogs = chatDao.getChatLogsByIds(logRemoteIds)
-                val chatRemoteIds = newLogs.map(ChatLog::chatRemoteId).distinct()
-                val chatLogsWithChat: Map<ChatLog, ChatItem> = chatDao.getUnreadChatLogs(chatRemoteIds)
-                chatLogsWithChat.toList()
-                    .groupBy { it.second }
-                    .map { (chatItem, value) ->
-                        val chatItemDTO = ChatItemMapper.toDTO(context)(chatItem)
-                        val chatLogs = value.map { ChatLogMapper.toDTO(context)(it.first) }
-                        ChatLogsAppNotification(
-                            userRemoteId,
-                            chatItemDTO,
-                            chatItemDTO.isGroupChat,
-                            chatLogs
-                        )
-                    }
+                val newLogIds = chatDao.getUniqueChatLogIdsIn(logRemoteIds)
+                val chatWithChatLogs: Map<ChatItem, List<ChatLog>> =
+                    chatDao.getUnreadChatLogs(newLogIds)
+                        .asSequence()
+                        .groupBy { it.value }
+                        .mapValues { it.value.map { (chatLog, _) -> chatLog } }
+
+                chatWithChatLogs.map { (chatItem, chatLogs) ->
+                    val chatItemDTO = ChatItemMapper.toDTO(context)(chatItem)
+                    val chatLogDTOs = chatLogs.map(ChatLogMapper.toDTO(context))
+                    ChatLogsAppNotification(
+                        userRemoteId,
+                        chatItemDTO,
+                        chatItemDTO.isGroupChat,
+                        chatLogDTOs
+                    )
+                }
             } ?: throw Exception("Unable to get authenticated user remote id")
         }
     }
@@ -170,12 +167,12 @@ class ChatRepository @Inject constructor(
      *
      * @param chatReadMessage The chat read message object received from the server Socket connection
      */
-    suspend fun updateChatParticipantReadTime(chatReadMessage: ChatReadMessage) {
+    suspend fun updateChatParticipantReadTime(chatReadMessage: ChatReadMessage): Result<Unit> =
         executeAction(dispatcher) {
-            chatDao.getChatParticipant(chatReadMessage.participantRemoteId, chatReadMessage.chatRemoteId)
-                ?.let { chatDao.update(it.copy(lastReadTime = chatReadMessage.readTime)) }
+            val (chatRemoteId, remoteId, readTime) = chatReadMessage
+            chatDao.updateParticipantReadTime(remoteId, chatRemoteId, readTime)
         }
-    }
+
 
     /**
      * Updates local chat items with the response received from the API
@@ -303,7 +300,7 @@ class ChatRepository @Inject constructor(
         executeAuthenticatedAction(dispatcher) { authHeader ->
             val chatLogsToCreate = chatDao.getPendingChatLogsCreations()
             if (chatLogsToCreate.isNotEmpty()) {
-                val request: List<CreateChatLogRequest> = chatLogsToCreate.map { toNetworkRequest(it) }
+                val request: List<CreateChatLogRequest> = chatLogsToCreate.map(CreateChatLogMapper::toNetworkRequest)
                 chatApiService.createChatLogs(authHeader, request)
                 chatDao.clearPendingChatLogsCreation()
             }
@@ -407,11 +404,8 @@ class ChatRepository @Inject constructor(
      */
     suspend fun sendReadChat(chatRemoteId: String): Result<Unit> =
         executeAuthenticatedAction(dispatcher) { authHeader ->
-            val readChatResponse: ReadChatResponse = chatApiService.readChat(authHeader, chatRemoteId)
-            chatDao.updateReadChat(readChatResponse.chatRemoteId, readChatResponse.lastReadTime)
-            chatDao.updateReadChatItem(
-                readChatResponse.chatRemoteId,
-                readChatResponse.lastReadTime
-            )
+            val (remoteId: String, readTime: Long) = chatApiService.readChat(authHeader, chatRemoteId)
+            chatDao.updateReadChat(remoteId, readTime)
+            chatDao.updateReadChatItem(remoteId, readTime)
         }
 }

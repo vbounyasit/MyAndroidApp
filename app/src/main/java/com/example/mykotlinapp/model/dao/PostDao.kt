@@ -49,6 +49,9 @@ interface PostDao {
     @Update
     suspend fun update(userPost: UserPost)
 
+    @Update
+    suspend fun update(userPosts: List<UserPost>)
+
     /**
      * Delete
      */
@@ -74,5 +77,8 @@ interface PostDao {
 
     @Query("SELECT * from user_posts LEFT JOIN post_medias ON post_remote_id = parent_post_remote_id WHERE parent_group_remote_id = :groupRemoteId ORDER BY post_creation_time DESC")
     fun getUserPostsWithImagesFlow(groupRemoteId: String): Flow<Map<UserPost, List<PostMedia>>>
+
+    @Query("SELECT * from user_posts LEFT JOIN post_medias ON post_remote_id = parent_post_remote_id WHERE post_remote_id = :postRemoteId LIMIT 1")
+    fun getUserPostWithImagesFlow(postRemoteId: String): Flow<Map<UserPost, List<PostMedia>>>
 
 }

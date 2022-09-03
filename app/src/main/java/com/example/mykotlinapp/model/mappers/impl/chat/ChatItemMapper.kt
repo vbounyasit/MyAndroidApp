@@ -5,12 +5,12 @@ import com.example.mykotlinapp.R
 import com.example.mykotlinapp.domain.pojo.SyncState
 import com.example.mykotlinapp.model.dto.ui.chat.ChatItemDTO
 import com.example.mykotlinapp.model.entity.chat.ChatItem
-import com.example.mykotlinapp.model.mappers.DTOContextMapper
+import com.example.mykotlinapp.model.mappers.DTOMapperWithParam
 import com.example.mykotlinapp.model.mappers.NetworkResponseMapper
 import com.example.mykotlinapp.model.mappers.impl.Utils
 import com.example.mykotlinapp.network.dto.responses.chat.ChatItemResponse
 
-object ChatItemMapper : DTOContextMapper<ChatItem, ChatItemDTO>,
+object ChatItemMapper : DTOMapperWithParam<ChatItem, ChatItemDTO, Context>,
     NetworkResponseMapper<ChatItemResponse, ChatItem> {
 
     override fun toEntity(networkData: ChatItemResponse): ChatItem {
@@ -27,12 +27,10 @@ object ChatItemMapper : DTOContextMapper<ChatItem, ChatItemDTO>,
         )
     }
 
-    override fun toDTO(context: Context): (entity: ChatItem) -> ChatItemDTO =
+    override fun toDTO(parameter: Context): (entity: ChatItem) -> ChatItemDTO =
         { entity ->
-            val pictures =
-                entity.profilePicture.split(context.getString(R.string.profile_pictures_delimiter))
-            val lastActive =
-                Utils.toActivityStatus(context, System.currentTimeMillis(), entity.lastActive)
+            val pictures = entity.profilePicture.split(parameter.getString(R.string.profile_pictures_delimiter))
+            val lastActive = Utils.toActivityStatus(parameter, System.currentTimeMillis(), entity.lastActive)
             ChatItemDTO(
                 entity.remoteId,
                 entity.name,

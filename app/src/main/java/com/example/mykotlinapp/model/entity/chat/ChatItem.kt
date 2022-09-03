@@ -28,4 +28,4 @@ data class ChatItem(
     override val creationTime: Long,
     @ColumnInfo(name = "chat_update_time")
     override val updateTime: Long
-): SyncData, TimeStampData
+) : SyncData, TimeStampData

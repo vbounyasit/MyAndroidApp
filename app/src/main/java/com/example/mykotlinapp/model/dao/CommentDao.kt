@@ -35,6 +35,9 @@ interface CommentDao {
     @Update
     suspend fun update(comment: UserComment)
 
+    @Update
+    suspend fun update(comments: List<UserComment>)
+
     /**
      * Delete
      */

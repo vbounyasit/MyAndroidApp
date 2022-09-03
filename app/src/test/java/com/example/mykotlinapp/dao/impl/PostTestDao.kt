@@ -35,6 +35,8 @@ class PostTestDao : PostDao, TestDao {
 
     override suspend fun update(userPost: UserPost) = userPostsTable.update(userPost)
 
+    override suspend fun update(userPosts: List<UserPost>) = userPostsTable.updateAll(userPosts)
+
     override suspend fun deletePosts(posts: List<UserPost>) = userPostsTable.deleteAll(posts)
 
     override suspend fun clearPostsNotIn(except: List<String>) = userPostsTable.deleteWhen { !except.contains(it.remoteId) }
@@ -52,6 +54,12 @@ class PostTestDao : PostDao, TestDao {
     override fun getUserPostsWithImagesFlow(groupRemoteId: String): Flow<Map<UserPost, List<PostMedia>>> = flow {
         emit(userPostsTable.leftJoin(postMediasTable) { userPost, postMedia ->
             userPost.remoteId == postMedia.remoteId && userPost.groupRemoteId == groupRemoteId
+        })
+    }
+
+    override fun getUserPostWithImagesFlow(postRemoteId: String): Flow<Map<UserPost, List<PostMedia>>> = flow {
+        emit(userPostsTable.leftJoin(postMediasTable) { userPost, postMedia ->
+            userPost.remoteId == postMedia.remoteId && userPost.remoteId == postRemoteId
         })
     }
 

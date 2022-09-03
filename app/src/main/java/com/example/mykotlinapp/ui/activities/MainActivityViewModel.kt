@@ -123,7 +123,12 @@ class MainActivityViewModel @Inject constructor(
         socketComponent.addEvent(
             SOCKET_CHAT_READ_EVENT,
             SocketEventListener<ChatReadMessage> { data ->
-                viewModelScope.launch { chatRepository.updateChatParticipantReadTime(data) }
+                viewModelScope.launch {
+                    chatRepository.updateChatParticipantReadTime(data)
+                        .onFailure {
+                            //todo
+                        }
+                }
             })
         socketComponent.addEvent(
             SOCKET_CHAT_NEW_MESSAGE_EVENT,
