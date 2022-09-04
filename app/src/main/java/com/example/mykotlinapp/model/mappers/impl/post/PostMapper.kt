@@ -13,7 +13,7 @@ import com.example.mykotlinapp.model.mappers.impl.Utils.toFormattedTimeAgo
 import com.example.mykotlinapp.network.dto.responses.post.PostResponse
 import kotlin.collections.Map.Entry
 
-object PostMapper : DTOMapperWithParam<Entry<UserPost, List<PostMedia>>, PostDTO, Context>,
+object PostMapper : DTOMapperWithParam<Pair<UserPost, List<PostMedia>>, PostDTO, Context>,
     NetworkResponseMapper<PostResponse, UserPost> {
 
     override fun toEntity(networkData: PostResponse): UserPost {
@@ -33,7 +33,7 @@ object PostMapper : DTOMapperWithParam<Entry<UserPost, List<PostMedia>>, PostDTO
         )
     }
 
-    override fun toDTO(parameter: Context): (entity: Entry<UserPost, List<PostMedia>>) -> PostDTO =
+    override fun toDTO(parameter: Context): (entity: Pair<UserPost, List<PostMedia>>) -> PostDTO =
         { (post, media) ->
             val timePosted: String = toFormattedTimeAgo(parameter, post.creationTime)
             PostDTO(

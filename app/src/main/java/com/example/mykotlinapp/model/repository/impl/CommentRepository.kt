@@ -48,7 +48,7 @@ class CommentRepository @Inject constructor(
      * @return A flow containing the list of comments
      */
     fun getUserPostComments(postRemoteId: String): Flow<List<CommentDTO>> =
-        commentDao.getUserCommentsFlow(postRemoteId).map((CommentMapper::toDTO)(context))
+        commentDao.getUserCommentsFlow(postRemoteId).toDTO((CommentMapper::toDTO)(context))
 
     /**
      * Database

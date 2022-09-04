@@ -97,11 +97,8 @@ class UserRepository @Inject constructor(
      * @param userRemoteId The remote id of the user ti retrieve
      * @return A flow containing the user data
      */
-    fun getUserData(userRemoteId: String): Flow<UserDTO?> {
-        return userDao.getUserFlow(userRemoteId).distinctUntilChanged().map { user ->
-            user?.let { UserMapper.toDTO(user) }
-        }
-    }
+    fun getUserData(userRemoteId: String): Flow<UserDTO?> = userDao.getUserFlow(userRemoteId).toDTO(UserMapper::toDTO)
+
 
     /**
      * Gets the list of user contacts with contact requests
@@ -110,12 +107,8 @@ class UserRepository @Inject constructor(
      */
     fun getUserContactsWithRequests(): Flow<List<UserContactDTO>> {
         return userDao.getContactsNotOfRelationFlow(FRIENDS)
-            .map {
-                it
-                    .filter { contact -> contact.syncState != SyncState.PENDING_REMOVAL }
-                    .map((UserContactMapper::toDTO)(context))
-                    .take(context.resources.getInteger(R.integer.max_contact_requests_to_display))
-            }
+            .toDTO((UserContactMapper::toDTO)(context))
+            .map { it.take(context.resources.getInteger(R.integer.max_contact_requests_to_display)) }
             .combine(getUserContacts()) { x, y -> x + y }
     }
 
@@ -124,13 +117,8 @@ class UserRepository @Inject constructor(
      *
      * @return A flow containing the list of contacts
      */
-    fun getUserContacts(): Flow<List<UserContactDTO>> {
-        return userDao.getContactsOfRelationFlow(FRIENDS).map { userContacts ->
-            userContacts
-                .filter { it.syncState != SyncState.PENDING_REMOVAL }
-                .map((UserContactMapper::toDTO)(context))
-        }
-    }
+    fun getUserContacts(): Flow<List<UserContactDTO>> = userDao.getContactsOfRelationFlow(FRIENDS).toDTO((UserContactMapper::toDTO)(context))
+
 
     /**
      * Log user out

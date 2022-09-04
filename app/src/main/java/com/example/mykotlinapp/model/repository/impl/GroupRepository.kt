@@ -44,11 +44,7 @@ class GroupRepository @Inject constructor(
      * @param groupRemoteId The remote id of the group
      * @return A flow containing the retrieved group to display
      */
-    fun getGroup(groupRemoteId: String): Flow<GroupDTO?> =
-        groupDao
-            .getGroupFlow(groupRemoteId)
-            .distinctUntilChanged()
-            .map { it?.let((GroupMapper::toDTO)(context)) }
+    fun getGroup(groupRemoteId: String): Flow<GroupDTO?> = groupDao.getGroupFlow(groupRemoteId).toDTO((GroupMapper::toDTO)(context))
 
     /**
      * Gets the group data to display in the app bar of a user post
@@ -56,11 +52,7 @@ class GroupRepository @Inject constructor(
      * @param groupRemoteId The remote id of the group to get the data for
      * @return A flow containing the data for the post app bar
      */
-    fun getUserPostAppBar(groupRemoteId: String): Flow<PostGroupData?> =
-        groupDao
-            .getGroupFlow(groupRemoteId)
-            .distinctUntilChanged()
-            .map { it?.let((GroupMapper::toPostGroupData)(context)) }
+    fun getUserPostAppBar(groupRemoteId: String): Flow<PostGroupData?> = groupDao.getGroupFlow(groupRemoteId).toDTO((GroupMapper::toPostGroupData)(context))
 
     /**
      * Get the amount of unread posts for a given group to display

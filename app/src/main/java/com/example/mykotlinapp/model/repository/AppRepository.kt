@@ -5,11 +5,13 @@ import com.example.mykotlinapp.model.dao.SharedPreferenceDao
 import com.example.mykotlinapp.model.entity.SyncData
 import com.example.mykotlinapp.model.entity.TimeStampData
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 /**
  * base class implemented by all repositories - work in progress
- * TODO use performAction in all subclasses
  * TODO implement helper functions for sending updates to API
  * TODO implement helper functions to get flows of lists and filter PENDING_REMOVAL
  * TODO implement helper functions to update database with a given input
@@ -212,5 +214,33 @@ open class AppRepository(private val sharedPreferenceDao: SharedPreferenceDao) {
         val getDataById: suspend (String) -> LocalData?,
         val upsertData: suspend (LocalData) -> Unit
     )
+
+
+    @JvmName("listSyncDataToDTO")
+    protected fun <T : SyncData, U> Flow<List<T>>.toDTO(mapperFunction: (T) -> U): Flow<List<U>> =
+        this.map { list -> list.filter { it.syncState != SyncState.PENDING_REMOVAL }.map(mapperFunction) }
+
+    @JvmName("listSyncDataToDTOWithListMapper")
+    protected fun <T : SyncData, U> Flow<List<T>>.toDTO(mapperFunction: (List<T>) -> List<U>): Flow<List<U>> =
+        this.map { list -> list.filter { it.syncState != SyncState.PENDING_REMOVAL }.let(mapperFunction) }
+
+    @JvmName("listToDTO")
+    protected fun <T, U> Flow<List<T>>.toDTO(mapperFunction: (T) -> U): Flow<List<U>> = this.map { it.map(mapperFunction) }
+
+    @JvmName("listToDTOWithListMapper")
+    protected fun <T, U> Flow<List<T>>.toDTO(mapperFunction: (List<T>) -> List<U>): Flow<List<U>> = this.map(mapperFunction)
+
+    @JvmName("mapToDTO")
+    protected fun <K : SyncData, V, T> Flow<Map<K, V>>.toDTO(mapperFunction: (Pair<K, V>) -> T): Flow<List<T>> =
+        this.map { input ->
+            input
+                .asSequence()
+                .filter { (key, _) -> key.syncState != SyncState.PENDING_REMOVAL }
+                .map { it.toPair() }
+                .map(mapperFunction)
+                .toList()
+        }
+
+    protected fun <T, U> Flow<T?>.toDTO(mapperFunction: (T) -> U): Flow<U?> = this.distinctUntilChanged().map { it?.let(mapperFunction) }
 
 }

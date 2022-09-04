@@ -50,14 +50,7 @@ class PostRepository @Inject constructor(
      * @param groupRemoteId The remote id of the group to get posts from
      * @return A flow containing the list of posts
      */
-    fun getUserPosts(groupRemoteId: String): Flow<List<PostDTO>> =
-        postDao.getUserPostsWithImagesFlow(groupRemoteId).map { postsWithMedia ->
-            postsWithMedia
-                .asSequence()
-                .filter { (userPost, _) -> userPost.syncState != SyncState.PENDING_REMOVAL }
-                .map((PostMapper::toDTO)(context))
-                .toList()
-        }
+    fun getUserPosts(groupRemoteId: String): Flow<List<PostDTO>> = postDao.getUserPostsWithImagesFlow(groupRemoteId).toDTO((PostMapper::toDTO)(context))
 
     /**
      * Gets a user post to display
@@ -67,8 +60,9 @@ class PostRepository @Inject constructor(
      */
     fun getUserPost(remoteId: String): Flow<PostDTO?> =
         postDao.getUserPostWithImagesFlow(remoteId)
+            .toDTO((PostMapper::toDTO)(context))
+            .map { it.firstOrNull() }
             .distinctUntilChanged()
-            .map { it.firstNotNullOfOrNull((PostMapper::toDTO)(context)) }
 
     /**
      * @param remoteId The remote id of the given post

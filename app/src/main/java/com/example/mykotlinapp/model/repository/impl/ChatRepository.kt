@@ -55,8 +55,7 @@ class ChatRepository @Inject constructor(
      * Gets the list of chat items to display
      * @return A flow containing the list of chat items
      */
-    fun getChatItems(): Flow<List<ChatListItemDTO>> =
-        chatDao.getChatItemsFlow().map { it.toList().map((ChatListItemMapper::toDTO)(context)) }
+    fun getChatItems(): Flow<List<ChatListItemDTO>> = chatDao.getChatItemsFlow().toDTO((ChatListItemMapper::toDTO)(context))
 
     /**
      * Gets a chat property data to display
@@ -64,8 +63,7 @@ class ChatRepository @Inject constructor(
      * @param chatRemoteId The remote id of the chat to get data for
      * @return A flow containing a chat property to display
      */
-    fun getChatFlow(chatRemoteId: String): Flow<ChatDTO?> =
-        chatDao.getChatFlow(chatRemoteId).distinctUntilChanged().map { it?.let((ChatPropertyMapper::toDTO)(context)) }
+    fun getChatFlow(chatRemoteId: String): Flow<ChatDTO?> = chatDao.getChatFlow(chatRemoteId).toDTO((ChatPropertyMapper::toDTO)(context))
 
     /**
      * Get chat participants for a given chat to display
@@ -74,7 +72,7 @@ class ChatRepository @Inject constructor(
      * @return A flow containing the list of chat participants
      */
     fun getChatParticipants(chatRemoteId: String): Flow<List<ChatParticipantDTO>> =
-        chatDao.getChatParticipantsFlow(chatRemoteId).map { it.map(ChatParticipantMapper::toDTO) }
+        chatDao.getChatParticipantsFlow(chatRemoteId).toDTO(ChatParticipantMapper::toDTO)
 
     /**
      * Get chat bubbles for a given chat to display
@@ -83,15 +81,9 @@ class ChatRepository @Inject constructor(
      * @return A flow containing the chat logs & notifications required
      */
     fun getChatBubbles(chatRemoteId: String): Flow<List<ChatBubbleDTO>> {
-        val pendingChatLogsFlow =
-            chatDao.getPendingChatLogsFlow(chatRemoteId)
-                .map { it.map((PendingChatLogMapper::toDTO)(context)) }
-        val chatLogsFlow =
-            chatDao.getChatLogsFlow(chatRemoteId)
-                .map { it.toList().map((ChatLogMapper::toDTO)(context)) }
-        val chatNotificationsFlow =
-            chatDao.getChatNotificationsFlow(chatRemoteId)
-                .map { it.map(ChatNotificationMapper::toDTO) }
+        val pendingChatLogsFlow = chatDao.getPendingChatLogsFlow(chatRemoteId).toDTO((PendingChatLogMapper::toDTO)(context))
+        val chatLogsFlow = chatDao.getChatLogsFlow(chatRemoteId).toDTO((ChatLogMapper::toDTO)(context))
+        val chatNotificationsFlow = chatDao.getChatNotificationsFlow(chatRemoteId).toDTO(ChatNotificationMapper::toDTO)
         return chatLogsFlow
             .combine(chatNotificationsFlow) { x, y -> x + y }
             .combine(pendingChatLogsFlow) { x, y -> x + y }
@@ -137,12 +129,12 @@ class ChatRepository @Inject constructor(
 
                 chatWithChatLogs.map { (chatItem, chatLogs) ->
                     val chatItemDTO = ChatItemMapper.toDTO(context)(chatItem)
-                    val chatLogDTOs = chatLogs.map(ChatLogMapper.toDTO(context))
+                    val chatLogsDTO = chatLogs.map(ChatLogMapper.toDTO(context))
                     ChatLogsAppNotification(
                         userRemoteId,
                         chatItemDTO,
                         chatItemDTO.isGroupChat,
-                        chatLogDTOs
+                        chatLogsDTO
                     )
                 }
             } ?: throw Exception("Unable to get authenticated user remote id")
@@ -212,9 +204,7 @@ class ChatRepository @Inject constructor(
      */
     private suspend fun updateChatLogsFromResponse(chatLogsResponse: List<ChatLogResponse>, insert: Boolean = false) {
         val newEntities = chatLogsResponse.map(ChatLogMapper::toEntity)
-        if (insert)
-            chatDao.insertChatLogs(newEntities)
-        else
+        if (!insert)
             updateData(
                 newEntities,
                 DataBulkOperations(
@@ -223,6 +213,7 @@ class ChatRepository @Inject constructor(
                     chatDao::clearChatLogsNotIn
                 )
             )
+        else chatDao.insertChatLogs(newEntities)
     }
 
     /**
@@ -234,8 +225,6 @@ class ChatRepository @Inject constructor(
     private suspend fun updateChatNotificationsFromResponse(chatNotificationsResponse: List<ChatNotificationResponse>, insert: Boolean = false) {
         val newEntities = chatNotificationsResponse.map(ChatNotificationMapper::toEntity)
         if (insert)
-            chatDao.insertChatNotifications(newEntities)
-        else
             updateData(
                 newEntities,
                 DataBulkOperations(
@@ -244,6 +233,7 @@ class ChatRepository @Inject constructor(
                     chatDao::clearChatNotificationsNotIn
                 )
             )
+        else chatDao.insertChatNotifications(newEntities)
     }
 
     /**
