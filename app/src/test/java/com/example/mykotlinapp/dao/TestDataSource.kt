@@ -5,13 +5,11 @@ class TestDataSource<Index, Entity>(val getIndex: (Entity) -> Index) {
     private val localStorage: MutableMap<Index, Entity> = mutableMapOf()
 
     fun insert(entity: Entity) {
-        if (!localStorage.containsKey(getIndex(entity)))
-            localStorage[getIndex(entity)] = entity
+        localStorage[getIndex(entity)] = entity
     }
 
     fun insert(entities: List<Entity>) {
         entities
-            .filter { !localStorage.containsKey(getIndex(it)) }
             .map { Pair(getIndex(it), it) }
             .let(localStorage::putAll)
     }
@@ -25,10 +23,11 @@ class TestDataSource<Index, Entity>(val getIndex: (Entity) -> Index) {
     fun getAllWhen(predicate: (Entity) -> Boolean): List<Entity> = localStorage.values.filter(predicate)
 
     fun update(entity: Entity) {
-        localStorage[getIndex(entity)] = entity
+        if (localStorage.containsKey(getIndex(entity)))
+            localStorage[getIndex(entity)] = entity
     }
 
-    fun updateAll(entities: List<Entity>) = localStorage.putAll(entities.map { Pair(getIndex(it), it) })
+    fun updateAll(entities: List<Entity>) = localStorage.putAll(entities.filter { localStorage.containsKey(getIndex(it)) }.map { Pair(getIndex(it), it) })
 
     fun update(index: Index, transformation: (Entity) -> Entity) {
         localStorage[index]?.let { localStorage[index] = transformation(it) }

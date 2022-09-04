@@ -117,13 +117,13 @@ open class AppRepository(private val sharedPreferenceDao: SharedPreferenceDao) {
      * @param LocalData The type of the database entity
      * @param newData The new data received from the API
      * @param dataBulkOperations The DAO database functions related to the database entity
-     * @param shouldKeepData The predicate to use to compare the old and new data
+     * @param shouldReplaceData The predicate to use to compare the old and new data
      *                       (old data, new data) -> should the new data replace the old one
      */
     private suspend fun <LocalData : SyncData> syncData(
         newData: List<LocalData>,
         dataBulkOperations: DataBulkOperations<LocalData>,
-        shouldKeepData: (LocalData, LocalData) -> Boolean
+        shouldReplaceData: (LocalData, LocalData) -> Boolean
     ) {
         val (getDataByIds, upsertData, clearDataNotIn) = dataBulkOperations
         val getKey: (LocalData) -> String = { it.remoteId }
@@ -132,7 +132,7 @@ open class AppRepository(private val sharedPreferenceDao: SharedPreferenceDao) {
             val dataByRemoteId = getDataByIds(remoteIds).associateBy(getKey)
             clearDataNotIn?.invoke(remoteIds)
             upsertData(filter { newData ->
-                dataByRemoteId[newData.remoteId]?.let { currentData -> shouldKeepData(currentData, newData) } ?: true
+                dataByRemoteId[newData.remoteId]?.let { currentData -> shouldReplaceData(currentData, newData) } ?: true
             })
         }
     }
